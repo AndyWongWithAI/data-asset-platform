@@ -9,7 +9,8 @@ export default function CatalogModule({ assetId, onNavigate }) {
   const filtered = data.tables.filter((t) => {
     if (!keyword) return true;
     const app = data.applications.find((a) => a.id === t.appId)?.name || '';
-    return t.nameCn.includes(keyword) || t.nameEn.includes(keyword) || app.includes(keyword);
+    const db = data.databases.find((d) => d.id === t.dbId)?.name || '';
+    return t.nameCn.includes(keyword) || t.nameEn.includes(keyword) || app.includes(keyword) || db.includes(keyword);
   });
 
   const selected = data.tables.find((t) => t.id === selectedTableId);
