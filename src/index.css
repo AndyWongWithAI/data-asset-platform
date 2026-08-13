@@ -39,3 +39,17 @@ body { font-family: -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei",
 .field-card-meta div { display: flex; gap: 8px; font-size: 12px; margin: 3px 0; color: #4e5969; }
 .field-card-meta label { width: 56px; color: #86909c; flex-shrink: 0; }
 .link { border: none; background: none; color: #165dff; cursor: pointer; font-size: 12px; padding: 0; }
+.sub-tabs { display: flex; gap: 8px; margin-bottom: 16px; }
+.sub-tabs button { padding: 6px 14px; border: 1px solid #c9cdd4; background: #fff; border-radius: 4px; cursor: pointer; }
+.sub-tabs button.sub-active { background: #165dff; color: #fff; border-color: #165dff; }
+.sub-tabs button:disabled { color: #c9cdd4; cursor: not-allowed; }
+.score-row { display: flex; align-items: center; gap: 16px; background: #fff; border: 1px solid #e5e6eb; border-radius: 4px; padding: 12px 16px; margin-bottom: 12px; }
+.score-info { display: flex; flex-direction: column; gap: 4px; font-size: 13px; }
+.score-info span { color: #86909c; }
+.issues { flex: 1; }
+.issue { display: flex; align-items: center; gap: 8px; font-size: 13px; margin: 4px 0; }
+.gauge { width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-direction: column; background: #f2f3f5; }
+.gauge-ok { background: #e8ffea; color: #0e8a16; }
+.gauge-warn { background: #fff7e6; color: #d46b08; }
+.gauge-num { font-size: 20px; font-weight: 700; }
+.gauge-label { font-size: 12px; }
