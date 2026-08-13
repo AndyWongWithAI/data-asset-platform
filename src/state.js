@@ -11,7 +11,10 @@ export const MODULE_GROUPS = [
   { name: '价值输出', items: [{ key: 'service', title: '数据服务', implemented: false }] },
 ];
 
-export const MODULES = MODULE_GROUPS.flatMap((g) => g.items);
+// 非侧边栏模块：表详情（多实例，每张表一个 tab，标题取表名）
+const TABLE_DETAIL = { key: 'tableDetail', title: '表详情', implemented: true, multi: true };
+
+export const MODULES = [...MODULE_GROUPS.flatMap((g) => g.items), TABLE_DETAIL];
 
 export function createInitialState() {
   return { tabs: [], activeTabId: null, nextTabId: 1 };
@@ -49,14 +52,25 @@ export function activateTab(state, tabId) {
 export function navigate(state, moduleKey, assetId = null) {
   const mod = MODULES.find((m) => m.key === moduleKey);
   if (!mod) return state;
-  const existing = state.tabs.find((t) => t.moduleKey === moduleKey);
+  // 多实例模块按「模块 + 表」区分 tab，其余按模块去重
+  const existing = state.tabs.find((t) =>
+    mod.multi
+      ? t.moduleKey === moduleKey && t.assetId?.tableId === assetId?.tableId
+      : t.moduleKey === moduleKey
+  );
   let next = state;
   let tabId;
   if (existing) {
     tabId = existing.id;
   } else {
-    next = openTab(state, moduleKey);
-    tabId = next.activeTabId;
+    const id = state.nextTabId;
+    const title = mod.multi && assetId?.title ? assetId.title : mod.title;
+    next = {
+      ...state,
+      tabs: [...state.tabs, { id, moduleKey, title, assetId: null }],
+      nextTabId: state.nextTabId + 1,
+    };
+    tabId = id;
   }
   return {
     ...next,

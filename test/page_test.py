@@ -33,6 +33,13 @@ def main():
         page.locator('.sidebar-item', has_text='数据资产目录').click()
         assert page.locator('.tab', has_text='数据资产目录').count() == 1
         assert page.locator('.table tbody tr').count() >= 5
+        # 检索区分：应用/业务域下拉 + 表名输入
+        assert page.locator('.search-bar select').count() == 2
+        assert page.locator('.search-bar input').count() == 1
+        # 查看按钮 → 打开字段级元数据 tab
+        page.locator('.table tbody tr .link').first.click()
+        assert page.locator('.field-table').count() == 1
+        assert page.locator('.tab', has_text='测风数据表').count() == 1
         # 打开治理看板
         page.locator('.sidebar-item', has_text='数据治理看板').click()
         assert page.locator('.tab', has_text='数据治理看板').count() == 1
@@ -40,10 +47,11 @@ def main():
         page.locator('.sidebar-item', has_text='数据质量').click()
         assert page.locator('.placeholder').count() == 1
         assert page.locator('.badge-2nd').count() >= 1
-        # 跨模块转跳：治理看板 → 定位字段 → 激活资产目录
+        # 跨模块转跳：治理看板 → 定位字段 → 打开表详情 tab
         page.locator('.tab', has_text='数据治理看板').click()
         page.locator('.issue .link').first.click()
-        assert page.locator('.tab.active', has_text='数据资产目录').count() == 1
+        assert page.locator('.tab.active', has_text='测风数据表').count() == 1
+        assert page.locator('.field-table').count() == 1
         print('page_test PASS')
         browser.close()
 

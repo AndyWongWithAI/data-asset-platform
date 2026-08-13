@@ -38,7 +38,7 @@ function QualityBoard({ onNavigate }) {
                   <div key={issue.id} className="issue">
                     <Tag tone={issue.severity === '严重' ? 'danger' : 'warn'}>{issue.severity}</Tag>
                     <span>{issue.desc}</span>
-                    <button className="link" onClick={() => onNavigate('catalog', { tableId: f?.tableId, fieldId: issue.fieldId })}>
+                    <button className="link" onClick={() => onNavigate('tableDetail', { tableId: f?.tableId, fieldId: issue.fieldId, title: data.tables.find((x) => x.id === f?.tableId)?.nameCn })}>
                       定位字段 {f?.business.nameCn} · {rule?.name}
                     </button>
                   </div>
@@ -75,7 +75,7 @@ function StandardBoard({ onNavigate }) {
                 <td>{f.business.nameCn}</td>
                 <td>{t?.nameCn}</td>
                 <td>{f.management.securityLevel}</td>
-                <td><button className="link" onClick={() => onNavigate('catalog', { tableId: f.tableId, fieldId: f.id })}>定位</button></td>
+                <td><button className="link" onClick={() => onNavigate('tableDetail', { tableId: f.tableId, fieldId: f.id, title: t?.nameCn })}>定位</button></td>
               </tr>
             );
           })}

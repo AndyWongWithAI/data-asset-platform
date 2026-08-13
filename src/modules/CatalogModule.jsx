@@ -1,52 +1,47 @@
 import { useState } from 'react';
 import data from '../data.js';
-import FieldMetaCard from '../components/FieldMetaCard.jsx';
 
-export default function CatalogModule({ assetId, onNavigate }) {
+export default function CatalogModule({ onNavigate }) {
+  const [appId, setAppId] = useState('all');
+  const [domainId, setDomainId] = useState('all');
   const [keyword, setKeyword] = useState('');
-  const [selectedTableId, setSelectedTableId] = useState(assetId?.tableId ?? null);
 
   const filtered = data.tables.filter((t) => {
-    if (!keyword) return true;
-    const app = data.applications.find((a) => a.id === t.appId)?.name || '';
-    const db = data.databases.find((d) => d.id === t.dbId)?.name || '';
-    return t.nameCn.includes(keyword) || t.nameEn.includes(keyword) || app.includes(keyword) || db.includes(keyword);
+    if (appId !== 'all' && t.appId !== appId) return false;
+    if (domainId !== 'all' && t.bizDomainId !== domainId) return false;
+    if (keyword && !(t.nameCn.includes(keyword) || t.nameEn.includes(keyword))) return false;
+    return true;
   });
-
-  const selected = data.tables.find((t) => t.id === selectedTableId);
-  const fields = selected ? data.fields.filter((f) => f.tableId === selected.id) : [];
 
   return (
     <div className="catalog">
       <div className="search-bar">
-        <input placeholder="检索应用 / 库 / 表名…" value={keyword}
+        <select value={appId} onChange={(e) => setAppId(e.target.value)} aria-label="按应用筛选">
+          <option value="all">全部应用</option>
+          {data.applications.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
+        </select>
+        <select value={domainId} onChange={(e) => setDomainId(e.target.value)} aria-label="按业务域筛选">
+          <option value="all">全部业务域</option>
+          {data.bizDomains.map((b) => <option key={b.id} value={b.id}>{b.name}</option>)}
+        </select>
+        <input placeholder="按表名检索（子字符串匹配）…" value={keyword}
           onChange={(e) => setKeyword(e.target.value)} />
       </div>
-      <div className="catalog-layout">
-        <table className="table">
-          <thead><tr><th>表名</th><th>应用</th><th>库</th><th>业务域</th></tr></thead>
-          <tbody>
-            {filtered.map((t) => (
-              <tr key={t.id} className={t.id === selectedTableId ? 'row-active' : ''}
-                onClick={() => setSelectedTableId(t.id)}>
-                <td>{t.nameCn}<span className="en">{t.nameEn}</span></td>
-                <td>{data.applications.find((a) => a.id === t.appId)?.name}</td>
-                <td>{data.databases.find((d) => d.id === t.dbId)?.name}</td>
-                <td>{data.bizDomains.find((b) => b.id === t.bizDomainId)?.name}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        {selected && (
-          <div className="detail">
-            <h3>{selected.nameCn}</h3>
-            <p className="en">{selected.nameEn} · {selected.tableType} · {selected.desc}</p>
-            {fields.map((f) => (
-              <FieldMetaCard key={f.id} field={f} onNavigate={onNavigate} />
-            ))}
-          </div>
-        )}
-      </div>
+      <table className="table">
+        <thead><tr><th>表名</th><th>应用</th><th>库</th><th>业务域</th><th>操作</th></tr></thead>
+        <tbody>
+          {filtered.map((t) => (
+            <tr key={t.id}>
+              <td>{t.nameCn}<span className="en">{t.nameEn}</span></td>
+              <td>{data.applications.find((a) => a.id === t.appId)?.name}</td>
+              <td>{data.databases.find((d) => d.id === t.dbId)?.name}</td>
+              <td>{data.bizDomains.find((b) => b.id === t.bizDomainId)?.name}</td>
+              <td><button className="link" onClick={() => onNavigate('tableDetail', { tableId: t.id, title: t.nameCn })}>查看</button></td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      {filtered.length === 0 && <div className="empty-hint">无匹配的表，请调整筛选条件</div>}
     </div>
   );
 }
