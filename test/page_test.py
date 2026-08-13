@@ -15,6 +15,28 @@ def wait_ready():
             time.sleep(1)
     raise SystemExit('dev server 未就绪')
 
+def assert_no_hscroll(page):
+    """表格撑满容器宽度且无横向溢出（自适应）"""
+    r = page.evaluate("""() => {
+      const panel = document.querySelector('.tab-panel');
+      return {
+        panel: panel ? panel.scrollWidth - panel.clientWidth : 0,
+        body: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      };
+    }""")
+    assert r['body'] <= 1, f"页面横向溢出 {r['body']}px"
+    assert r['panel'] <= 1, f"工作区横向溢出 {r['panel']}px"
+
+def assert_table_fills(page):
+    """表格宽度跟踪容器宽度（非固定窄宽）"""
+    r = page.evaluate("""() => {
+      const t = document.querySelector('.table');
+      const parent = t ? t.parentElement : null;
+      if (!t || !parent) return { parent: 0, table: 0 };
+      return { parent: parent.clientWidth, table: t.getBoundingClientRect().width };
+    }""")
+    assert r['table'] >= r['parent'] - 4, f"表格未撑满容器：table {r['table']}px vs 容器 {r['parent']}px"
+
 def main():
     wait_ready()
     try:
@@ -36,10 +58,22 @@ def main():
         # 检索区分：应用/业务域下拉 + 表名输入
         assert page.locator('.search-bar select').count() == 2
         assert page.locator('.search-bar input').count() == 1
+        # 表粒度清单自适应：撑满 + 无横向溢出
+        assert_table_fills(page)
+        assert_no_hscroll(page)
         # 查看按钮 → 打开字段级元数据 tab
         page.locator('.table tbody tr .link').first.click()
         assert page.locator('.field-table').count() == 1
         assert page.locator('.tab', has_text='测风数据表').count() == 1
+        # 字段粒度清单自适应
+        assert_table_fills(page)
+        assert_no_hscroll(page)
+        # 窄视口下仍自适应（字段详情为最宽表）
+        page.set_viewport_size({'width': 900, 'height': 700})
+        assert_table_fills(page)
+        assert_no_hscroll(page)
+        # 恢复常规视口
+        page.set_viewport_size({'width': 1280, 'height': 720})
         # 打开治理看板
         page.locator('.sidebar-item', has_text='数据治理看板').click()
         assert page.locator('.tab', has_text='数据治理看板').count() == 1

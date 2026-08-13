@@ -27,8 +27,8 @@ body { font-family: -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei",
 .search-bar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 .search-bar select { padding: 8px 12px; border: 1px solid #c9cdd4; border-radius: 4px; background: #fff; }
 .search-bar input { width: 240px; padding: 8px 12px; border: 1px solid #c9cdd4; border-radius: 4px; }
-.table { border-collapse: collapse; background: #fff; flex: 1; }
-.table th, .table td { border: 1px solid #e5e6eb; padding: 8px 12px; font-size: 13px; text-align: left; }
+.table { width: 100%; border-collapse: collapse; background: #fff; }
+.table th, .table td { border: 1px solid #e5e6eb; padding: 8px 12px; font-size: 13px; text-align: left; overflow-wrap: anywhere; }
 .table .en { color: #86909c; font-size: 12px; margin-left: 8px; }
 .table tbody tr.row-active { background: #e8f3ff; }
 .detail-head { margin-bottom: 12px; }

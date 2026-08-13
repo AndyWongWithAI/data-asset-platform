@@ -17,6 +17,8 @@ npm run build      # 构建到 dist/
 npm run test:page  # playwright 页面冒烟（需先起 dev server + chromium）
 ```
 
+> **每次开发完成后必须跑 `npm run test:page` 端到端测试**（含表粒度/字段粒度清单自适应宽度断言），通过后方可合并。
+
 ## 文档层级（上游 → 下游，唯一依赖方向）
 
 1. `REQUIREMENTS.md` —— 立项需求 + 设计约束（技术选型已确认：React + Vite + 静态 JSON mock）
