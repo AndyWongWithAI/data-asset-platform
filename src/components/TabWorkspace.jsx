@@ -1,5 +1,6 @@
 import CatalogModule from '../modules/CatalogModule.jsx';
 import GovernanceModule from '../modules/GovernanceModule.jsx';
+import PlaceholderModule from '../modules/PlaceholderModule.jsx';
 
 export default function TabWorkspace({ state, dispatch }) {
   const activeTab = state.tabs.find((t) => t.id === state.activeTabId);
@@ -23,7 +24,7 @@ export default function TabWorkspace({ state, dispatch }) {
             ? <CatalogModule assetId={activeTab.assetId} onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
             : activeTab.moduleKey === 'governance'
               ? <GovernanceModule assetId={activeTab.assetId} onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
-              : <div className="module-placeholder">{activeTab.title}（模块内容由 Task 5-7 提供）</div>
+              : <PlaceholderModule moduleKey={activeTab.moduleKey} />
           : <div className="empty-hint">点击左侧导航打开模块</div>}
       </div>
     </div>

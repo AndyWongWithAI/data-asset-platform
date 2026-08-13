@@ -53,3 +53,7 @@ body { font-family: -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei",
 .gauge-warn { background: #fff7e6; color: #d46b08; }
 .gauge-num { font-size: 20px; font-weight: 700; }
 .gauge-label { font-size: 12px; }
+.placeholder { background: #fff; border: 1px solid #e5e6eb; border-radius: 4px; padding: 24px; }
+.placeholder h3 { margin-bottom: 12px; }
+.placeholder-pos { color: #4e5969; font-size: 14px; line-height: 1.6; margin-bottom: 16px; }
+.placeholder-note { color: #d46b08; font-size: 13px; }
