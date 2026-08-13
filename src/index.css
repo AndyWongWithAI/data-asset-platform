@@ -24,3 +24,18 @@ body { font-family: -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei",
 .tag-warn { background: #fff7e6; color: #d46b08; }
 .tag-danger { background: #ffece8; color: #cb272d; }
 .tag-ok { background: #e8ffea; color: #0e8a16; }
+.search-bar input { width: 100%; max-width: 480px; padding: 8px 12px; border: 1px solid #c9cdd4; border-radius: 4px; }
+.catalog-layout { display: flex; gap: 16px; margin-top: 12px; }
+.table { border-collapse: collapse; background: #fff; flex: 1; }
+.table th, .table td { border: 1px solid #e5e6eb; padding: 8px 12px; font-size: 13px; text-align: left; }
+.table .en { color: #86909c; font-size: 12px; margin-left: 8px; }
+.table tbody tr { cursor: pointer; }
+.table tbody tr.row-active { background: #e8f3ff; }
+.detail { flex: 1.2; }
+.detail h3 { margin-bottom: 4px; }
+.detail .en { color: #86909c; font-size: 12px; margin-bottom: 12px; }
+.field-card { border: 1px solid #e5e6eb; border-radius: 4px; padding: 10px 12px; margin-bottom: 8px; background: #fff; }
+.field-card-head { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.field-card-meta div { display: flex; gap: 8px; font-size: 12px; margin: 3px 0; color: #4e5969; }
+.field-card-meta label { width: 56px; color: #86909c; flex-shrink: 0; }
+.link { border: none; background: none; color: #165dff; cursor: pointer; font-size: 12px; padding: 0; }
