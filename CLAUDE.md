@@ -6,7 +6,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 GDEPDI（广东省电力设计研究院）「数据资源管理平台」展示版（Demo）——面向**海上风电全生命周期数据治理**。目标读者：架构评审 / 求职作品集 / 方案演示。
 
-**当前阶段：纯设计/需求阶段，尚无代码、无 git、无 package.json。** 本目录只有 3 份 Markdown 设计文档，前端工程（React + Vite）尚未搭建。在写任何代码前，先确认当前文档状态是否已推进到实现阶段。
+**当前状态：MVP 已实现并合入 `main`**（M1 资产目录 + M0 治理看板·质量/标准子看板），血缘看板与 M2–M6 独立页留二期（占位页已就位）。本仓库已 `git init`，`main` 受 git-guardrails 保护（只接受 merge 提交），开发走任务分支再 merge。
+
+## 常用命令
+
+```bash
+npm run dev        # 本地开发（Vite，base=/data-asset-platform/，访问 http://localhost:5173/data-asset-platform/）
+npm test           # data 引用完整性 + state 状态机单测（node --test 自动发现，不带目录参数）
+npm run build      # 构建到 dist/
+npm run test:page  # playwright 页面冒烟（需先起 dev server + chromium）
+```
 
 ## 文档层级（上游 → 下游，唯一依赖方向）
 
