@@ -2,17 +2,15 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { MODULE_GROUPS, MODULES, createInitialState, openTab, closeTab, navigate } from '../src/state.js';
 
-test('MODULE_GROUPS 含 7 模块且 catalog/governance/M2-M5 已实现', () => {
-  const keys = MODULE_GROUPS.flatMap((g) => g.items.map((i) => i.key));
-  assert.equal(keys.length, 7);
-  const m = Object.fromEntries(MODULE_GROUPS.flatMap((g) => g.items).map((i) => [i.key, i]));
-  assert.equal(m.catalog.implemented, true);
-  assert.equal(m.governance.implemented, true);
-  assert.equal(m.quality.implemented, true);
-  assert.equal(m.standard.implemented, true);
-  assert.equal(m.security.implemented, true);
-  assert.equal(m.masterdata.implemented, true);
-  assert.equal(m.service.implemented, false);
+test('MODULE_GROUPS 含 10 模块且全部 implemented', () => {
+  const items = MODULE_GROUPS.flatMap((g) => g.items);
+  assert.equal(items.length, 10);
+  assert.deepEqual(MODULE_GROUPS.map((g) => g.name), ['生产态·治理看板', '设计态·定义', '数据交换']);
+  const m = Object.fromEntries(items.map((i) => [i.key, i]));
+  for (const k of ['catalog','qualityBoard','lineageBoard','standardBoard','quality','standard','security','masterdata','batchFile','dataService'])
+    assert.equal(m[k].implemented, true, `${k} 应 implemented`);
+  assert.equal(m.governance, undefined);
+  assert.equal(m.service, undefined);
 });
 
 test('openTab 首次打开追加并激活，重复打开不重复追加', () => {
@@ -20,7 +18,7 @@ test('openTab 首次打开追加并激活，重复打开不重复追加', () => 
   s = openTab(s, 'catalog');
   assert.equal(s.tabs.length, 1);
   assert.equal(s.activeTabId, 1);
-  s = openTab(s, 'governance');
+  s = openTab(s, 'qualityBoard');
   s = openTab(s, 'catalog');
   assert.equal(s.tabs.length, 2);
   assert.equal(s.activeTabId, 1);
@@ -29,7 +27,7 @@ test('openTab 首次打开追加并激活，重复打开不重复追加', () => 
 test('closeTab 关闭激活 tab 后激活相邻', () => {
   let s = createInitialState();
   s = openTab(s, 'catalog');
-  s = openTab(s, 'governance');
+  s = openTab(s, 'qualityBoard');
   s = openTab(s, 'quality');
   s = closeTab(s, 3);
   assert.equal(s.tabs.length, 2);

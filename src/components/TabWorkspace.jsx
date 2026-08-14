@@ -1,5 +1,6 @@
 import CatalogModule from '../modules/CatalogModule.jsx';
-import GovernanceModule from '../modules/GovernanceModule.jsx';
+import QualityBoardModule from '../modules/QualityBoardModule.jsx';
+import StandardBoardModule from '../modules/StandardBoardModule.jsx';
 import TableDetailModule from '../modules/TableDetailModule.jsx';
 import QualityModule from '../modules/QualityModule.jsx';
 import StandardModule from '../modules/StandardModule.jsx';
@@ -27,19 +28,21 @@ export default function TabWorkspace({ state, dispatch }) {
         {activeTab
           ? activeTab.moduleKey === 'catalog'
             ? <CatalogModule assetId={activeTab.assetId} onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
-            : activeTab.moduleKey === 'governance'
-              ? <GovernanceModule assetId={activeTab.assetId} onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
-              : activeTab.moduleKey === 'tableDetail'
-                ? <TableDetailModule assetId={activeTab.assetId} onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
-                : activeTab.moduleKey === 'quality'
-                  ? <QualityModule onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
-                  : activeTab.moduleKey === 'standard'
-                    ? <StandardModule onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
-                    : activeTab.moduleKey === 'security'
-                      ? <SecurityModule onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
-                      : activeTab.moduleKey === 'masterdata'
-                        ? <MasterDataModule onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
-                        : <PlaceholderModule moduleKey={activeTab.moduleKey} />
+            : activeTab.moduleKey === 'qualityBoard'
+              ? <QualityBoardModule onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
+              : activeTab.moduleKey === 'standardBoard'
+                ? <StandardBoardModule onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
+                : activeTab.moduleKey === 'tableDetail'
+                  ? <TableDetailModule assetId={activeTab.assetId} onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
+                  : activeTab.moduleKey === 'quality'
+                    ? <QualityModule onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
+                    : activeTab.moduleKey === 'standard'
+                      ? <StandardModule onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
+                      : activeTab.moduleKey === 'security'
+                        ? <SecurityModule onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
+                        : activeTab.moduleKey === 'masterdata'
+                          ? <MasterDataModule onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
+                          : <PlaceholderModule moduleKey={activeTab.moduleKey} />
           : <div className="empty-hint">点击左侧导航打开模块</div>}
       </div>
     </div>
