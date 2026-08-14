@@ -148,6 +148,7 @@ def main():
         page.locator('.table tbody tr .link').first.click()
         assert page.locator('.detail-panel').count() == 1
         assert page.locator('.term-chain').count() == 0
+        assert page.locator('.detail-panel h4', has_text='英文名映射').count() == 0   # 英文名映射块已删，英文名=词根拼接直接展示
         assert page.locator('.detail-panel', has_text='类型').count() >= 1
         assert page.locator('.detail-panel', has_text='业务域').count() >= 1
         assert page.locator('.detail-panel', has_text='定义').count() >= 1

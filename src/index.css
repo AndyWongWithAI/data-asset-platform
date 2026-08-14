@@ -96,4 +96,3 @@ body { font-family: -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei",
 .flow-step .step-name { font-weight: 600; min-width: 96px; }
 .flow-step .step-actor { color: #86909c; }
 .flow-step .step-result { margin-left: auto; }
-.term-chain-hint { color: #86909c; font-size: 12px; margin: 6px 0 12px; }
