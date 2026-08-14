@@ -41,13 +41,13 @@ export default function TabWorkspace({ state, dispatch }) {
                 : activeTab.moduleKey === 'tableDetail'
                   ? <TableDetailModule assetId={activeTab.assetId} onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
                   : activeTab.moduleKey === 'quality'
-                    ? <QualityModule onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
+                    ? <QualityModule assetId={activeTab.assetId} onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
                     : activeTab.moduleKey === 'baseTerm'
                       ? <BaseTermModule onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
                       : activeTab.moduleKey === 'valueDomain'
                         ? <ValueDomainModule assetId={activeTab.assetId} onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
                         : activeTab.moduleKey === 'refData'
-                          ? <RefDataModule onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
+                          ? <RefDataModule assetId={activeTab.assetId} onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
                           : activeTab.moduleKey === 'infoItem'
                             ? <InfoItemModule assetId={activeTab.assetId} onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
                             : activeTab.moduleKey === 'security'
