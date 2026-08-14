@@ -48,7 +48,7 @@ export default function TableDetailModule({ assetId, onNavigate }) {
                     <button key={r.id} className="link" onClick={() => onNavigate('quality', null)}>{r.name}</button>
                   ))
                   : '—'}</td>
-                <td>{std ? `${std.nameCn}（${std.code}）` : '—'}</td>
+                <td>{std ? <button className="link" onClick={() => onNavigate('infoItem', { infoItemId: std.id })}>{std.nameCn}（{std.code}）</button> : '—'}</td>
                 <td><Tag tone={LEVEL_TONE[f.management.securityLevel] || 'default'}>{f.management.securityLevel} {sec?.name}</Tag></td>
                 <td>{md ? md.name : '—'}</td>
                 <td>{f.management.owner}</td>

@@ -6,6 +6,7 @@ export default function InfoItemModule({ onNavigate, assetId }) {
 
   if (selectedId) {
     const ii = data.infoItems.find((i) => i.id === selectedId);
+    if (!ii) return <div className="empty-hint">未找到该信息项</div>;
     const vd = data.valueDomains.find((v) => v.id === ii.valueDomainId);
     const rd = ii.refDataId ? data.refDatas.find((r) => r.id === ii.refDataId) : null;
     const terms = ii.termIds.map((id) => data.baseTerms.find((t) => t.id === id)).filter(Boolean);
