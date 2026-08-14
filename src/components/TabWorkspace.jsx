@@ -2,6 +2,7 @@ import CatalogModule from '../modules/CatalogModule.jsx';
 import GovernanceModule from '../modules/GovernanceModule.jsx';
 import TableDetailModule from '../modules/TableDetailModule.jsx';
 import QualityModule from '../modules/QualityModule.jsx';
+import StandardModule from '../modules/StandardModule.jsx';
 import PlaceholderModule from '../modules/PlaceholderModule.jsx';
 
 export default function TabWorkspace({ state, dispatch }) {
@@ -30,7 +31,9 @@ export default function TabWorkspace({ state, dispatch }) {
                 ? <TableDetailModule assetId={activeTab.assetId} onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
                 : activeTab.moduleKey === 'quality'
                   ? <QualityModule onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
-                  : <PlaceholderModule moduleKey={activeTab.moduleKey} />
+                  : activeTab.moduleKey === 'standard'
+                    ? <StandardModule onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
+                    : <PlaceholderModule moduleKey={activeTab.moduleKey} />
           : <div className="empty-hint">点击左侧导航打开模块</div>}
       </div>
     </div>
