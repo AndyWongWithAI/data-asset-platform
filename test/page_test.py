@@ -97,8 +97,14 @@ def main():
         assert page.locator('.field-table').count() == 1
         assert page.locator('.row-active').count() == 1
         assert page.locator('.tab.active', has_text='SCADA 遥测表').count() == 1
-        # M3 数据标准（四模块：基础术语 / 值域 / 参考数据 / 信息项）
-        # 基础术语
+        # M3 数据标准（可收缩目录：父级「数据标准」含 4 子项）
+        # 侧边栏折叠目录：点「数据标准」父级 toggle 折叠/展开子项
+        assert page.locator('.sidebar-sub', has_text='基础术语').count() == 1   # 默认展开
+        page.locator('.sidebar-dir', has_text='数据标准').click()
+        assert page.locator('.sidebar-sub', has_text='基础术语').count() == 0   # 折叠后不可见
+        page.locator('.sidebar-dir', has_text='数据标准').click()
+        assert page.locator('.sidebar-sub', has_text='基础术语').count() == 1   # 再点展开
+        # 基础术语（无下钻）
         click_menu(page, '基础术语')
         assert page.locator('.tab.active', has_text='基础术语').count() == 1
         assert page.locator('.table tbody tr').count() >= 20
@@ -106,8 +112,9 @@ def main():
         assert page.locator('.modal').count() == 1
         page.locator('.modal button', has_text='知道了').click()
         assert page.locator('.modal').count() == 0
-        page.locator('.table tbody tr .link').first.click()
-        assert page.locator('.detail-panel').count() == 1
+        # 去下钻：点中文名第一列后仍无 .detail-panel
+        page.locator('.table tbody tr').first.locator('td').first.click()
+        assert page.locator('.detail-panel').count() == 0
         # 值域
         click_menu(page, '值域')
         assert page.locator('.tab.active', has_text='值域').count() == 1
@@ -132,18 +139,32 @@ def main():
         click_menu(page, '信息项')
         assert page.locator('.tab.active', has_text='信息项').count() == 1
         assert page.locator('.table tbody tr').count() >= 10
+        assert page.locator('.table thead th', has_text='类型').count() == 1   # 列表含「类型」列
         page.locator('button', has_text='新增信息项').click()
         assert page.locator('.modal').count() == 1
         page.locator('.modal button', has_text='知道了').click()
         assert page.locator('.modal').count() == 0
-        # 点信息项进详情（第一条 ii_voltage 电压等级编码）→ 词根链 + 被引用字段转跳 M1
+        # 点信息项进详情（第一条 ii_voltage 电压等级编码）→ 无词根链 + 类型/业务域/定义 + 被引用字段转跳 M1
         page.locator('.table tbody tr .link').first.click()
         assert page.locator('.detail-panel').count() == 1
-        assert page.locator('.term-chain').count() == 1
+        assert page.locator('.term-chain').count() == 0
+        assert page.locator('.detail-panel', has_text='类型').count() >= 1
+        assert page.locator('.detail-panel', has_text='业务域').count() >= 1
+        assert page.locator('.detail-panel', has_text='定义').count() >= 1
         page.locator('.detail-panel .link', has_text='定位').first.click()
         assert page.locator('.field-table').count() == 1
         assert page.locator('.row-active').count() == 1
         assert page.locator('.tab.active', has_text='海缆参数表').count() == 1
+        # 关联标准转跳（需求 5）：M1 资产目录 → 测风数据表「查看」→ 点「关联标准」→ 信息项详情
+        click_menu(page, '数据资产目录')
+        assert page.locator('.table tbody tr').count() >= 5
+        page.locator('.table tbody tr', has_text='测风数据表').locator('.link', has_text='查看').click()
+        assert page.locator('.field-table').count() == 1
+        page.locator('.field-table tbody tr', has_text='风速值').locator('.link', has_text='II0008').click()
+        assert page.locator('.tab.active', has_text='信息项').count() == 1
+        assert page.locator('.detail-panel').count() == 1
+        assert page.locator('.detail-panel h3', has_text='风速值').count() == 1
+        assert page.locator('.detail-panel h3', has_text='电压等级编码').count() == 0
         # M4 数据安全分级
         click_menu(page, '数据安全')
         assert page.locator('.tab', has_text='数据安全').count() == 1
@@ -181,10 +202,13 @@ def main():
         click_menu(page, '数据质量看板')
         assert page.locator('.tab', has_text='数据质量看板').count() == 1
         assert page.locator('.score-row').count() >= 2
-        # ② 数据标准看板（生产态）
+        # ② 数据标准看板（生产态）+ 贯标对齐判定（需求 6）
         click_menu(page, '数据标准看板')
         assert page.locator('.tab', has_text='数据标准看板').count() == 1
         assert page.locator('.score-row').count() >= 1
+        assert page.locator('.score-info', has_text='已贯').count() == 1   # 贯标率（约 12%）
+        assert page.locator('.table', has_text='名称未对齐').count() >= 1  # 应贯未贯明细含原因列
+        assert page.locator('.table', has_text='无关联标准').count() >= 1
         # ③ 数据血缘看板（列表 + UML 血缘图 + 字段级一级/N级交互 + 节点转跳）
         click_menu(page, '数据血缘看板')
         assert page.locator('.tab', has_text='数据血缘看板').count() == 1
