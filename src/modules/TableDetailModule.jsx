@@ -45,7 +45,7 @@ export default function TableDetailModule({ assetId, onNavigate }) {
                 <td>{f.technical.isPK ? 'PK' : ''}{f.technical.isPK && f.technical.isFK ? '/' : ''}{f.technical.isFK ? 'FK' : ''}</td>
                 <td>{rules.length
                   ? rules.map((r) => (
-                    <button key={r.id} className="link" onClick={() => onNavigate('governance', { ruleId: r.id })}>{r.name}</button>
+                    <button key={r.id} className="link" onClick={() => onNavigate('quality', null)}>{r.name}</button>
                   ))
                   : '—'}</td>
                 <td>{std ? `${std.name}（${std.code}）` : '—'}</td>
