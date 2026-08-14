@@ -45,7 +45,7 @@ export default function TabWorkspace({ state, dispatch }) {
                     : activeTab.moduleKey === 'baseTerm'
                       ? <BaseTermModule onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
                       : activeTab.moduleKey === 'valueDomain'
-                        ? <ValueDomainModule onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
+                        ? <ValueDomainModule assetId={activeTab.assetId} onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
                         : activeTab.moduleKey === 'refData'
                           ? <RefDataModule onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
                           : activeTab.moduleKey === 'infoItem'
