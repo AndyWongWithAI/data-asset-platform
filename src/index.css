@@ -69,16 +69,26 @@ body { font-family: -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei",
 .kv-list code { color: #4e5969; font-size: 12px; }
 .mode-labels { display: inline-flex; align-items: center; gap: 4px; flex-wrap: wrap; }
 .lineage-svg { width: 100%; height: auto; background: #fff; border: 1px solid #e5e6eb; border-radius: 4px; }
-.lineage-node { cursor: pointer; }
-.lineage-node rect { fill: #fff; stroke: #165dff; stroke-width: 1.5; }
-.lineage-node-center rect { fill: #e8f3ff; stroke: #165dff; stroke-width: 2; }
-.lineage-node text { font-size: 12px; fill: #1f2329; }
-.lineage-node .lineage-node-mode { font-size: 10px; fill: #86909c; }
-.lineage-node .lineage-node-mode-default { fill: #86909c; }
-.lineage-node .lineage-node-mode-ok { fill: #0e8a16; }
-.lineage-edge { stroke: #86909c; stroke-width: 1.2; fill: none; }
-.lineage-edge-label { font-size: 11px; fill: #4e5969; }
-.lineage-empty-col { font-size: 12px; fill: #c9cdd4; }
+.lineage-table-box > rect { fill: #fff; stroke: #165dff; stroke-width: 1.5; rx: 6; }
+.lineage-table-box .table-title { font-weight: 600; font-size: 13px; fill: #1f2329; }
+.lineage-table-box .table-title-en { font-size: 10px; fill: #86909c; }
+.lineage-table-box .table-title-hitbox { cursor: pointer; }
+.lineage-table-box .sep { stroke: #e5e6eb; stroke-width: 1; }
+.lineage-field-row { cursor: pointer; }
+.lineage-field-row text { font-size: 12px; fill: #4e5969; }
+.lineage-field-row:hover text { fill: #165dff; }
+.lineage-field-active rect { fill: #e8f1ff; }
+.lineage-field-active text { fill: #165dff; font-weight: 600; }
+.lineage-field-code { font-size: 10px; fill: #86909c; }
+.lineage-edge-table { stroke: #165dff; stroke-width: 1.6; fill: none; }
+.lineage-edge-table.is-dimmed { stroke: #c9cdd4; stroke-width: 1.4; }
+.lineage-edge-field { stroke: #165dff; stroke-width: 1.8; fill: none; }
+.lineage-edge-table, .lineage-edge-field { pointer-events: none; }
+.lineage-edge-label { font-size: 11px; fill: #86909c; }
+.lineage-edge-mode { font-size: 10px; }
+.lineage-edge-mode.mode-ok { fill: #00b42a; }
+.lineage-edge-mode.mode-default { fill: #86909c; }
+.lineage-empty-col { fill: #c9cdd4; font-size: 12px; }
 .flow-step { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-left: 3px solid #165dff; background: #fff; margin-bottom: 8px; font-size: 13px; }
 .flow-step .step-name { font-weight: 600; min-width: 96px; }
 .flow-step .step-actor { color: #86909c; }
