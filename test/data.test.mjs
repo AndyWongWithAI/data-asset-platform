@@ -24,7 +24,7 @@ test('applications/databases/tables 引用完整', () => {
 test('fields 三类元数据齐全 + 引用完整', () => {
   const tableIds = ids(D.tables);
   const ruleIds = ids(D.qualityRules);
-  const stdIds = ids(D.standards);
+  const stdIds = ids(D.infoItems);
   const secLevels = new Set(D.security.map((s) => s.level));
   const mdIds = ids(D.masterData);
   for (const f of D.fields) {
@@ -133,5 +133,51 @@ test('L4 数据服务含二次审批（≥4 步）', () => {
   for (const s of l4) {
     assert.ok(s.applyFlow.some((st) => st.step === '二次审批'), `L4 服务 ${s.id} 应含二次审批`);
     assert.ok(s.applyFlow.length >= 4, `L4 服务 ${s.id} 应至少 4 步审批`);
+  }
+});
+
+test('baseTerms：id 唯一 + 类词白名单精确等于 10 个', () => {
+  const termIds = D.baseTerms.map((t) => t.id);
+  assert.equal(new Set(termIds).size, termIds.length, 'baseTerms id 重复');
+  const classWords = new Set(D.baseTerms.filter((t) => t.isClassWord).map((t) => t.nameCn));
+  const expected = new Set(['名称', '编码', '量', '值', '日期', '时间', '日期时间', '标识', '百分比', '率']);
+  assert.deepEqual([...classWords].sort(), [...expected].sort(), '类词白名单不精确相等');
+  assert.equal(classWords.size, 10, '类词去重后应恰好 10 个');
+});
+
+test('valueDomains：id/code 唯一', () => {
+  assert.equal(ids(D.valueDomains).size, D.valueDomains.length, 'valueDomains id 重复');
+  const codes = D.valueDomains.map((v) => v.code);
+  assert.equal(new Set(codes).size, codes.length, 'valueDomains code 重复');
+});
+
+test('refDatas：code 唯一 + 每条 values 含 code+name', () => {
+  const codes = D.refDatas.map((r) => r.code);
+  assert.equal(new Set(codes).size, codes.length, 'refDatas code 重复');
+  for (const r of D.refDatas) {
+    assert.ok(Array.isArray(r.values) && r.values.length >= 1, `refData ${r.id} 缺 values`);
+    for (const v of r.values) {
+      assert.ok(v.code && v.name, `refData ${r.id} 枚举值缺 code/name`);
+    }
+  }
+});
+
+test('infoItems：id 唯一 + 引用完整 + 命名规则', () => {
+  assert.equal(ids(D.infoItems).size, D.infoItems.length, 'infoItems id 重复');
+  const termMap = new Map(D.baseTerms.map((t) => [t.id, t]));
+  const vdIds = ids(D.valueDomains);
+  const rdIds = ids(D.refDatas);
+  for (const ii of D.infoItems) {
+    assert.ok(ii.valueDomainId, `infoItem ${ii.id} valueDomainId 为空`);
+    assert.ok(vdIds.has(ii.valueDomainId), `infoItem ${ii.id} valueDomainId ${ii.valueDomainId} 不存在`);
+    if (ii.refDataId != null) assert.ok(rdIds.has(ii.refDataId), `infoItem ${ii.id} refDataId ${ii.refDataId} 不存在`);
+    assert.ok(Array.isArray(ii.termIds) && ii.termIds.length >= 1, `infoItem ${ii.id} 缺 termIds`);
+    const terms = ii.termIds.map((tid) => termMap.get(tid));
+    terms.forEach((t, idx) => assert.ok(t, `infoItem ${ii.id} termId ${ii.termIds[idx]} 不存在`));
+    const last = terms[terms.length - 1];
+    assert.ok(last.isClassWord, `infoItem ${ii.id} 最后一个 term 应为类词`);
+    assert.ok(ii.nameCn.endsWith(last.nameCn), `infoItem ${ii.id} nameCn 应以类词「${last.nameCn}」结尾`);
+    const expectedEn = terms.map((t) => t.nameEn).join('_');
+    assert.equal(ii.nameEn, expectedEn, `infoItem ${ii.id} nameEn 应为 ${expectedEn}`);
   }
 });
