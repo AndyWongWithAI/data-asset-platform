@@ -65,3 +65,34 @@ test('maskExamples 每条 level 合法', () => {
     assert.ok(secLevels.has(m.level), `maskExample ${m.field} level ${m.level} 不存在`);
   }
 });
+
+test('lineage 引用完整 + mode 合法', () => {
+  const tableIds = ids(D.tables);
+  const modes = new Set(['离线批次', '数据服务', '应用内']);
+  assert.ok(D.lineage.length >= 9);
+  for (const l of D.lineage) {
+    assert.ok(tableIds.has(l.up), `lineage ${l.id} up ${l.up} 不存在`);
+    assert.ok(tableIds.has(l.down), `lineage ${l.id} down ${l.down} 不存在`);
+    assert.ok(modes.has(l.mode), `lineage ${l.id} mode ${l.mode} 非法`);
+  }
+});
+
+test('batchFiles 引用完整 + 审批链完整', () => {
+  const tableIds = ids(D.tables);
+  assert.ok(D.batchFiles.length >= 5);
+  for (const b of D.batchFiles) {
+    assert.ok(tableIds.has(b.sourceTableId), `batchFile ${b.id} sourceTableId 不存在`);
+    for (const s of b.applyFlow) assert.ok(s.step && s.result, `batchFile ${b.id} applyFlow 缺 step/result`);
+  }
+});
+
+test('services 引用完整 + securityLevel 合法 + 审批链完整', () => {
+  const tableIds = ids(D.tables);
+  const secLevels = new Set(D.security.map((s) => s.level));
+  assert.ok(D.services.length >= 5);
+  for (const s of D.services) {
+    assert.ok(secLevels.has(s.securityLevel), `service ${s.id} securityLevel 非法`);
+    for (const tid of s.tableIds) assert.ok(tableIds.has(tid), `service ${s.id} tableId ${tid} 不存在`);
+    for (const step of s.applyFlow) assert.ok(step.step && step.result, `service ${s.id} applyFlow 缺 step/result`);
+  }
+});
