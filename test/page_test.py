@@ -164,11 +164,11 @@ def main():
         # 交换方式标注在连线上（离线批次或数据服务至少一种 mode 标注存在）
         assert page.locator('.lineage-edge-mode').count() >= 1
         # 点中心表「风速」字段 → 表级线变灰 + 字段级线出现
-        page.locator('.lineage-field-row', has_text='风速').click()
+        page.locator('.lineage-field-row', has_text='风速').first.click()
         assert page.locator('.lineage-edge-table.is-dimmed').count() >= 1
         assert page.locator('.lineage-edge-field').count() >= 1
         # 再点同字段 → 清空回表级视图
-        page.locator('.lineage-field-row', has_text='风速').click()
+        page.locator('.lineage-field-row', has_text='风速').first.click()
         assert page.locator('.lineage-edge-field').count() == 0
         assert page.locator('.lineage-edge-table.is-dimmed').count() == 0
         # 点表名条 → 转跳 M1 表详情
