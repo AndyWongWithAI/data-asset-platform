@@ -96,3 +96,28 @@ test('services 引用完整 + securityLevel 合法 + 审批链完整', () => {
     for (const step of s.applyFlow) assert.ok(step.step && step.result, `service ${s.id} applyFlow 缺 step/result`);
   }
 });
+
+test('lineage 覆盖全部 10 张表', () => {
+  const covered = new Set();
+  for (const l of D.lineage) { covered.add(l.up); covered.add(l.down); }
+  assert.equal(covered.size, D.tables.length, '血缘应覆盖全部表');
+  for (const t of D.tables) assert.ok(covered.has(t.id), `表 ${t.id} 未被血缘覆盖`);
+});
+
+test('lineage mode 与跨应用/应用内归属一致', () => {
+  const appOf = (tid) => D.tables.find((t) => t.id === tid)?.appId;
+  for (const l of D.lineage) {
+    const cross = appOf(l.up) !== appOf(l.down);
+    if (cross) assert.ok(['离线批次', '数据服务'].includes(l.mode), `${l.id} 跨应用应标 离线批次/数据服务，实际 ${l.mode}`);
+    else assert.equal(l.mode, '应用内', `${l.id} 应用内应标 应用内，实际 ${l.mode}`);
+  }
+});
+
+test('L4 数据服务含二次审批（≥4 步）', () => {
+  const l4 = D.services.filter((s) => s.securityLevel === 'L4');
+  assert.ok(l4.length >= 1, '应至少 1 个 L4 服务');
+  for (const s of l4) {
+    assert.ok(s.applyFlow.some((st) => st.step === '二次审批'), `L4 服务 ${s.id} 应含二次审批`);
+    assert.ok(s.applyFlow.length >= 4, `L4 服务 ${s.id} 应至少 4 步审批`);
+  }
+});
