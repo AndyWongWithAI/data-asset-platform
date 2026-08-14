@@ -58,3 +58,10 @@ test('qualityRules/qualityResults 引用完整', () => {
     }
   }
 });
+
+test('maskExamples 每条 level 合法', () => {
+  const secLevels = new Set(D.security.map((s) => s.level));
+  for (const m of D.maskExamples) {
+    assert.ok(secLevels.has(m.level), `maskExample ${m.field} level ${m.level} 不存在`);
+  }
+});

@@ -3,10 +3,10 @@ export const MODULE_GROUPS = [
   { name: '生产态·监控', items: [{ key: 'governance', title: '数据治理看板', implemented: true }] },
   { name: '设计态·定义', items: [
     { key: 'catalog', title: '数据资产目录', implemented: true },
-    { key: 'quality', title: '数据质量', implemented: false },
-    { key: 'standard', title: '数据标准', implemented: false },
-    { key: 'security', title: '数据安全', implemented: false },
-    { key: 'masterdata', title: '主数据', implemented: false },
+    { key: 'quality', title: '数据质量', implemented: true },
+    { key: 'standard', title: '数据标准', implemented: true },
+    { key: 'security', title: '数据安全', implemented: true },
+    { key: 'masterdata', title: '主数据', implemented: true },
   ]},
   { name: '价值输出', items: [{ key: 'service', title: '数据服务', implemented: false }] },
 ];
