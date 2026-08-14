@@ -182,3 +182,30 @@ test('infoItems：id 唯一 + 引用完整 + 命名规则', () => {
     assert.equal(ii.nameEn, expectedEn, `infoItem ${ii.id} nameEn 应为 ${expectedEn}`);
   }
 });
+
+test('infoItems：类型/业务域/定义约束', () => {
+  const domainIds = ids(D.bizDomains);
+  for (const ii of D.infoItems) {
+    assert.ok(ii.type === '技术' || ii.type === '业务', `infoItem ${ii.id} type ${ii.type} 非法，应为「技术」或「业务」`);
+    if (ii.type === '业务') {
+      assert.ok(ii.bizDomainId, `infoItem ${ii.id} 为业务项，bizDomainId 不能为空`);
+      assert.ok(domainIds.has(ii.bizDomainId), `infoItem ${ii.id} bizDomainId ${ii.bizDomainId} 不存在`);
+      assert.ok(typeof ii.definition === 'string' && ii.definition.trim().length > 0, `infoItem ${ii.id} 为业务项，definition 不能为空`);
+    } else {
+      assert.equal(ii.bizDomainId, null, `infoItem ${ii.id} 为技术项，bizDomainId 应为 null`);
+      assert.equal(ii.definition, null, `infoItem ${ii.id} 为技术项，definition 应为 null`);
+    }
+  }
+});
+
+test('字段名与信息项标准名对齐（6 字段已贯标）', () => {
+  const iiMap = new Map(D.infoItems.map((i) => [i.id, i]));
+  const aligned = new Set();
+  for (const f of D.fields) {
+    if (!f.management.standardId) continue;
+    const ii = iiMap.get(f.management.standardId);
+    if (f.business.nameCn === ii.nameCn && f.business.code === ii.nameEn) aligned.add(f.id);
+  }
+  const expected = new Set(['f_wind_speed', 'f_scada_temp', 'f_prog_progress', 'f_cable_voltage', 'f_scada_power', 'f_turbine_model']);
+  assert.deepEqual([...aligned].sort(), [...expected].sort(), '已对齐字段集合应精确等于这 6 个字段');
+});
