@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { MODULE_GROUPS, MODULES, createInitialState, openTab, closeTab, navigate } from '../src/state.js';
 
-test('MODULE_GROUPS 3 组 + standard 父级含 4 子项 + MODULES 叶子 13', () => {
+test('MODULE_GROUPS 3 组 + standard 父级含 4 子项 + MODULES 13 叶子 + tableDetail 共 14', () => {
   assert.deepEqual(MODULE_GROUPS.map((g) => g.name), ['生产态·治理看板', '设计态·定义', '数据交换']);
   const design = MODULE_GROUPS.find((g) => g.name === '设计态·定义');
   const standard = design.items.find((i) => i.key === 'standard');
