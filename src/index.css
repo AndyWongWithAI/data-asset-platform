@@ -74,6 +74,8 @@ body { font-family: -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei",
 .lineage-node-center rect { fill: #e8f3ff; stroke: #165dff; stroke-width: 2; }
 .lineage-node text { font-size: 12px; fill: #1f2329; }
 .lineage-node .lineage-node-mode { font-size: 10px; fill: #86909c; }
+.lineage-node .lineage-node-mode-default { fill: #86909c; }
+.lineage-node .lineage-node-mode-ok { fill: #0e8a16; }
 .lineage-edge { stroke: #86909c; stroke-width: 1.2; fill: none; }
 .lineage-edge-label { font-size: 11px; fill: #4e5969; }
 .lineage-empty-col { font-size: 12px; fill: #c9cdd4; }

@@ -87,7 +87,7 @@ function LineageGraph({ tableId, onNavigate }) {
                   <rect x={leftX} y={upY} width={W} height={H} rx={6} />
                   <text x={leftX + 10} y={upY + 22}>{n.nameCn}</text>
                   {edge?.mode && edge.mode !== '应用内' && (
-                    <text className="lineage-node-mode" x={leftX + 10} y={upY + H - 8}>{edge.mode}</text>
+                    <text className={`lineage-node-mode ${edge.mode === '数据服务' ? 'lineage-node-mode-ok' : 'lineage-node-mode-default'}`} x={leftX + 10} y={upY + H - 8}>{edge.mode}</text>
                   )}
                 </g>
               </g>
@@ -116,7 +116,7 @@ function LineageGraph({ tableId, onNavigate }) {
                   <rect x={rightX} y={downY} width={W} height={H} rx={6} />
                   <text x={rightX + 10} y={downY + 22}>{n.nameCn}</text>
                   {edge?.mode && edge.mode !== '应用内' && (
-                    <text className="lineage-node-mode" x={rightX + 10} y={downY + H - 8}>{edge.mode}</text>
+                    <text className={`lineage-node-mode ${edge.mode === '数据服务' ? 'lineage-node-mode-ok' : 'lineage-node-mode-default'}`} x={rightX + 10} y={downY + H - 8}>{edge.mode}</text>
                   )}
                 </g>
               </g>
