@@ -7,44 +7,6 @@ const STATUS_TONE = { 运行中: 'ok', 审批中: 'warn' };
 
 export default function BatchFileModule({ onNavigate }) {
   const [status, setStatus] = useState('all');
-  const [selectedId, setSelectedId] = useState(null);
-
-  if (selectedId) {
-    const b = data.batchFiles.find((x) => x.id === selectedId);
-    const sourceTable = data.tables.find((t) => t.id === b.sourceTableId);
-    return (
-      <div className="detail-panel">
-        <button className="link" onClick={() => setSelectedId(null)}>← 返回列表</button>
-        <h3>{b.name}</h3>
-        <div className="kv-list">
-          <div>
-            <span>源表</span>
-            <b>
-              {sourceTable?.nameCn}{' '}
-              <button
-                className="link"
-                onClick={() => onNavigate('tableDetail', { tableId: b.sourceTableId, title: sourceTable?.nameCn })}
-              >查看源表</button>
-            </b>
-          </div>
-          <div><span>目标系统</span><b>{b.targetSystem}</b></div>
-          <div><span>文件格式</span><b>{b.fileFormat}</b></div>
-          <div><span>调度周期</span><b>{b.schedule}</b></div>
-          <div><span>安全分级</span><b>{b.securityLevel}</b></div>
-          <div><span>状态</span><Tag tone={STATUS_TONE[b.status] || 'default'}>{b.status}</Tag></div>
-        </div>
-        <h4>审批链</h4>
-        {b.applyFlow.map((s, i) => (
-          <div className="flow-step" key={i}>
-            <span className="step-name">{s.step}</span>
-            <span className="step-actor">{s.actor} · {s.time}</span>
-            <span className="step-result">{s.result}</span>
-          </div>
-        ))}
-      </div>
-    );
-  }
-
   const filtered = data.batchFiles.filter((b) => status === 'all' || b.status === status);
   return (
     <div>
@@ -63,7 +25,7 @@ export default function BatchFileModule({ onNavigate }) {
             const sourceTable = data.tables.find((t) => t.id === b.sourceTableId);
             return (
               <tr key={b.id}>
-                <td><button className="link" onClick={() => setSelectedId(b.id)}>{b.name}</button></td>
+                <td><button className="link" onClick={() => onNavigate('batchFileDetail', { batchFileId: b.id })}>{b.name}</button></td>
                 <td>{sourceTable?.nameCn}</td>
                 <td>{b.targetSystem}</td>
                 <td>{b.fileFormat}</td>

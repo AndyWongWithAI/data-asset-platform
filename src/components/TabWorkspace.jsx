@@ -12,6 +12,13 @@ import MasterDataModule from '../modules/MasterDataModule.jsx';
 import LineageModule from '../modules/LineageModule.jsx';
 import BatchFileModule from '../modules/BatchFileModule.jsx';
 import DataServiceModule from '../modules/DataServiceModule.jsx';
+import InfoItemDetailModule from '../modules/InfoItemDetailModule.jsx';
+import ValueDomainDetailModule from '../modules/ValueDomainDetailModule.jsx';
+import RefDataDetailModule from '../modules/RefDataDetailModule.jsx';
+import QualityDetailModule from '../modules/QualityDetailModule.jsx';
+import MasterDataDetailModule from '../modules/MasterDataDetailModule.jsx';
+import BatchFileDetailModule from '../modules/BatchFileDetailModule.jsx';
+import DataServiceDetailModule from '../modules/DataServiceDetailModule.jsx';
 import PlaceholderModule from '../modules/PlaceholderModule.jsx';
 
 export default function TabWorkspace({ state, dispatch }) {
@@ -41,15 +48,15 @@ export default function TabWorkspace({ state, dispatch }) {
                 : activeTab.moduleKey === 'tableDetail'
                   ? <TableDetailModule assetId={activeTab.assetId} onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
                   : activeTab.moduleKey === 'quality'
-                    ? <QualityModule assetId={activeTab.assetId} onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
+                    ? <QualityModule onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
                     : activeTab.moduleKey === 'baseTerm'
                       ? <BaseTermModule onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
                       : activeTab.moduleKey === 'valueDomain'
-                        ? <ValueDomainModule assetId={activeTab.assetId} onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
+                        ? <ValueDomainModule onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
                         : activeTab.moduleKey === 'refData'
-                          ? <RefDataModule assetId={activeTab.assetId} onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
+                          ? <RefDataModule onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
                           : activeTab.moduleKey === 'infoItem'
-                            ? <InfoItemModule assetId={activeTab.assetId} onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
+                            ? <InfoItemModule onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
                             : activeTab.moduleKey === 'security'
                               ? <SecurityModule onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
                               : activeTab.moduleKey === 'masterdata'
@@ -60,7 +67,21 @@ export default function TabWorkspace({ state, dispatch }) {
                                     ? <BatchFileModule onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
                                     : activeTab.moduleKey === 'dataService'
                                       ? <DataServiceModule onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
-                                      : <PlaceholderModule moduleKey={activeTab.moduleKey} />
+                                      : activeTab.moduleKey === 'infoItemDetail'
+                                        ? <InfoItemDetailModule assetId={activeTab.assetId} onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
+                                        : activeTab.moduleKey === 'valueDomainDetail'
+                                          ? <ValueDomainDetailModule assetId={activeTab.assetId} onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
+                                          : activeTab.moduleKey === 'refDataDetail'
+                                            ? <RefDataDetailModule assetId={activeTab.assetId} onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
+                                            : activeTab.moduleKey === 'qualityDetail'
+                                              ? <QualityDetailModule assetId={activeTab.assetId} onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
+                                              : activeTab.moduleKey === 'masterdataDetail'
+                                                ? <MasterDataDetailModule assetId={activeTab.assetId} onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
+                                                : activeTab.moduleKey === 'batchFileDetail'
+                                                  ? <BatchFileDetailModule assetId={activeTab.assetId} onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
+                                                  : activeTab.moduleKey === 'dataServiceDetail'
+                                                    ? <DataServiceDetailModule assetId={activeTab.assetId} onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
+                                                    : <PlaceholderModule moduleKey={activeTab.moduleKey} />
           : <div className="empty-hint">点击左侧导航打开模块</div>}
       </div>
     </div>

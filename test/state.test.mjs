@@ -2,16 +2,18 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { MODULE_GROUPS, MODULES, createInitialState, openTab, closeTab, navigate } from '../src/state.js';
 
-test('MODULE_GROUPS 3 组 + standard 父级含 4 子项 + MODULES 13 叶子 + tableDetail 共 14', () => {
+test('MODULE_GROUPS 3 组 + standard 父级含 4 子项 + MODULES 13 叶子 + tableDetail + 7 详情共 21', () => {
   assert.deepEqual(MODULE_GROUPS.map((g) => g.name), ['生产态·治理看板', '设计态·定义', '数据交换']);
   const design = MODULE_GROUPS.find((g) => g.name === '设计态·定义');
   const standard = design.items.find((i) => i.key === 'standard');
   assert.ok(standard && standard.children, 'standard 应为父级目录');
   assert.deepEqual(standard.children.map((c) => c.key), ['baseTerm', 'valueDomain', 'refData', 'infoItem']);
   const leafKeys = MODULES.map((m) => m.key);
-  assert.equal(leafKeys.length, 14); // 13 叶子模块 + tableDetail
+  assert.equal(leafKeys.length, 21); // 13 叶子模块 + tableDetail + 7 详情模块
   assert.ok(!leafKeys.includes('standard'), 'standard 父级不应是模块');
   assert.ok(leafKeys.includes('tableDetail'));
+  const detailKeys = ['infoItemDetail', 'valueDomainDetail', 'refDataDetail', 'qualityDetail', 'masterdataDetail', 'batchFileDetail', 'dataServiceDetail'];
+  for (const k of detailKeys) assert.ok(leafKeys.includes(k), `详情模块 ${k} 应在 MODULES`);
 });
 
 test('openTab 首次打开追加并激活，重复打开不重复追加', () => {
@@ -43,6 +45,17 @@ test('navigate 写入 assetId 并激活，不重复建 tab', () => {
   s = navigate(s, 'catalog', { tableId: 't_geo' });
   assert.equal(s.tabs.length, 1);
   assert.deepEqual(s.tabs[0].assetId, { tableId: 't_geo' });
+});
+
+test('navigate 详情模块单实例复用，点不同对象更新 assetId 不新开 tab', () => {
+  let s = createInitialState();
+  s = navigate(s, 'infoItemDetail', { infoItemId: 'ii_voltage' });
+  assert.equal(s.tabs.length, 1);
+  assert.equal(s.tabs[0].title, '信息项详情');
+  assert.deepEqual(s.tabs[0].assetId, { infoItemId: 'ii_voltage' });
+  s = navigate(s, 'infoItemDetail', { infoItemId: 'ii_wind_speed' });
+  assert.equal(s.tabs.length, 1, '详情模块应复用同一 tab');
+  assert.deepEqual(s.tabs[0].assetId, { infoItemId: 'ii_wind_speed' });
 });
 
 test('MODULES 含非侧边栏 tableDetail（多实例），且不进侧边栏', () => {

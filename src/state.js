@@ -26,8 +26,19 @@ export const MODULE_GROUPS = [
 // 非侧边栏模块：表详情（多实例，每张表一个 tab，标题取表名）
 const TABLE_DETAIL = { key: 'tableDetail', title: '表详情', implemented: true, multi: true };
 
+// 非侧边栏模块：列表/详情拆分后的详情 tab（单实例复用，标题固定，点新对象切换内容）
+const DETAIL_MODULES = [
+  { key: 'infoItemDetail', title: '信息项详情', implemented: true },
+  { key: 'valueDomainDetail', title: '值域详情', implemented: true },
+  { key: 'refDataDetail', title: '参考数据详情', implemented: true },
+  { key: 'qualityDetail', title: '规则详情', implemented: true },
+  { key: 'masterdataDetail', title: '主数据详情', implemented: true },
+  { key: 'batchFileDetail', title: '批次文件详情', implemented: true },
+  { key: 'dataServiceDetail', title: '数据服务详情', implemented: true },
+];
+
 const flatten = (items) => items.flatMap((i) => (i.children ? flatten(i.children) : [i]));
-export const MODULES = [...MODULE_GROUPS.flatMap((g) => flatten(g.items)), TABLE_DETAIL];
+export const MODULES = [...MODULE_GROUPS.flatMap((g) => flatten(g.items)), TABLE_DETAIL, ...DETAIL_MODULES];
 
 export function createInitialState() {
   return { tabs: [], activeTabId: null, nextTabId: 1 };

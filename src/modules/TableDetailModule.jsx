@@ -45,10 +45,10 @@ export default function TableDetailModule({ assetId, onNavigate }) {
                 <td>{f.technical.isPK ? 'PK' : ''}{f.technical.isPK && f.technical.isFK ? '/' : ''}{f.technical.isFK ? 'FK' : ''}</td>
                 <td>{rules.length
                   ? rules.map((r) => (
-                    <button key={r.id} className="link" onClick={() => onNavigate('quality', { qualityRuleId: r.id })}>{r.name}</button>
+                    <button key={r.id} className="link" onClick={() => onNavigate('qualityDetail', { qualityRuleId: r.id })}>{r.name}</button>
                   ))
                   : '—'}</td>
-                <td>{std ? <button className="link" onClick={() => onNavigate('infoItem', { infoItemId: std.id })}>{std.nameCn}（{std.code}）</button> : '—'}</td>
+                <td>{std ? <button className="link" onClick={() => onNavigate('infoItemDetail', { infoItemId: std.id })}>{std.nameCn}（{std.code}）</button> : '—'}</td>
                 <td><Tag tone={LEVEL_TONE[f.management.securityLevel] || 'default'}>{f.management.securityLevel} {sec?.name}</Tag></td>
                 <td>{md ? md.name : '—'}</td>
                 <td>{f.management.owner}</td>
