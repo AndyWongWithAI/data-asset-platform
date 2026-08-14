@@ -151,7 +151,8 @@ test('valueDomains：id/code 唯一', () => {
   assert.equal(new Set(codes).size, codes.length, 'valueDomains code 重复');
 });
 
-test('refDatas：code 唯一 + 每条 values 含 code+name', () => {
+test('refDatas：id/code 唯一 + 每条 values 含 code+name', () => {
+  assert.equal(ids(D.refDatas).size, D.refDatas.length, 'refDatas id 重复');
   const codes = D.refDatas.map((r) => r.code);
   assert.equal(new Set(codes).size, codes.length, 'refDatas code 重复');
   for (const r of D.refDatas) {
@@ -176,7 +177,7 @@ test('infoItems：id 唯一 + 引用完整 + 命名规则', () => {
     terms.forEach((t, idx) => assert.ok(t, `infoItem ${ii.id} termId ${ii.termIds[idx]} 不存在`));
     const last = terms[terms.length - 1];
     assert.ok(last.isClassWord, `infoItem ${ii.id} 最后一个 term 应为类词`);
-    assert.ok(ii.nameCn.endsWith(last.nameCn), `infoItem ${ii.id} nameCn 应以类词「${last.nameCn}」结尾`);
+    assert.equal(ii.nameCn, terms.map((t) => t.nameCn).join(''), `infoItem ${ii.id} nameCn 应为词根顺序拼接「${terms.map((t) => t.nameCn).join('')}」`);
     const expectedEn = terms.map((t) => t.nameEn).join('_');
     assert.equal(ii.nameEn, expectedEn, `infoItem ${ii.id} nameEn 应为 ${expectedEn}`);
   }
