@@ -125,6 +125,11 @@ def main():
         assert page.locator('.modal').count() == 0
         page.locator('.table tbody tr .link').first.click()
         assert page.locator('.detail-panel').count() == 1
+        # 被引用信息项中文名 → 具体信息项详情（ii_voltage 电压等级编码）
+        page.locator('.detail-panel table tbody tr .link', has_text='电压等级编码').click()
+        assert page.locator('.tab.active', has_text='信息项').count() == 1
+        assert page.locator('.detail-panel h3', has_text='电压等级编码').count() == 1
+        page.locator('.detail-panel .link', has_text='返回列表').click()
         # 参考数据
         click_menu(page, '参考数据')
         assert page.locator('.tab.active', has_text='参考数据').count() == 1
@@ -135,6 +140,11 @@ def main():
         assert page.locator('.modal').count() == 0
         page.locator('.table tbody tr .link').first.click()
         assert page.locator('.detail-panel').count() == 1
+        # 被引用信息项中文名 → 具体信息项详情（ii_voltage 电压等级编码）
+        page.locator('.detail-panel table tbody tr .link', has_text='电压等级编码').click()
+        assert page.locator('.tab.active', has_text='信息项').count() == 1
+        assert page.locator('.detail-panel h3', has_text='电压等级编码').count() == 1
+        page.locator('.detail-panel .link', has_text='返回列表').click()
         # 信息项
         click_menu(page, '信息项')
         assert page.locator('.tab.active', has_text='信息项').count() == 1

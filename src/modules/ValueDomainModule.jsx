@@ -24,7 +24,7 @@ export default function ValueDomainModule({ onNavigate, assetId }) {
             {refs.map((i) => (
               <tr key={i.id}>
                 <td>{i.code}</td>
-                <td><button className="link" onClick={() => onNavigate('infoItem', null)}>{i.nameCn}</button></td>
+                <td><button className="link" onClick={() => onNavigate('infoItem', { infoItemId: i.id })}>{i.nameCn}</button></td>
               </tr>
             ))}
           </tbody>
