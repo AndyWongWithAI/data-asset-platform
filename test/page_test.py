@@ -15,6 +15,10 @@ def wait_ready():
             time.sleep(1)
     raise SystemExit('dev server 未就绪')
 
+def click_menu(page, title):
+    """精确点击侧边栏菜单项（exact=True 规避『数据质量』vs『数据质量看板』、『数据标准』vs『数据标准看板』子串冲突）"""
+    page.get_by_role('button', name=title, exact=True).click()
+
 def assert_no_hscroll(page):
     """表格撑满容器宽度且无横向溢出（自适应）"""
     r = page.evaluate("""() => {
@@ -52,7 +56,7 @@ def main():
         assert page.locator('.sidebar').count() == 1
         assert page.locator('.header').count() == 1
         # 打开资产目录
-        page.locator('.sidebar-item', has_text='数据资产目录').click()
+        click_menu(page, '数据资产目录')
         assert page.locator('.tab', has_text='数据资产目录').count() == 1
         assert page.locator('.table tbody tr').count() >= 5
         # 检索区分：应用/业务域下拉 + 表名输入
@@ -74,12 +78,12 @@ def main():
         assert_no_hscroll(page)
         # 恢复常规视口
         page.set_viewport_size({'width': 1280, 'height': 720})
-        # 打开治理看板
-        page.locator('.sidebar-item', has_text='数据治理看板').click()
-        assert page.locator('.tab', has_text='数据治理看板').count() == 1
+        # 打开数据质量看板（生产态）
+        click_menu(page, '数据质量看板')
+        assert page.locator('.tab', has_text='数据质量看板').count() == 1
         # M2 数据质量
-        page.locator('.sidebar-item', has_text='数据质量').click()
-        assert page.locator('.tab', has_text='数据质量').count() == 1
+        click_menu(page, '数据质量')
+        assert page.locator('.tab.active', has_text='数据质量').count() == 1
         assert page.locator('.table tbody tr').count() >= 8
         # 占位按钮 → 弹框 → 关闭
         page.locator('button', has_text='新增规则').click()
@@ -94,8 +98,8 @@ def main():
         assert page.locator('.row-active').count() == 1
         assert page.locator('.tab.active', has_text='SCADA 遥测表').count() == 1
         # M3 数据标准
-        page.locator('.sidebar-item', has_text='数据标准').click()
-        assert page.locator('.tab', has_text='数据标准').count() == 1
+        click_menu(page, '数据标准')
+        assert page.locator('.tab.active', has_text='数据标准').count() == 1
         assert page.locator('.table tbody tr').count() >= 6
         page.locator('button', has_text='新增标准').click()
         assert page.locator('.modal').count() == 1
@@ -108,7 +112,7 @@ def main():
         assert page.locator('.row-active').count() == 1
         assert page.locator('.tab.active', has_text='海缆参数表').count() == 1
         # M4 数据安全分级
-        page.locator('.sidebar-item', has_text='数据安全').click()
+        click_menu(page, '数据安全')
         assert page.locator('.tab', has_text='数据安全').count() == 1
         assert page.locator('.score-row').count() >= 4   # L1-L4 分级总览
         page.locator('button', has_text='分级调整').click()
@@ -122,11 +126,11 @@ def main():
         assert page.locator('.row-active').count() == 1
         assert page.locator('.tab.active', has_text='地质钻孔表').count() == 1
         # 切到脱敏前后对比（定位转跳 M1 后需先回到数据安全模块）
-        page.locator('.sidebar-item', has_text='数据安全').click()
+        click_menu(page, '数据安全')
         page.locator('.sub-tabs button', has_text='脱敏前后对比').click()
         assert page.locator('.table tbody tr').count() >= 4
         # M5 主数据管理
-        page.locator('.sidebar-item', has_text='主数据').click()
+        click_menu(page, '主数据')
         assert page.locator('.tab', has_text='主数据').count() == 1
         assert page.locator('.table tbody tr').count() >= 5
         page.locator('button', has_text='新增实体').click()
@@ -139,8 +143,53 @@ def main():
         assert page.locator('.field-table').count() == 1
         assert page.locator('.row-active').count() == 1
         assert page.locator('.tab.active', has_text='风机设备表').count() == 1
-        # 跨模块转跳：治理看板 → 定位字段 → 打开表详情 tab
-        page.locator('.tab', has_text='数据治理看板').click()
+
+        # ① 数据质量看板（生产态）
+        click_menu(page, '数据质量看板')
+        assert page.locator('.tab', has_text='数据质量看板').count() == 1
+        assert page.locator('.score-row').count() >= 2
+        # ② 数据标准看板（生产态）
+        click_menu(page, '数据标准看板')
+        assert page.locator('.tab', has_text='数据标准看板').count() == 1
+        assert page.locator('.score-row').count() >= 1
+        # ③ 数据血缘看板（列表 + SVG 图 + 节点转跳）
+        click_menu(page, '数据血缘看板')
+        assert page.locator('.tab', has_text='数据血缘看板').count() == 1
+        assert page.locator('.table tbody tr').count() >= 10
+        page.locator('.table tbody tr .link', has_text='查看血缘图').first.click()
+        node_count = page.locator('.lineage-node').count()
+        assert node_count >= 1
+        if node_count > 1:
+            page.locator('.lineage-node').nth(1).click()
+            assert page.locator('.field-table').count() == 1
+        # ④ 批次文件（列表 + 详情 + 审批链 + 源表转跳 + 占位）
+        click_menu(page, '批次文件')
+        assert page.locator('.tab', has_text='批次文件').count() == 1
+        assert page.locator('.table tbody tr').count() >= 5
+        page.locator('button', has_text='发起交换申请').click()
+        assert page.locator('.modal').count() == 1
+        page.locator('.modal button', has_text='知道了').click()
+        page.locator('.table tbody tr .link').first.click()
+        assert page.locator('.detail-panel').count() == 1
+        assert page.locator('.flow-step').count() >= 3
+        page.locator('.detail-panel .link', has_text='查看源表').click()
+        assert page.locator('.field-table').count() == 1
+        assert page.locator('.row-active').count() == 0   # 表详情非字段定位，无高亮
+        # ⑤ 数据服务（列表 + 详情 + 审批链 + 封装资产转跳 + 占位）
+        click_menu(page, '数据服务')
+        assert page.locator('.tab', has_text='数据服务').count() == 1
+        assert page.locator('.table tbody tr').count() >= 5
+        page.locator('button', has_text='发起服务申请').click()
+        assert page.locator('.modal').count() == 1
+        page.locator('.modal button', has_text='知道了').click()
+        page.locator('.table tbody tr .link').first.click()
+        assert page.locator('.detail-panel').count() == 1
+        assert page.locator('.flow-step').count() >= 3
+        page.locator('.detail-panel .link', has_text='查看').first.click()
+        assert page.locator('.field-table').count() == 1
+
+        # 跨模块转跳：质量看板 → 定位字段 → 打开表详情 tab
+        page.locator('.tab', has_text='数据质量看板').click()
         page.locator('.issue .link').first.click()
         assert page.locator('.tab.active', has_text='测风数据表').count() == 1
         assert page.locator('.field-table').count() == 1
