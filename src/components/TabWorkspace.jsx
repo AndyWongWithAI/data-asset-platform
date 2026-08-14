@@ -8,6 +8,7 @@ import SecurityModule from '../modules/SecurityModule.jsx';
 import MasterDataModule from '../modules/MasterDataModule.jsx';
 import LineageModule from '../modules/LineageModule.jsx';
 import BatchFileModule from '../modules/BatchFileModule.jsx';
+import DataServiceModule from '../modules/DataServiceModule.jsx';
 import PlaceholderModule from '../modules/PlaceholderModule.jsx';
 
 export default function TabWorkspace({ state, dispatch }) {
@@ -48,7 +49,9 @@ export default function TabWorkspace({ state, dispatch }) {
                             ? <LineageModule onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
                             : activeTab.moduleKey === 'batchFile'
                               ? <BatchFileModule onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
-                              : <PlaceholderModule moduleKey={activeTab.moduleKey} />
+                              : activeTab.moduleKey === 'dataService'
+                                ? <DataServiceModule onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
+                                : <PlaceholderModule moduleKey={activeTab.moduleKey} />
           : <div className="empty-hint">点击左侧导航打开模块</div>}
       </div>
     </div>
