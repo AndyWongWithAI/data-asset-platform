@@ -5,26 +5,6 @@ import ComingSoonAction from '../components/ComingSoonAction.jsx';
 
 export default function BaseTermModule() {
   const [kind, setKind] = useState('all');
-  const [selectedId, setSelectedId] = useState(null);
-
-  if (selectedId) {
-    const term = data.baseTerms.find((t) => t.id === selectedId);
-    return (
-      <div className="detail-panel">
-        <button className="link" onClick={() => setSelectedId(null)}>← 返回列表</button>
-        <h3>{term.nameCn}<span className="en">{term.nameEn}</span></h3>
-        <div className="kv-list">
-          <div><span>中文名</span><b>{term.nameCn}</b></div>
-          <div><span>英文名</span><code>{term.nameEn}</code></div>
-          <div>
-            <span>是否类词</span>
-            {term.isClassWord ? <Tag tone="ok">类词</Tag> : <b>非类词</b>}
-          </div>
-          <div><span>同义词</span><b>{term.synonyms.length ? term.synonyms.join('、') : '—'}</b></div>
-        </div>
-      </div>
-    );
-  }
 
   const filtered = data.baseTerms.filter((t) =>
     kind === 'all' || (kind === 'classWord' ? t.isClassWord : !t.isClassWord)
@@ -48,7 +28,7 @@ export default function BaseTermModule() {
         <tbody>
           {filtered.map((t) => (
             <tr key={t.id}>
-              <td><button className="link" onClick={() => setSelectedId(t.id)}>{t.nameCn}</button></td>
+              <td>{t.nameCn}</td>
               <td><code>{t.nameEn}</code></td>
               <td>{preview(t)}</td>
               <td>{t.isClassWord ? <Tag tone="ok">类词</Tag> : '—'}</td>

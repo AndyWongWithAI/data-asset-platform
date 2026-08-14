@@ -1,10 +1,8 @@
-import { useState } from 'react';
 import data from '../data.js';
-import Tag from '../components/Tag.jsx';
 import ComingSoonAction from '../components/ComingSoonAction.jsx';
 
-export default function InfoItemModule({ onNavigate }) {
-  const [selectedId, setSelectedId] = useState(null);
+export default function InfoItemModule({ onNavigate, assetId }) {
+  const selectedId = assetId?.infoItemId ?? null;
 
   if (selectedId) {
     const ii = data.infoItems.find((i) => i.id === selectedId);
@@ -12,29 +10,22 @@ export default function InfoItemModule({ onNavigate }) {
     const rd = ii.refDataId ? data.refDatas.find((r) => r.id === ii.refDataId) : null;
     const terms = ii.termIds.map((id) => data.baseTerms.find((t) => t.id === id)).filter(Boolean);
     const refs = data.fields.filter((f) => f.management.standardId === selectedId);
+    const isTech = ii.type === '技术';
+    const bizDomain = ii.bizDomainId ? data.bizDomains.find((b) => b.id === ii.bizDomainId) : null;
     return (
       <div className="detail-panel">
-        <button className="link" onClick={() => setSelectedId(null)}>← 返回列表</button>
+        <button className="link" onClick={() => onNavigate('infoItem', null)}>← 返回列表</button>
         <h3>{ii.nameCn}<span className="en">{ii.code}</span></h3>
         <div className="kv-list">
           <div><span>信息项编号</span><code>{ii.code}</code></div>
           <div><span>中文名</span><b>{ii.nameCn}</b></div>
           <div><span>英文名</span><code>{ii.nameEn}</code></div>
+          <div><span>类型</span><b>{ii.type}</b></div>
+          <div><span>业务域</span><b>{isTech ? '—' : (bizDomain?.name ?? '—')}</b></div>
+          <div><span>定义</span><b>{isTech ? '—' : (ii.definition ?? '—')}</b></div>
           <div><span>值域</span><code>{vd?.code ?? '—'}</code></div>
           <div><span>参考数据</span><b>{rd ? `${rd.name}（${rd.code}）` : '—'}</b></div>
         </div>
-        <h4>构成词根链</h4>
-        <div className="term-chain">
-          {terms.map((t, idx) => (
-            <span key={t.id} className="term-chain-node">
-              {idx > 0 && <span className="term-chain-arrow">→</span>}
-              {t.isClassWord
-                ? <Tag tone="ok">{t.nameCn}（类词）</Tag>
-                : <span className="term-chain-term">{t.nameCn}</span>}
-            </span>
-          ))}
-        </div>
-        <p className="term-chain-hint">中文名由基础术语顺序拼接构成，以类词结尾。</p>
         <h4>英文名映射</h4>
         <div className="kv-list">
           <div><span>英文名</span><code>{ii.nameEn}</code></div>
@@ -70,13 +61,14 @@ export default function InfoItemModule({ onNavigate }) {
         <ComingSoonAction label="新增信息项" />
       </div>
       <table className="table">
-        <thead><tr><th>信息项编号</th><th>中文名</th><th>英文名</th><th>值域</th><th>参考数据</th></tr></thead>
+        <thead><tr><th>信息项编号</th><th>中文名</th><th>英文名</th><th>类型</th><th>值域</th><th>参考数据</th></tr></thead>
         <tbody>
           {data.infoItems.map((i) => (
             <tr key={i.id}>
-              <td><button className="link" onClick={() => setSelectedId(i.id)}>{i.code}</button></td>
+              <td><button className="link" onClick={() => onNavigate('infoItem', { infoItemId: i.id })}>{i.code}</button></td>
               <td>{i.nameCn}</td>
               <td><code>{i.nameEn}</code></td>
+              <td>{i.type}</td>
               <td><code>{vdCode(i.valueDomainId)}</code></td>
               <td>{rdName(i.refDataId)}</td>
             </tr>

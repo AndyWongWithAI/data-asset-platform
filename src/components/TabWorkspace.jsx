@@ -49,7 +49,7 @@ export default function TabWorkspace({ state, dispatch }) {
                         : activeTab.moduleKey === 'refData'
                           ? <RefDataModule onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
                           : activeTab.moduleKey === 'infoItem'
-                            ? <InfoItemModule onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
+                            ? <InfoItemModule assetId={activeTab.assetId} onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
                             : activeTab.moduleKey === 'security'
                               ? <SecurityModule onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
                               : activeTab.moduleKey === 'masterdata'

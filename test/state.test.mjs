@@ -2,15 +2,16 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { MODULE_GROUPS, MODULES, createInitialState, openTab, closeTab, navigate } from '../src/state.js';
 
-test('MODULE_GROUPS 含 13 模块且全部 implemented', () => {
-  const items = MODULE_GROUPS.flatMap((g) => g.items);
-  assert.equal(items.length, 13);
+test('MODULE_GROUPS 3 组 + standard 父级含 4 子项 + MODULES 13 叶子 + tableDetail 共 14', () => {
   assert.deepEqual(MODULE_GROUPS.map((g) => g.name), ['生产态·治理看板', '设计态·定义', '数据交换']);
-  const m = Object.fromEntries(items.map((i) => [i.key, i]));
-  for (const k of ['catalog','qualityBoard','lineageBoard','standardBoard','quality','baseTerm','valueDomain','refData','infoItem','security','masterdata','batchFile','dataService'])
-    assert.equal(m[k].implemented, true, `${k} 应 implemented`);
-  assert.equal(m.governance, undefined);
-  assert.equal(m.service, undefined);
+  const design = MODULE_GROUPS.find((g) => g.name === '设计态·定义');
+  const standard = design.items.find((i) => i.key === 'standard');
+  assert.ok(standard && standard.children, 'standard 应为父级目录');
+  assert.deepEqual(standard.children.map((c) => c.key), ['baseTerm', 'valueDomain', 'refData', 'infoItem']);
+  const leafKeys = MODULES.map((m) => m.key);
+  assert.equal(leafKeys.length, 14); // 13 叶子模块 + tableDetail
+  assert.ok(!leafKeys.includes('standard'), 'standard 父级不应是模块');
+  assert.ok(leafKeys.includes('tableDetail'));
 });
 
 test('openTab 首次打开追加并激活，重复打开不重复追加', () => {
