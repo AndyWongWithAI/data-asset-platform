@@ -11,6 +11,9 @@ body { font-family: -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei",
 .sidebar-group-name { padding: 12px 16px 4px; font-size: 12px; color: #86909c; }
 .sidebar-item { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 10px 16px; border: none; background: none; text-align: left; cursor: pointer; font-size: 14px; color: #1f2329; }
 .sidebar-item.active { background: #e8f3ff; color: #165dff; border-right: 2px solid #165dff; }
+.sidebar-dir { display: flex; align-items: center; gap: 6px; width: 100%; padding: 10px 16px; border: none; background: none; text-align: left; cursor: pointer; font-size: 14px; color: #1f2329; font-weight: 600; }
+.dir-arrow { display: inline-block; width: 12px; color: #86909c; font-size: 12px; }
+.sidebar-sub { padding-left: 32px; }
 .badge-2nd { font-size: 11px; color: #86909c; border: 1px solid #c9cdd4; border-radius: 2px; padding: 0 4px; }
 .workspace { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
 .tabbar { display: flex; height: 36px; background: #fff; border-bottom: 1px solid #e5e6eb; }

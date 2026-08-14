@@ -8,10 +8,12 @@ export const MODULE_GROUPS = [
   { name: '设计态·定义', items: [
     { key: 'catalog', title: '数据资产目录', implemented: true },
     { key: 'quality', title: '数据质量', implemented: true },
-    { key: 'baseTerm', title: '基础术语', implemented: true },
-    { key: 'valueDomain', title: '值域', implemented: true },
-    { key: 'refData', title: '参考数据', implemented: true },
-    { key: 'infoItem', title: '信息项', implemented: true },
+    { key: 'standard', title: '数据标准', implemented: true, children: [
+      { key: 'baseTerm', title: '基础术语', implemented: true },
+      { key: 'valueDomain', title: '值域', implemented: true },
+      { key: 'refData', title: '参考数据', implemented: true },
+      { key: 'infoItem', title: '信息项', implemented: true },
+    ]},
     { key: 'security', title: '数据安全', implemented: true },
     { key: 'masterdata', title: '主数据', implemented: true },
   ]},
@@ -24,7 +26,8 @@ export const MODULE_GROUPS = [
 // 非侧边栏模块：表详情（多实例，每张表一个 tab，标题取表名）
 const TABLE_DETAIL = { key: 'tableDetail', title: '表详情', implemented: true, multi: true };
 
-export const MODULES = [...MODULE_GROUPS.flatMap((g) => g.items), TABLE_DETAIL];
+const flatten = (items) => items.flatMap((i) => (i.children ? flatten(i.children) : [i]));
+export const MODULES = [...MODULE_GROUPS.flatMap((g) => flatten(g.items)), TABLE_DETAIL];
 
 export function createInitialState() {
   return { tabs: [], activeTabId: null, nextTabId: 1 };
