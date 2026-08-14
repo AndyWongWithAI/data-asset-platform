@@ -9,7 +9,6 @@ export default function InfoItemModule({ onNavigate, assetId }) {
     if (!ii) return <div className="empty-hint">未找到该信息项</div>;
     const vd = data.valueDomains.find((v) => v.id === ii.valueDomainId);
     const rd = ii.refDataId ? data.refDatas.find((r) => r.id === ii.refDataId) : null;
-    const terms = ii.termIds.map((id) => data.baseTerms.find((t) => t.id === id)).filter(Boolean);
     const refs = data.fields.filter((f) => f.management.standardId === selectedId);
     const isTech = ii.type === '技术';
     const bizDomain = ii.bizDomainId ? data.bizDomains.find((b) => b.id === ii.bizDomainId) : null;
@@ -27,12 +26,6 @@ export default function InfoItemModule({ onNavigate, assetId }) {
           <div><span>值域</span><code>{vd?.code ?? '—'}</code></div>
           <div><span>参考数据</span><b>{rd ? `${rd.name}（${rd.code}）` : '—'}</b></div>
         </div>
-        <h4>英文名映射</h4>
-        <div className="kv-list">
-          <div><span>英文名</span><code>{ii.nameEn}</code></div>
-          <div><span>词根拼接式</span><code>{terms.map((t) => t.nameEn).join('_')}</code></div>
-        </div>
-        <p className="term-chain-hint">英文名由词根英文名以下划线拼接而来。</p>
         <h4>被引用字段（{refs.length}）</h4>
         <table className="table">
           <thead><tr><th>字段名</th><th>所属表</th><th>操作</th></tr></thead>
