@@ -103,6 +103,22 @@ def main():
         assert page.locator('.detail-panel').count() == 1
         page.locator('.detail-panel .link', has_text='定位').first.click()
         assert page.locator('.field-table').count() == 1
+        # M4 数据安全分级
+        page.locator('.sidebar-item', has_text='数据安全').click()
+        assert page.locator('.tab', has_text='数据安全').count() == 1
+        assert page.locator('.score-row').count() >= 4   # L1-L4 分级总览
+        page.locator('button', has_text='分级调整').click()
+        assert page.locator('.modal').count() == 1
+        page.locator('.modal button', has_text='知道了').click()
+        # 切到高风险清单 → 定位字段转跳 M1
+        page.locator('.sub-tabs button', has_text='高风险清单').click()
+        assert page.locator('.table tbody tr').count() >= 1
+        page.locator('.table tbody tr .link', has_text='定位').first.click()
+        assert page.locator('.field-table').count() == 1
+        # 切到脱敏前后对比（定位转跳 M1 后需先回到数据安全模块）
+        page.locator('.sidebar-item', has_text='数据安全').click()
+        page.locator('.sub-tabs button', has_text='脱敏前后对比').click()
+        assert page.locator('.table tbody tr').count() >= 4
         # 跨模块转跳：治理看板 → 定位字段 → 打开表详情 tab
         page.locator('.tab', has_text='数据治理看板').click()
         page.locator('.issue .link').first.click()
