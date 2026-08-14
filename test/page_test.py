@@ -166,7 +166,7 @@ def main():
         # 一级：点中心表「风速」字段 → 表级线变灰 + 字段级线出现
         page.locator('.lineage-field-row', has_text='风速').first.click()
         assert page.locator('.lineage-edge-table.is-dimmed').count() >= 1
-        assert page.locator('.lineage-edge-field').count() >= 1
+        assert page.locator('.lineage-edge-field').count() == 1
         # 再点同字段 → 清空回表级视图
         page.locator('.lineage-field-row', has_text='风速').first.click()
         assert page.locator('.lineage-edge-field').count() == 0

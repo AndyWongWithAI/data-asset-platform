@@ -117,16 +117,22 @@ function LineageGraph({ tableId, onNavigate }) {
       if (!downToUp.has(m.down)) downToUp.set(m.down, []);
       downToUp.get(m.down).push(m.up);
     });
-    // 3. BFS 双向可达：沿 upToDown 扩展下游、沿 downToUp 扩展上游
+    // 3. 两条独立闭包：下游闭包 + 上游闭包，取并集（避免无向连通把兄弟字段误画）
     const reachable = new Set([selFieldId]);
-    const queue = [selFieldId];
-    while (queue.length > 0) {
-      const cur = queue.shift();
+    // 下游闭包：只沿 upToDown 扩展
+    const downQueue = [selFieldId];
+    while (downQueue.length > 0) {
+      const cur = downQueue.shift();
       (upToDown.get(cur) || []).forEach((next) => {
-        if (!reachable.has(next)) { reachable.add(next); queue.push(next); }
+        if (!reachable.has(next)) { reachable.add(next); downQueue.push(next); }
       });
+    }
+    // 上游闭包：只沿 downToUp 扩展
+    const upQueue = [selFieldId];
+    while (upQueue.length > 0) {
+      const cur = upQueue.shift();
       (downToUp.get(cur) || []).forEach((next) => {
-        if (!reachable.has(next)) { reachable.add(next); queue.push(next); }
+        if (!reachable.has(next)) { reachable.add(next); upQueue.push(next); }
       });
     }
     // 4. 只画两端都可达的边
