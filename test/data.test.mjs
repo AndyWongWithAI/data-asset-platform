@@ -182,3 +182,17 @@ test('infoItems：id 唯一 + 引用完整 + 命名规则', () => {
     assert.equal(ii.nameEn, expectedEn, `infoItem ${ii.id} nameEn 应为 ${expectedEn}`);
   }
 });
+
+test('infoItems：类型/业务域/定义约束', () => {
+  const domainIds = ids(D.bizDomains);
+  for (const ii of D.infoItems) {
+    assert.ok(ii.type === '技术' || ii.type === '业务', `infoItem ${ii.id} type ${ii.type} 非法，应为「技术」或「业务」`);
+    if (ii.type === '业务') {
+      assert.ok(ii.bizDomainId, `infoItem ${ii.id} 为业务项，bizDomainId 不能为空`);
+      assert.ok(domainIds.has(ii.bizDomainId), `infoItem ${ii.id} bizDomainId ${ii.bizDomainId} 不存在`);
+      assert.ok(typeof ii.definition === 'string' && ii.definition.trim().length > 0, `infoItem ${ii.id} 为业务项，definition 不能为空`);
+    } else {
+      assert.equal(ii.bizDomainId, null, `infoItem ${ii.id} 为技术项，bizDomainId 应为 null`);
+    }
+  }
+});
