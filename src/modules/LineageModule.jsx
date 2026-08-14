@@ -94,20 +94,43 @@ function LineageGraph({ tableId, onNavigate }) {
 
   const dimmed = selFieldId !== null;
 
-  // 字段级线：命中选中字段的映射，且两端表都在当前图内
+  // 字段级线：N 级多跳遍历（双向有向可达闭包），只画两端字段都在当前图内的映射
   const fieldLines = [];
   if (selFieldId !== null) {
+    // 1. 收集画布内字段级映射边（up/down 字段所属表都在 inGraph 内）
+    const inGraphEdges = [];
     data.lineage.forEach((l) => {
       (l.fieldMapping || []).forEach((m) => {
-        if (m.up === selFieldId || m.down === selFieldId) {
-          const upT = fieldTable.get(m.up);
-          const downT = fieldTable.get(m.down);
-          if (upT && downT && inGraph.has(upT) && inGraph.has(downT)) {
-            fieldLines.push(m);
-          }
+        const upT = fieldTable.get(m.up);
+        const downT = fieldTable.get(m.down);
+        if (upT && downT && inGraph.has(upT) && inGraph.has(downT)) {
+          inGraphEdges.push(m);
         }
       });
     });
+    // 2. 建有向邻接表：下游方向 upToDown + 上游方向 downToUp
+    const upToDown = new Map();
+    const downToUp = new Map();
+    inGraphEdges.forEach((m) => {
+      if (!upToDown.has(m.up)) upToDown.set(m.up, []);
+      upToDown.get(m.up).push(m.down);
+      if (!downToUp.has(m.down)) downToUp.set(m.down, []);
+      downToUp.get(m.down).push(m.up);
+    });
+    // 3. BFS 双向可达：沿 upToDown 扩展下游、沿 downToUp 扩展上游
+    const reachable = new Set([selFieldId]);
+    const queue = [selFieldId];
+    while (queue.length > 0) {
+      const cur = queue.shift();
+      (upToDown.get(cur) || []).forEach((next) => {
+        if (!reachable.has(next)) { reachable.add(next); queue.push(next); }
+      });
+      (downToUp.get(cur) || []).forEach((next) => {
+        if (!reachable.has(next)) { reachable.add(next); queue.push(next); }
+      });
+    }
+    // 4. 只画两端都可达的边
+    fieldLines.push(...inGraphEdges.filter((m) => reachable.has(m.up) && reachable.has(m.down)));
   }
 
   const fieldRowCenterY = (tableY, seq) =>
