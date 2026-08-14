@@ -8,7 +8,10 @@ export const MODULE_GROUPS = [
   { name: '设计态·定义', items: [
     { key: 'catalog', title: '数据资产目录', implemented: true },
     { key: 'quality', title: '数据质量', implemented: true },
-    { key: 'standard', title: '数据标准', implemented: true },
+    { key: 'baseTerm', title: '基础术语', implemented: true },
+    { key: 'valueDomain', title: '值域', implemented: true },
+    { key: 'refData', title: '参考数据', implemented: true },
+    { key: 'infoItem', title: '信息项', implemented: true },
     { key: 'security', title: '数据安全', implemented: true },
     { key: 'masterdata', title: '主数据', implemented: true },
   ]},
