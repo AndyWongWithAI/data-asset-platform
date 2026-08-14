@@ -23,7 +23,7 @@ export default function InfoItemModule({ onNavigate, assetId }) {
           <div><span>类型</span><b>{ii.type}</b></div>
           <div><span>业务域</span><b>{isTech ? '—' : (bizDomain?.name ?? '—')}</b></div>
           <div><span>定义</span><b>{isTech ? '—' : (ii.definition ?? '—')}</b></div>
-          <div><span>值域</span><code>{vd?.code ?? '—'}</code></div>
+          <div><span>值域</span>{vd ? <button className="link" onClick={() => onNavigate('valueDomain', { valueDomainId: vd.id })}>{vd.code}</button> : '—'}</div>
           <div><span>参考数据</span><b>{rd ? `${rd.name}（${rd.code}）` : '—'}</b></div>
         </div>
         <h4>被引用字段（{refs.length}）</h4>

@@ -1,16 +1,15 @@
-import { useState } from 'react';
 import data from '../data.js';
 import ComingSoonAction from '../components/ComingSoonAction.jsx';
 
-export default function ValueDomainModule({ onNavigate }) {
-  const [selectedId, setSelectedId] = useState(null);
+export default function ValueDomainModule({ onNavigate, assetId }) {
+  const selectedId = assetId?.valueDomainId ?? null;
 
   if (selectedId) {
     const vd = data.valueDomains.find((v) => v.id === selectedId);
     const refs = data.infoItems.filter((i) => i.valueDomainId === selectedId);
     return (
       <div className="detail-panel">
-        <button className="link" onClick={() => setSelectedId(null)}>← 返回列表</button>
+        <button className="link" onClick={() => onNavigate('valueDomain', null)}>← 返回列表</button>
         <h3>{vd.code}</h3>
         <div className="kv-list">
           <div><span>值域编号</span><code>{vd.code}</code></div>
@@ -45,7 +44,7 @@ export default function ValueDomainModule({ onNavigate }) {
         <tbody>
           {data.valueDomains.map((v) => (
             <tr key={v.id}>
-              <td><button className="link" onClick={() => setSelectedId(v.id)}>{v.code}</button></td>
+              <td><button className="link" onClick={() => onNavigate('valueDomain', { valueDomainId: v.id })}>{v.code}</button></td>
               <td><code>{v.dataType}</code></td>
               <td>{v.length}</td>
               <td>{v.precision}</td>

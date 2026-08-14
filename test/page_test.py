@@ -156,6 +156,12 @@ def main():
         assert page.locator('.field-table').count() == 1
         assert page.locator('.row-active').count() == 1
         assert page.locator('.tab.active', has_text='海缆参数表').count() == 1
+        # 值域跳转：信息项详情点「值域」→ 值域明细（ii_voltage 值域=VD-VARCHAR10）
+        click_menu(page, '信息项')
+        assert page.locator('.detail-panel').count() == 1
+        page.locator('.detail-panel .kv-list .link', has_text='VD-VARCHAR10').click()
+        assert page.locator('.tab.active', has_text='值域').count() == 1
+        assert page.locator('.detail-panel', has_text='VD-VARCHAR10').count() >= 1
         # 关联标准转跳（需求 5）：M1 资产目录 → 测风数据表「查看」→ 点「关联标准」→ 信息项详情
         click_menu(page, '数据资产目录')
         assert page.locator('.table tbody tr').count() >= 5
