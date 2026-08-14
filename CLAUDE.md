@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 GDEPDI（广东省电力设计研究院）「数据资源管理平台」展示版（Demo）——面向**海上风电全生命周期数据治理**。目标读者：架构评审 / 求职作品集 / 方案演示。
 
-**当前状态：MVP 已实现并合入 `main`**（M1 资产目录 + M0 治理看板·质量/标准子看板），血缘看板与 M2–M6 独立页留二期（占位页已就位）。本仓库已 `git init`，`main` 受 git-guardrails 保护（只接受 merge 提交），开发走任务分支再 merge。
+**当前状态：二期已实现并合入 `main`**（M1 资产目录 + M0 治理看板 + M2 数据质量 + M3 数据标准 + M4 数据安全分级 + M5 主数据管理，四个设计态独立页全部只读展示 + 占位写按钮）。血缘看板与 M6 数据服务仍占位（二期）。本仓库 `main` 受 git-guardrails 保护（只接受 merge 提交），开发走任务分支再 merge。
 
 ## 常用命令
 
