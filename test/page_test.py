@@ -92,6 +92,7 @@ def main():
         assert page.locator('.modal').count() == 0
         # 点规则进详情 → 定位字段转跳 M1
         page.locator('.table tbody tr .link').first.click()
+        assert page.locator('.tab.active', has_text='规则详情').count() == 1
         assert page.locator('.detail-panel').count() == 1
         page.locator('.detail-panel .link', has_text='定位').click()
         assert page.locator('.field-table').count() == 1
@@ -124,12 +125,12 @@ def main():
         page.locator('.modal button', has_text='知道了').click()
         assert page.locator('.modal').count() == 0
         page.locator('.table tbody tr .link').first.click()
+        assert page.locator('.tab.active', has_text='值域详情').count() == 1
         assert page.locator('.detail-panel').count() == 1
-        # 被引用信息项中文名 → 具体信息项详情（ii_voltage 电压等级编码）
+        # 被引用信息项中文名 → 信息项详情 tab（ii_voltage 电压等级编码）
         page.locator('.detail-panel table tbody tr .link', has_text='电压等级编码').click()
-        assert page.locator('.tab.active', has_text='信息项').count() == 1
+        assert page.locator('.tab.active', has_text='信息项详情').count() == 1
         assert page.locator('.detail-panel h3', has_text='电压等级编码').count() == 1
-        page.locator('.detail-panel .link', has_text='返回列表').click()
         # 参考数据
         click_menu(page, '参考数据')
         assert page.locator('.tab.active', has_text='参考数据').count() == 1
@@ -139,12 +140,12 @@ def main():
         page.locator('.modal button', has_text='知道了').click()
         assert page.locator('.modal').count() == 0
         page.locator('.table tbody tr .link').first.click()
+        assert page.locator('.tab.active', has_text='参考数据详情').count() == 1
         assert page.locator('.detail-panel').count() == 1
-        # 被引用信息项中文名 → 具体信息项详情（ii_voltage 电压等级编码）
+        # 被引用信息项中文名 → 信息项详情 tab（ii_voltage 电压等级编码）
         page.locator('.detail-panel table tbody tr .link', has_text='电压等级编码').click()
-        assert page.locator('.tab.active', has_text='信息项').count() == 1
+        assert page.locator('.tab.active', has_text='信息项详情').count() == 1
         assert page.locator('.detail-panel h3', has_text='电压等级编码').count() == 1
-        page.locator('.detail-panel .link', has_text='返回列表').click()
         # 信息项
         click_menu(page, '信息项')
         assert page.locator('.tab.active', has_text='信息项').count() == 1
@@ -156,6 +157,7 @@ def main():
         assert page.locator('.modal').count() == 0
         # 点信息项进详情（第一条 ii_voltage 电压等级编码）→ 无词根链 + 类型/业务域/定义 + 被引用字段转跳 M1
         page.locator('.table tbody tr .link').first.click()
+        assert page.locator('.tab.active', has_text='信息项详情').count() == 1
         assert page.locator('.detail-panel').count() == 1
         assert page.locator('.term-chain').count() == 0
         assert page.locator('.detail-panel h4', has_text='英文名映射').count() == 0   # 英文名映射块已删，英文名=词根拼接直接展示
@@ -166,17 +168,17 @@ def main():
         assert page.locator('.field-table').count() == 1
         assert page.locator('.row-active').count() == 1
         assert page.locator('.tab.active', has_text='海缆参数表').count() == 1
-        # 值域跳转：信息项详情点「值域」→ 值域明细（ii_voltage 值域=VD-VARCHAR10）
-        click_menu(page, '信息项')
+        # 值域跳转：信息项详情点「值域」→ 值域详情 tab（ii_voltage 值域=VD-VARCHAR10）
+        page.locator('.tab', has_text='信息项详情').click()
         assert page.locator('.detail-panel').count() == 1
         page.locator('.detail-panel .kv-list .link', has_text='VD-VARCHAR10').click()
-        assert page.locator('.tab.active', has_text='值域').count() == 1
+        assert page.locator('.tab.active', has_text='值域详情').count() == 1
         assert page.locator('.detail-panel', has_text='VD-VARCHAR10').count() >= 1
-        # 参考数据跳转：信息项详情「参考数据」→ 参考数据详情（ii_voltage 参考数据=电压等级）
-        click_menu(page, '信息项')
+        # 参考数据跳转：信息项详情「参考数据」→ 参考数据详情 tab（ii_voltage 参考数据=电压等级）
+        page.locator('.tab', has_text='信息项详情').click()
         assert page.locator('.detail-panel').count() == 1
         page.locator('.detail-panel .kv-list .link', has_text='电压等级').click()
-        assert page.locator('.tab.active', has_text='参考数据').count() == 1
+        assert page.locator('.tab.active', has_text='参考数据详情').count() == 1
         assert page.locator('.detail-panel h3', has_text='电压等级').count() == 1
         # 关联标准转跳（需求 5）：M1 资产目录 → 测风数据表「查看」→ 点「关联标准」→ 信息项详情
         click_menu(page, '数据资产目录')
@@ -184,7 +186,7 @@ def main():
         page.locator('.table tbody tr', has_text='测风数据表').locator('.link', has_text='查看').click()
         assert page.locator('.field-table').count() == 1
         page.locator('.field-table tbody tr', has_text='风速值').locator('.link', has_text='II0008').click()
-        assert page.locator('.tab.active', has_text='信息项').count() == 1
+        assert page.locator('.tab.active', has_text='信息项详情').count() == 1
         assert page.locator('.detail-panel').count() == 1
         assert page.locator('.detail-panel h3', has_text='风速值').count() == 1
         assert page.locator('.detail-panel h3', has_text='电压等级编码').count() == 0
@@ -193,7 +195,7 @@ def main():
         page.locator('.table tbody tr', has_text='测风数据表').locator('.link', has_text='查看').click()
         assert page.locator('.field-table').count() == 1
         page.locator('.field-table tbody tr', has_text='风速值').locator('.link', has_text='测风风速取值越界').click()
-        assert page.locator('.tab.active', has_text='数据质量').count() == 1
+        assert page.locator('.tab.active', has_text='规则详情').count() == 1
         assert page.locator('.detail-panel h3', has_text='测风风速取值越界').count() == 1
         # M4 数据安全分级
         click_menu(page, '数据安全')
@@ -222,6 +224,7 @@ def main():
         page.locator('.modal button', has_text='知道了').click()
         # 点实体进详情 → 被引用字段转跳 M1
         page.locator('.table tbody tr .link').first.click()
+        assert page.locator('.tab.active', has_text='主数据详情').count() == 1
         assert page.locator('.detail-panel').count() == 1
         page.locator('.detail-panel .link', has_text='定位').first.click()
         assert page.locator('.field-table').count() == 1
@@ -277,6 +280,7 @@ def main():
         assert page.locator('.modal').count() == 1
         page.locator('.modal button', has_text='知道了').click()
         page.locator('.table tbody tr .link').first.click()
+        assert page.locator('.tab.active', has_text='批次文件详情').count() == 1
         assert page.locator('.detail-panel').count() == 1
         assert page.locator('.flow-step').count() >= 3
         page.locator('.detail-panel .link', has_text='查看源表').click()
@@ -290,6 +294,7 @@ def main():
         assert page.locator('.modal').count() == 1
         page.locator('.modal button', has_text='知道了').click()
         page.locator('.table tbody tr .link').first.click()
+        assert page.locator('.tab.active', has_text='数据服务详情').count() == 1
         assert page.locator('.detail-panel').count() == 1
         assert page.locator('.flow-step').count() >= 3
         page.locator('.detail-panel .link', has_text='查看').first.click()
