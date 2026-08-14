@@ -1,16 +1,15 @@
-import { useState } from 'react';
 import data from '../data.js';
 import ComingSoonAction from '../components/ComingSoonAction.jsx';
 
-export default function RefDataModule({ onNavigate }) {
-  const [selectedId, setSelectedId] = useState(null);
+export default function RefDataModule({ onNavigate, assetId }) {
+  const selectedId = assetId?.refDataId ?? null;
 
   if (selectedId) {
     const rd = data.refDatas.find((r) => r.id === selectedId);
     const refs = data.infoItems.filter((i) => i.refDataId === selectedId);
     return (
       <div className="detail-panel">
-        <button className="link" onClick={() => setSelectedId(null)}>← 返回列表</button>
+        <button className="link" onClick={() => onNavigate('refData', null)}>← 返回列表</button>
         <h3>{rd.name}<span className="en">{rd.code}</span></h3>
         <div className="kv-list">
           <div><span>编号</span><code>{rd.code}</code></div>
@@ -56,7 +55,7 @@ export default function RefDataModule({ onNavigate }) {
         <tbody>
           {data.refDatas.map((r) => (
             <tr key={r.id}>
-              <td><button className="link" onClick={() => setSelectedId(r.id)}>{r.code}</button></td>
+              <td><button className="link" onClick={() => onNavigate('refData', { refDataId: r.id })}>{r.code}</button></td>
               <td>{r.name}</td>
               <td>{r.values.length}</td>
             </tr>

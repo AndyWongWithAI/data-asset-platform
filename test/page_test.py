@@ -172,6 +172,12 @@ def main():
         page.locator('.detail-panel .kv-list .link', has_text='VD-VARCHAR10').click()
         assert page.locator('.tab.active', has_text='值域').count() == 1
         assert page.locator('.detail-panel', has_text='VD-VARCHAR10').count() >= 1
+        # 参考数据跳转：信息项详情「参考数据」→ 参考数据详情（ii_voltage 参考数据=电压等级）
+        click_menu(page, '信息项')
+        assert page.locator('.detail-panel').count() == 1
+        page.locator('.detail-panel .kv-list .link', has_text='电压等级').click()
+        assert page.locator('.tab.active', has_text='参考数据').count() == 1
+        assert page.locator('.detail-panel h3', has_text='电压等级').count() == 1
         # 关联标准转跳（需求 5）：M1 资产目录 → 测风数据表「查看」→ 点「关联标准」→ 信息项详情
         click_menu(page, '数据资产目录')
         assert page.locator('.table tbody tr').count() >= 5
@@ -182,6 +188,13 @@ def main():
         assert page.locator('.detail-panel').count() == 1
         assert page.locator('.detail-panel h3', has_text='风速值').count() == 1
         assert page.locator('.detail-panel h3', has_text='电压等级编码').count() == 0
+        # 关联规则跳转：字段明细「关联规则」列 → 具体规则详情
+        click_menu(page, '数据资产目录')
+        page.locator('.table tbody tr', has_text='测风数据表').locator('.link', has_text='查看').click()
+        assert page.locator('.field-table').count() == 1
+        page.locator('.field-table tbody tr', has_text='风速值').locator('.link', has_text='测风风速取值越界').click()
+        assert page.locator('.tab.active', has_text='数据质量').count() == 1
+        assert page.locator('.detail-panel h3', has_text='测风风速取值越界').count() == 1
         # M4 数据安全分级
         click_menu(page, '数据安全')
         assert page.locator('.tab', has_text='数据安全').count() == 1

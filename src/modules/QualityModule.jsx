@@ -5,9 +5,9 @@ import ComingSoonAction from '../components/ComingSoonAction.jsx';
 
 const SEVERITY_TONE = { 严重: 'danger', 警告: 'warn', 提示: 'default' };
 
-export default function QualityModule({ onNavigate }) {
+export default function QualityModule({ onNavigate, assetId }) {
   const [type, setType] = useState('all');
-  const [selectedId, setSelectedId] = useState(null);
+  const selectedId = assetId?.qualityRuleId ?? null;
 
   if (selectedId) {
     const rule = data.qualityRules.find((r) => r.id === selectedId);
@@ -15,7 +15,7 @@ export default function QualityModule({ onNavigate }) {
     const table = data.tables.find((t) => t.id === field?.tableId);
     return (
       <div className="detail-panel">
-        <button className="link" onClick={() => setSelectedId(null)}>← 返回列表</button>
+        <button className="link" onClick={() => onNavigate('quality', null)}>← 返回列表</button>
         <h3>{rule.name}</h3>
         <div className="kv-list">
           <div><span>规则类型</span><b>{rule.type}</b></div>
@@ -56,7 +56,7 @@ export default function QualityModule({ onNavigate }) {
             const f = data.fields.find((x) => x.id === r.targetFieldId);
             return (
               <tr key={r.id}>
-                <td><button className="link" onClick={() => setSelectedId(r.id)}>{r.name}</button></td>
+                <td><button className="link" onClick={() => onNavigate('quality', { qualityRuleId: r.id })}>{r.name}</button></td>
                 <td>{r.type}</td>
                 <td>{f?.business.nameCn}</td>
                 <td><code>{r.expr}</code></td>
