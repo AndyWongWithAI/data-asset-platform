@@ -77,6 +77,20 @@ test('lineage 引用完整 + mode 合法', () => {
   }
 });
 
+test('lineage 每条边含字段级 fieldMapping（字段归表一致）', () => {
+  const fieldIds = ids(D.fields);
+  const fieldTable = new Map(D.fields.map((f) => [f.id, f.tableId]));
+  for (const l of D.lineage) {
+    assert.ok(l.fieldMapping && l.fieldMapping.length >= 1, `lineage ${l.id} 缺 fieldMapping 或为空`);
+    for (const m of l.fieldMapping) {
+      assert.ok(fieldIds.has(m.up), `lineage ${l.id} 映射 up 字段 ${m.up} 不存在`);
+      assert.ok(fieldIds.has(m.down), `lineage ${l.id} 映射 down 字段 ${m.down} 不存在`);
+      assert.equal(fieldTable.get(m.up), l.up, `lineage ${l.id} up 字段 ${m.up} 不属于上游表 ${l.up}`);
+      assert.equal(fieldTable.get(m.down), l.down, `lineage ${l.id} down 字段 ${m.down} 不属于下游表 ${l.down}`);
+    }
+  }
+});
+
 test('batchFiles 引用完整 + 审批链完整', () => {
   const tableIds = ids(D.tables);
   assert.ok(D.batchFiles.length >= 5);
