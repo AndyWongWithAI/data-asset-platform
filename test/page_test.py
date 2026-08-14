@@ -91,6 +91,18 @@ def main():
         assert page.locator('.detail-panel').count() == 1
         page.locator('.detail-panel .link', has_text='定位').click()
         assert page.locator('.field-table').count() == 1
+        # M3 数据标准
+        page.locator('.sidebar-item', has_text='数据标准').click()
+        assert page.locator('.tab', has_text='数据标准').count() == 1
+        assert page.locator('.table tbody tr').count() >= 6
+        page.locator('button', has_text='新增标准').click()
+        assert page.locator('.modal').count() == 1
+        page.locator('.modal button', has_text='知道了').click()
+        # 点标准进详情（第一条码表）→ 被引用字段转跳 M1
+        page.locator('.table tbody tr .link').first.click()
+        assert page.locator('.detail-panel').count() == 1
+        page.locator('.detail-panel .link', has_text='定位').first.click()
+        assert page.locator('.field-table').count() == 1
         # 跨模块转跳：治理看板 → 定位字段 → 打开表详情 tab
         page.locator('.tab', has_text='数据治理看板').click()
         page.locator('.issue .link').first.click()
