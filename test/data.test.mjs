@@ -193,6 +193,19 @@ test('infoItems：类型/业务域/定义约束', () => {
       assert.ok(typeof ii.definition === 'string' && ii.definition.trim().length > 0, `infoItem ${ii.id} 为业务项，definition 不能为空`);
     } else {
       assert.equal(ii.bizDomainId, null, `infoItem ${ii.id} 为技术项，bizDomainId 应为 null`);
+      assert.equal(ii.definition, null, `infoItem ${ii.id} 为技术项，definition 应为 null`);
     }
   }
+});
+
+test('字段名与信息项标准名对齐（6 字段已贯标）', () => {
+  const iiMap = new Map(D.infoItems.map((i) => [i.id, i]));
+  const aligned = new Set();
+  for (const f of D.fields) {
+    if (!f.management.standardId) continue;
+    const ii = iiMap.get(f.management.standardId);
+    if (f.business.nameCn === ii.nameCn && f.business.code === ii.nameEn) aligned.add(f.id);
+  }
+  const expected = new Set(['f_wind_speed', 'f_scada_temp', 'f_prog_progress', 'f_cable_voltage', 'f_scada_power', 'f_turbine_model']);
+  assert.deepEqual([...aligned].sort(), [...expected].sort(), '已对齐字段集合应精确等于这 6 个字段');
 });
