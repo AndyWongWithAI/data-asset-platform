@@ -28,7 +28,7 @@ export default function InfoItemModule({ onNavigate }) {
           {terms.map((t, idx) => (
             <span key={t.id} className="term-chain-node">
               {idx > 0 && <span className="term-chain-arrow">→</span>}
-              {idx === terms.length - 1
+              {t.isClassWord
                 ? <Tag tone="ok">{t.nameCn}（类词）</Tag>
                 : <span className="term-chain-term">{t.nameCn}</span>}
             </span>
