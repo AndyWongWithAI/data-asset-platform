@@ -77,10 +77,20 @@ def main():
         # 打开治理看板
         page.locator('.sidebar-item', has_text='数据治理看板').click()
         assert page.locator('.tab', has_text='数据治理看板').count() == 1
-        # 占位模块
+        # M2 数据质量
         page.locator('.sidebar-item', has_text='数据质量').click()
-        assert page.locator('.placeholder').count() == 1
-        assert page.locator('.badge-2nd').count() >= 1
+        assert page.locator('.tab', has_text='数据质量').count() == 1
+        assert page.locator('.table tbody tr').count() >= 8
+        # 占位按钮 → 弹框 → 关闭
+        page.locator('button', has_text='新增规则').click()
+        assert page.locator('.modal').count() == 1
+        page.locator('.modal button', has_text='知道了').click()
+        assert page.locator('.modal').count() == 0
+        # 点规则进详情 → 定位字段转跳 M1
+        page.locator('.table tbody tr .link').first.click()
+        assert page.locator('.detail-panel').count() == 1
+        page.locator('.detail-panel .link', has_text='定位').click()
+        assert page.locator('.field-table').count() == 1
         # 跨模块转跳：治理看板 → 定位字段 → 打开表详情 tab
         page.locator('.tab', has_text='数据治理看板').click()
         page.locator('.issue .link').first.click()
