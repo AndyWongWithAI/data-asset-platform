@@ -97,16 +97,49 @@ def main():
         assert page.locator('.field-table').count() == 1
         assert page.locator('.row-active').count() == 1
         assert page.locator('.tab.active', has_text='SCADA 遥测表').count() == 1
-        # M3 数据标准
-        click_menu(page, '数据标准')
-        assert page.locator('.tab.active', has_text='数据标准').count() == 1
-        assert page.locator('.table tbody tr').count() >= 6
-        page.locator('button', has_text='新增标准').click()
+        # M3 数据标准（四模块：基础术语 / 值域 / 参考数据 / 信息项）
+        # 基础术语
+        click_menu(page, '基础术语')
+        assert page.locator('.tab.active', has_text='基础术语').count() == 1
+        assert page.locator('.table tbody tr').count() >= 20
+        page.locator('button', has_text='新增术语').click()
         assert page.locator('.modal').count() == 1
         page.locator('.modal button', has_text='知道了').click()
-        # 点标准进详情（第一条码表）→ 被引用字段转跳 M1
+        assert page.locator('.modal').count() == 0
         page.locator('.table tbody tr .link').first.click()
         assert page.locator('.detail-panel').count() == 1
+        # 值域
+        click_menu(page, '值域')
+        assert page.locator('.tab.active', has_text='值域').count() == 1
+        assert page.locator('.table tbody tr').count() >= 6
+        page.locator('button', has_text='新增值域').click()
+        assert page.locator('.modal').count() == 1
+        page.locator('.modal button', has_text='知道了').click()
+        assert page.locator('.modal').count() == 0
+        page.locator('.table tbody tr .link').first.click()
+        assert page.locator('.detail-panel').count() == 1
+        # 参考数据
+        click_menu(page, '参考数据')
+        assert page.locator('.tab.active', has_text='参考数据').count() == 1
+        assert page.locator('.table tbody tr').count() >= 5
+        page.locator('button', has_text='新增参考数据').click()
+        assert page.locator('.modal').count() == 1
+        page.locator('.modal button', has_text='知道了').click()
+        assert page.locator('.modal').count() == 0
+        page.locator('.table tbody tr .link').first.click()
+        assert page.locator('.detail-panel').count() == 1
+        # 信息项
+        click_menu(page, '信息项')
+        assert page.locator('.tab.active', has_text='信息项').count() == 1
+        assert page.locator('.table tbody tr').count() >= 10
+        page.locator('button', has_text='新增信息项').click()
+        assert page.locator('.modal').count() == 1
+        page.locator('.modal button', has_text='知道了').click()
+        assert page.locator('.modal').count() == 0
+        # 点信息项进详情（第一条 ii_voltage 电压等级编码）→ 词根链 + 被引用字段转跳 M1
+        page.locator('.table tbody tr .link').first.click()
+        assert page.locator('.detail-panel').count() == 1
+        assert page.locator('.term-chain').count() == 1
         page.locator('.detail-panel .link', has_text='定位').first.click()
         assert page.locator('.field-table').count() == 1
         assert page.locator('.row-active').count() == 1
