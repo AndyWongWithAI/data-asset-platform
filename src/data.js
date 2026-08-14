@@ -3,7 +3,7 @@ const D = {
     title: '数据资源管理平台 · GDEPDI 海上风电',
     subtitle: '数据资产目录 · 数据治理看板 —— 设计态/生产态两态分层的治理闭环演示',
     disclaimer: '⚠ 参考模型声明：基于广东院公开业务信息构建的演示模型，非广东院实际部署、仅供演示。不虚构内部运营数据。',
-    stats: { applications: 5, databases: 5, tables: 10, fields: 51, rules: 8, standards: 6, masterData: 5 },
+    stats: { applications: 5, databases: 5, tables: 10, fields: 51, rules: 8, standards: 6, masterData: 5, maskExamples: 4 },
   },
   applications: [
     { id: 'app_res', name: '风资源评估系统', desc: '测风/气象数据采集与分析' },
@@ -300,6 +300,12 @@ const D = {
     { id: 'qres_app_ops', appId: 'app_ops', score: 78, dimension: '准确性', issues: [
       { id: 'issue_002', fieldId: 'f_scada_power', ruleId: 'qr_001', desc: '6 台机组有功功率越界（>16MW）', severity: '严重' },
     ]},
+  ],
+  maskExamples: [
+    { field: '场址精确坐标', level: 'L4', original: '21.5021°N, 111.3047°E', masked: '21.5°N, 111.3°E', strategy: '坐标模糊化' },
+    { field: '海缆路由坐标', level: 'L3', original: '21.4832°N, 111.2891°E', masked: '21.48°N, 111.29°E', strategy: '坐标偏移' },
+    { field: '岩土钻孔坐标', level: 'L3', original: '21.4618°N, 111.2716°E', masked: '21.46°N, 111.27°E', strategy: '坐标偏移' },
+    { field: 'SCADA 机组编号', level: 'L2', original: 'WTG-A12-07', masked: 'WTG-****-07', strategy: '字段掩码' },
   ],
 };
 export default D;

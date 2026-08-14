@@ -2,13 +2,17 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { MODULE_GROUPS, MODULES, createInitialState, openTab, closeTab, navigate } from '../src/state.js';
 
-test('MODULE_GROUPS 含 7 模块且 catalog/governance 已实现', () => {
+test('MODULE_GROUPS 含 7 模块且 catalog/governance/M2-M5 已实现', () => {
   const keys = MODULE_GROUPS.flatMap((g) => g.items.map((i) => i.key));
   assert.equal(keys.length, 7);
   const m = Object.fromEntries(MODULE_GROUPS.flatMap((g) => g.items).map((i) => [i.key, i]));
   assert.equal(m.catalog.implemented, true);
   assert.equal(m.governance.implemented, true);
-  assert.equal(m.quality.implemented, false);
+  assert.equal(m.quality.implemented, true);
+  assert.equal(m.standard.implemented, true);
+  assert.equal(m.security.implemented, true);
+  assert.equal(m.masterdata.implemented, true);
+  assert.equal(m.service.implemented, false);
 });
 
 test('openTab 首次打开追加并激活，重复打开不重复追加', () => {
