@@ -2,12 +2,12 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { MODULE_GROUPS, MODULES, createInitialState, openTab, closeTab, navigate } from '../src/state.js';
 
-test('MODULE_GROUPS 含 10 模块且全部 implemented', () => {
+test('MODULE_GROUPS 含 13 模块且全部 implemented', () => {
   const items = MODULE_GROUPS.flatMap((g) => g.items);
-  assert.equal(items.length, 10);
+  assert.equal(items.length, 13);
   assert.deepEqual(MODULE_GROUPS.map((g) => g.name), ['生产态·治理看板', '设计态·定义', '数据交换']);
   const m = Object.fromEntries(items.map((i) => [i.key, i]));
-  for (const k of ['catalog','qualityBoard','lineageBoard','standardBoard','quality','standard','security','masterdata','batchFile','dataService'])
+  for (const k of ['catalog','qualityBoard','lineageBoard','standardBoard','quality','baseTerm','valueDomain','refData','infoItem','security','masterdata','batchFile','dataService'])
     assert.equal(m[k].implemented, true, `${k} 应 implemented`);
   assert.equal(m.governance, undefined);
   assert.equal(m.service, undefined);
