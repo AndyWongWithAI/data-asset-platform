@@ -217,17 +217,21 @@ def main():
         page.locator('.score-row .link', has_text='调整').first.click()
         assert page.locator('.modal-lg').count() == 1
         page.locator('.modal button', has_text='取消').click()
-        # 切到高风险清单 → 定位字段转跳 M1
-        page.locator('.sub-tabs button', has_text='高风险清单').click()
-        assert page.locator('.table tbody tr').count() >= 1
-        page.locator('.table tbody tr .link', has_text='定位').first.click()
+        # 切到分级明细（分级维度 L1-L4 各一行）→ 点分级进详情
+        page.locator('.sub-tabs button', has_text='分级明细').click()
+        assert page.locator('.table tbody tr').count() >= 4
+        assert page.locator('.table tbody tr .link', has_text='L4 · 涉密').count() == 1   # 分级维度行存在
+        page.locator('.table tbody tr .link', has_text='L3 · 敏感').click()
+        assert page.locator('.tab.active', has_text='安全分级详情').count() == 1
+        assert page.locator('.detail-panel').count() == 1
+        # 分级详情：L3 下字段列表 + 来源 Tag（继承 / 自定义升级）
+        assert page.locator('.detail-panel table tbody tr').count() >= 1
+        assert page.locator('.detail-panel .tag', has_text='继承').count() >= 1
+        assert page.locator('.detail-panel .tag', has_text='自定义升级').count() >= 1
+        # 分级详情「定位」→ 字段级高亮转跳 M1
+        page.locator('.detail-panel table tbody tr .link', has_text='定位').first.click()
         assert page.locator('.field-table').count() == 1
         assert page.locator('.row-active').count() == 1
-        assert page.locator('.tab.active', has_text='地质钻孔表').count() == 1
-        # 切到脱敏前后对比（定位转跳 M1 后需先回到数据安全模块）
-        click_menu(page, '数据安全')
-        page.locator('.sub-tabs button', has_text='脱敏前后对比').click()
-        assert page.locator('.table tbody tr').count() >= 4
         # M5 主数据管理（同步占位，不可新增；清单 5 列 + 详情三 tab）
         click_menu(page, '主数据')
         assert page.locator('.tab', has_text='主数据').count() == 1

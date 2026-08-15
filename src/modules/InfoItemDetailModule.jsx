@@ -9,6 +9,7 @@ export default function InfoItemDetailModule({ onNavigate, assetId }) {
   const refs = data.fields.filter((f) => f.management.standardId === ii.id);
   const isTech = ii.type === '技术';
   const bizDomain = ii.bizDomainId ? data.bizDomains.find((b) => b.id === ii.bizDomainId) : null;
+  const sec = ii.securityLevel ? data.security.find((s) => s.level === ii.securityLevel) : null;
   return (
     <div className="detail-panel">
       <h3>{ii.nameCn}<span className="en">{ii.code}</span></h3>
@@ -21,6 +22,7 @@ export default function InfoItemDetailModule({ onNavigate, assetId }) {
         <div><span>定义</span><b>{isTech ? '—' : (ii.definition ?? '—')}</b></div>
         <div><span>值域</span>{vd ? <button className="link" onClick={() => onNavigate('valueDomainDetail', { valueDomainId: vd.id })}>{vd.code}</button> : '—'}</div>
         <div><span>参考数据</span>{rd ? <button className="link" onClick={() => onNavigate('refDataDetail', { refDataId: rd.id })}>{rd.name}（{rd.code}）</button> : '—'}</div>
+        <div><span>关联安全分级</span>{sec ? <button className="link" onClick={() => onNavigate('securityDetail', { securityLevel: sec.level })}>{sec.level} · {sec.name}</button> : '—'}</div>
       </div>
       <h4>被引用字段（{refs.length}）</h4>
       <table className="table">

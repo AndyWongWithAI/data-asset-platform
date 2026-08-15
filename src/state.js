@@ -36,6 +36,7 @@ const DETAIL_MODULES = [
   { key: 'masterdataDetail', title: '主数据详情', implemented: true },
   { key: 'fileExchangeDetail', title: '文件交换详情', implemented: true },
   { key: 'dataServiceDetail', title: '数据服务详情', implemented: true },
+  { key: 'securityDetail', title: '安全分级详情', implemented: true },
 ];
 
 const flatten = (items) => items.flatMap((i) => (i.children ? flatten(i.children) : [i]));

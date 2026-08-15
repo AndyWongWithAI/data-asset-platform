@@ -35,6 +35,7 @@ export const FORM_SCHEMAS = {
     { key: 'definition', label: '定义', type: 'text', help: 'type=业务时必填' },
     { key: 'valueDomainId', label: '值域', type: 'ref', ref: 'valueDomains', required: true },
     { key: 'refDataId', label: '参考数据', type: 'ref', ref: 'refDatas' },
+    { key: 'securityLevel', label: '安全分级', type: 'enum', enum: ['L1', 'L2', 'L3', 'L4'], help: '可选，空=未关联安全分级' },
   ],
 
   qualityRules: [
