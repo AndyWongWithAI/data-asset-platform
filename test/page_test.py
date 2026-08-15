@@ -215,13 +215,12 @@ def main():
         click_menu(page, '数据安全')
         page.locator('.sub-tabs button', has_text='脱敏前后对比').click()
         assert page.locator('.table tbody tr').count() >= 4
-        # M5 主数据管理
+        # M5 主数据管理（同步占位，不可新增）
         click_menu(page, '主数据')
         assert page.locator('.tab', has_text='主数据').count() == 1
         assert page.locator('.table tbody tr').count() >= 5
-        page.locator('button', has_text='新增实体').click()
-        assert page.locator('.modal-lg').count() == 1
-        page.locator('.modal button', has_text='取消').click()
+        page.on('dialog', lambda d: d.accept())
+        page.locator('button', has_text='同步').click()
         # 点实体进详情 → 被引用字段转跳 M1
         page.locator('.table tbody tr .link').first.click()
         assert page.locator('.tab.active', has_text='主数据详情').count() == 1
