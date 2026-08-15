@@ -10,14 +10,12 @@ export default function SecurityModule({ onNavigate }) {
   const [tab, setTab] = useState('overview');
   const [editingLevel, setEditingLevel] = useState(null);
   const countByLevel = (lv) => data.fields.filter((f) => f.management.securityLevel === lv).length;
-  const highRisk = data.fields.filter((f) => f.management.securityLevel === 'L3' || f.management.securityLevel === 'L4');
 
   return (
     <div>
       <div className="sub-tabs">
         <button className={tab === 'overview' ? 'sub-active' : ''} onClick={() => setTab('overview')}>分级总览</button>
-        <button className={tab === 'highrisk' ? 'sub-active' : ''} onClick={() => setTab('highrisk')}>高风险清单</button>
-        <button className={tab === 'mask' ? 'sub-active' : ''} onClick={() => setTab('mask')}>脱敏前后对比</button>
+        <button className={tab === 'detail' ? 'sub-active' : ''} onClick={() => setTab('detail')}>分级明细</button>
       </div>
 
       {tab === 'overview' && (
@@ -36,36 +34,18 @@ export default function SecurityModule({ onNavigate }) {
         </div>
       )}
 
-      {tab === 'highrisk' && (
+      {tab === 'detail' && (
         <table className="table">
-          <thead><tr><th>字段</th><th>所属表</th><th>安全分级</th><th>操作</th></tr></thead>
+          <thead><tr><th>级别</th><th>名称</th><th>描述</th><th>脱敏策略</th><th>定位数量</th><th>操作</th></tr></thead>
           <tbody>
-            {highRisk.map((f) => {
-              const t = data.tables.find((x) => x.id === f.tableId);
-              return (
-                <tr key={f.id}>
-                  <td>{f.business.nameCn}</td>
-                  <td>{t?.nameCn}</td>
-                  <td><Tag tone={LEVEL_TONE[f.management.securityLevel]}>{f.management.securityLevel}</Tag></td>
-                  <td><button className="link" onClick={() => onNavigate('tableDetail', { tableId: f.tableId, fieldId: f.id, title: t?.nameCn })}>定位</button></td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      )}
-
-      {tab === 'mask' && (
-        <table className="table">
-          <thead><tr><th>字段</th><th>级别</th><th>原值</th><th>脱敏后</th><th>策略</th></tr></thead>
-          <tbody>
-            {data.maskExamples.map((m, i) => (
-              <tr key={i}>
-                <td>{m.field}</td>
-                <td><Tag tone={LEVEL_TONE[m.level]}>{m.level}</Tag></td>
-                <td><code>{m.original}</code></td>
-                <td><code>{m.masked}</code></td>
-                <td>{m.strategy}</td>
+            {data.security.map((s) => (
+              <tr key={s.level}>
+                <td><Tag tone={LEVEL_TONE[s.level]}>{s.level}</Tag></td>
+                <td>{s.name}</td>
+                <td>{s.desc}</td>
+                <td>{s.mask || '无'}</td>
+                <td>{countByLevel(s.level)}</td>
+                <td><button className="link" onClick={() => onNavigate('securityDetail', { securityLevel: s.level })}>{s.level} · {s.name}</button></td>
               </tr>
             ))}
           </tbody>
