@@ -61,10 +61,10 @@ const SCHEMAS = {
   },
   masterData: {
     idKey: 'id', idPrefix: 'md', creatable: false, updatable: false,
-    required: ['code', 'entityType', 'name', 'attrs'],
+    required: ['code', 'name', 'entityType', 'definition', 'rule', 'owner'],
     unique: ['code'],
     enum: { entityType: ['风机', '海缆', '升压站', '项目', '供应商'] },
-    types: { attrs: 'object' },
+    types: { approvals: 'array' },
     refs: {},
   },
   security: {

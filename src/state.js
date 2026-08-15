@@ -6,7 +6,7 @@ export const MODULE_GROUPS = [
     { key: 'standardBoard', title: '数据标准看板', implemented: true },
   ]},
   { name: '设计态·定义', items: [
-    { key: 'catalog', title: '数据资产目录', implemented: true },
+    { key: 'catalog', title: '结构化元数据', implemented: true },
     { key: 'quality', title: '数据质量', implemented: true },
     { key: 'standard', title: '数据标准', implemented: true, children: [
       { key: 'baseTerm', title: '基础术语', implemented: true },
