@@ -302,6 +302,13 @@ def main():
         click_menu(page, '文件交换')
         assert page.locator('.tab', has_text='文件交换').count() == 1
         assert page.locator('.table tbody tr').count() >= 5
+        # 方向列 + 库级字段（入站任务展示库名）
+        assert page.locator('.table thead th', has_text='方向').count() == 1
+        assert page.locator('.table thead th', has_text='源系统 · 源对象').count() == 1
+        assert page.locator('.table thead th', has_text='目标系统 · 目标对象').count() == 1
+        assert page.locator('.table tbody tr', has_text='出站').count() == 5
+        assert page.locator('.table tbody tr', has_text='入站').count() == 3
+        assert page.locator('.table tbody tr', has_text='scada_telemetry_db').count() == 1
         page.locator('button', has_text='发起交换申请').click()
         assert page.locator('.modal').count() == 1
         page.locator('.modal button', has_text='知道了').click()
@@ -312,6 +319,16 @@ def main():
         page.locator('.detail-panel .link', has_text='查看').click()
         assert page.locator('.detail-head').count() == 1   # 表详情默认表级元数据
         assert page.locator('.row-active').count() == 0   # 表详情非字段定位，无高亮
+        # 入站详情：库级字段 + 生产元数据快照 + 转跳结构化元数据目录
+        click_menu(page, '文件交换')
+        page.locator('.table tbody tr', has_text='SCADA遥测数据接入').locator('.link').click()
+        assert page.locator('.tab.active', has_text='文件交换详情').count() == 1
+        assert page.locator('.detail-panel', has_text='源库').count() == 1
+        assert page.locator('.detail-panel', has_text='scada_telemetry_db').count() == 1
+        assert page.locator('.detail-panel', has_text='生产元数据快照').count() == 1
+        assert page.locator('.detail-panel', has_text='scada_alarm_raw').count() == 1
+        page.locator('.detail-panel .link', has_text='查看目录').click()
+        assert page.locator('.tab.active', has_text='结构化元数据').count() == 1
         # ⑤ 数据服务（列表 + 详情 + 审批链 + 封装资产转跳 + 占位）
         click_menu(page, '数据服务')
         assert page.locator('.tab', has_text='数据服务').count() == 1
