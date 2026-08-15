@@ -567,20 +567,28 @@ const D = {
       ] },
   ],
   batchFiles: [
-    { id: 'bf_001', name: '测风数据批次交换', sourceTableId: 't_wind', targetSystem: '大数据开发平台·功率预测', fileFormat: 'CSV', schedule: '每日 02:00', securityLevel: 'L2', status: '运行中',
+    // ===== 出站（平台内表 → 外部系统）=====
+    { id: 'bf_001', name: '测风数据批次交换', sourceSystem: '风资源评估系统', sourceTableId: 't_wind', sourceTableName: '测风数据表', targetSystem: '大数据开发平台·功率预测', targetTableId: null, targetTableName: '功率预测输入表', fileFormat: 'CSV', schedule: '每日 02:00', securityLevel: 'L2', status: '运行中',
       applyFlow: [
         { step: '申请', actor: '资源评估组', time: '2026-05-12', result: '通过' },
         { step: '安全合规审批', actor: '数据安全组', time: '2026-05-14', result: '通过' },
         { step: '授权', actor: '平台管理员', time: '2026-05-16', result: '已授权' },
       ] },
-    { id: 'bf_002', name: '地质勘测数据批次交换', sourceTableId: 't_geo', targetSystem: '工程设计系统·机型选型', fileFormat: 'CSV', schedule: '每日 02:00', securityLevel: 'L3', status: '运行中',
+    { id: 'bf_002', name: '地质勘测数据批次交换', sourceSystem: '海洋勘测系统', sourceTableId: 't_geo', sourceTableName: '地质钻孔表', targetSystem: '工程设计系统·机型选型', targetTableId: null, targetTableName: '基础选型参数表', fileFormat: 'CSV', schedule: '每日 02:00', securityLevel: 'L3', status: '运行中',
       applyFlow: [ { step: '申请', actor: '勘测组', time: '2026-05-11', result: '通过' }, { step: '安全合规审批', actor: '数据安全组', time: '2026-05-13', result: '通过' }, { step: '授权', actor: '平台管理员', time: '2026-05-15', result: '已授权' } ] },
-    { id: 'bf_003', name: '海底地形批次交换', sourceTableId: 't_topo', targetSystem: '工程设计系统·路由/站址', fileFormat: 'SHP', schedule: '每周一 03:00', securityLevel: 'L3', status: '运行中',
+    { id: 'bf_003', name: '海底地形批次交换', sourceSystem: '海洋勘测系统', sourceTableId: 't_topo', sourceTableName: '海底地形测绘表', targetSystem: '工程设计系统·路由/站址', targetTableId: null, targetTableName: '路由比选表', fileFormat: 'SHP', schedule: '每周一 03:00', securityLevel: 'L3', status: '运行中',
       applyFlow: [ { step: '申请', actor: '测绘组', time: '2026-05-10', result: '通过' }, { step: '安全合规审批', actor: '数据安全组', time: '2026-05-12', result: '通过' }, { step: '授权', actor: '平台管理员', time: '2026-05-14', result: '已授权' } ] },
-    { id: 'bf_004', name: '备件库存月度对账批次', sourceTableId: 't_spare', targetSystem: '供应商协同平台', fileFormat: 'CSV', schedule: '每月 1 日 02:00', securityLevel: 'L2', status: '审批中',
+    { id: 'bf_004', name: '备件库存月度对账批次', sourceSystem: '智慧运维系统', sourceTableId: 't_spare', sourceTableName: '备品备件表', targetSystem: '供应商协同平台', targetTableId: null, targetTableName: '备件对账表', fileFormat: 'CSV', schedule: '每月 1 日 02:00', securityLevel: 'L2', status: '审批中',
       applyFlow: [ { step: '申请', actor: '备件组', time: '2026-08-01', result: '通过' }, { step: '安全合规审批', actor: '数据安全组', time: '2026-08-03', result: '通过' } ] },
-    { id: 'bf_005', name: '施工进度批次交换', sourceTableId: 't_progress', targetSystem: '项目管理系统', fileFormat: 'JSON', schedule: '每日 06:00', securityLevel: 'L2', status: '运行中',
+    { id: 'bf_005', name: '施工进度批次交换', sourceSystem: '施工管理系统', sourceTableId: 't_progress', sourceTableName: '作业进度表', targetSystem: '项目管理系统', targetTableId: null, targetTableName: '进度汇总表', fileFormat: 'JSON', schedule: '每日 06:00', securityLevel: 'L2', status: '运行中',
       applyFlow: [ { step: '申请', actor: '施工管理组', time: '2026-05-09', result: '通过' }, { step: '安全合规审批', actor: '数据安全组', time: '2026-05-11', result: '通过' }, { step: '授权', actor: '平台管理员', time: '2026-05-13', result: '已授权' } ] },
+    // ===== 入站（外部数据源 → 平台内表）=====
+    { id: 'bf_006', name: 'SCADA遥测数据接入', sourceSystem: 'SCADA采集系统', sourceTableId: null, sourceTableName: 'scada_telemetry_origin', targetSystem: '数据资产平台', targetTableId: 't_scada', targetTableName: 'SCADA 遥测表', fileFormat: 'JSON', schedule: '每 5 分钟', securityLevel: 'L2', status: '运行中',
+      applyFlow: [ { step: '申请', actor: '运维组', time: '2026-05-20', result: '通过' }, { step: '安全合规审批', actor: '数据安全组', time: '2026-05-22', result: '通过' }, { step: '授权', actor: '平台管理员', time: '2026-05-24', result: '已授权' } ] },
+    { id: 'bf_007', name: '气象站观测数据接入', sourceSystem: '气象站', sourceTableId: null, sourceTableName: 'met_station_obs', targetSystem: '数据资产平台', targetTableId: 't_wind', targetTableName: '测风数据表', fileFormat: 'CSV', schedule: '每日 01:00', securityLevel: 'L2', status: '运行中',
+      applyFlow: [ { step: '申请', actor: '资源评估组', time: '2026-05-19', result: '通过' }, { step: '安全合规审批', actor: '数据安全组', time: '2026-05-21', result: '通过' }, { step: '授权', actor: '平台管理员', time: '2026-05-23', result: '已授权' } ] },
+    { id: 'bf_008', name: 'BIM模型属性接入', sourceSystem: 'BIM系统', sourceTableId: null, sourceTableName: 'bim_model_attr', targetSystem: '数据资产平台', targetTableId: 't_turbine', targetTableName: '风机设备表', fileFormat: 'JSON', schedule: '每日 02:00', securityLevel: 'L3', status: '审批中',
+      applyFlow: [ { step: '申请', actor: '设计组', time: '2026-08-01', result: '通过' }, { step: '安全合规审批', actor: '数据安全组', time: '2026-08-03', result: '通过' }, { step: '授权', actor: '平台管理员', time: '—', result: '待审批' } ] },
   ],
   services: [
     { id: 'svc_001', name: '风资源评估 API', type: 'API', latency: '准实时', tableIds: ['t_wind'], desc: '对外提供测风数据查询与统计', securityLevel: 'L2', status: '已上架',

@@ -18,7 +18,7 @@ export const MODULE_GROUPS = [
     { key: 'masterdata', title: '主数据', implemented: true },
   ]},
   { name: '数据交换', items: [
-    { key: 'batchFile', title: '批次文件', implemented: true },
+    { key: 'fileExchange', title: '文件交换', implemented: true },
     { key: 'dataService', title: '数据服务', implemented: true },
   ]},
 ];
@@ -33,7 +33,7 @@ const DETAIL_MODULES = [
   { key: 'refDataDetail', title: '参考数据详情', implemented: true },
   { key: 'qualityDetail', title: '规则详情', implemented: true },
   { key: 'masterdataDetail', title: '主数据详情', implemented: true },
-  { key: 'batchFileDetail', title: '批次文件详情', implemented: true },
+  { key: 'fileExchangeDetail', title: '文件交换详情', implemented: true },
   { key: 'dataServiceDetail', title: '数据服务详情', implemented: true },
 ];
 

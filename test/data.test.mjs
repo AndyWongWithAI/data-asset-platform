@@ -91,13 +91,26 @@ test('lineage 每条边含字段级 fieldMapping（字段归表一致）', () =>
   }
 });
 
-test('batchFiles 引用完整 + 审批链完整', () => {
+test('batchFiles 双向字段完整 + 引用完整 + 审批链完整', () => {
   const tableIds = ids(D.tables);
-  assert.ok(D.batchFiles.length >= 5);
+  assert.ok(D.batchFiles.length >= 8);
   for (const b of D.batchFiles) {
-    assert.ok(tableIds.has(b.sourceTableId), `batchFile ${b.id} sourceTableId 不存在`);
+    // 双向字段：源系统/源表/目标系统/目标表缺一不可
+    assert.ok(typeof b.sourceSystem === 'string' && b.sourceSystem.trim(), `batchFile ${b.id} 缺 sourceSystem`);
+    assert.ok(typeof b.sourceTableName === 'string' && b.sourceTableName.trim(), `batchFile ${b.id} 缺 sourceTableName`);
+    assert.ok(typeof b.targetSystem === 'string' && b.targetSystem.trim(), `batchFile ${b.id} 缺 targetSystem`);
+    assert.ok(typeof b.targetTableName === 'string' && b.targetTableName.trim(), `batchFile ${b.id} 缺 targetTableName`);
+    // 平台内表引用完整性：有 tableId 必须在 tables 内；null 允许（外部表）
+    if (b.sourceTableId != null) assert.ok(tableIds.has(b.sourceTableId), `batchFile ${b.id} sourceTableId 不存在`);
+    if (b.targetTableId != null) assert.ok(tableIds.has(b.targetTableId), `batchFile ${b.id} targetTableId 不存在`);
+    // 双向：至少一端落在平台内（有 tableId）
+    assert.ok(b.sourceTableId != null || b.targetTableId != null, `batchFile ${b.id} 两端均为外部表，应至少一端为平台内表`);
     for (const s of b.applyFlow) assert.ok(s.step && s.result, `batchFile ${b.id} applyFlow 缺 step/result`);
   }
+  // 入站任务：sourceTableId 为 null，targetTableId 指向平台内表
+  const inbound = D.batchFiles.filter((b) => b.sourceTableId == null);
+  assert.ok(inbound.length >= 3, '应至少 3 条入站任务（sourceTableId 为 null）');
+  for (const b of inbound) assert.ok(tableIds.has(b.targetTableId), `入站任务 ${b.id} targetTableId 应指向平台内表`);
 });
 
 test('services 引用完整 + securityLevel 合法 + 审批链完整', () => {

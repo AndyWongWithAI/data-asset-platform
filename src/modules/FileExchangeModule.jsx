@@ -5,7 +5,7 @@ import ComingSoonAction from '../components/ComingSoonAction.jsx';
 
 const STATUS_TONE = { 运行中: 'ok', 审批中: 'warn' };
 
-export default function BatchFileModule({ onNavigate }) {
+export default function FileExchangeModule({ onNavigate }) {
   const { data } = useData();
   const [status, setStatus] = useState('all');
   const filtered = data.batchFiles.filter((b) => status === 'all' || b.status === status);
@@ -20,24 +20,21 @@ export default function BatchFileModule({ onNavigate }) {
         <ComingSoonAction label="发起交换申请" />
       </div>
       <table className="table">
-        <thead><tr><th>任务名</th><th>源表</th><th>目标系统</th><th>文件格式</th><th>调度周期</th><th>状态</th></tr></thead>
+        <thead><tr><th>任务名</th><th>源系统 · 源表</th><th>目标系统 · 目标表</th><th>文件格式</th><th>调度周期</th><th>状态</th></tr></thead>
         <tbody>
-          {filtered.map((b) => {
-            const sourceTable = data.tables.find((t) => t.id === b.sourceTableId);
-            return (
-              <tr key={b.id}>
-                <td><button className="link" onClick={() => onNavigate('batchFileDetail', { batchFileId: b.id })}>{b.name}</button></td>
-                <td>{sourceTable?.nameCn}</td>
-                <td>{b.targetSystem}</td>
-                <td>{b.fileFormat}</td>
-                <td>{b.schedule}</td>
-                <td><Tag tone={STATUS_TONE[b.status] || 'default'}>{b.status}</Tag></td>
-              </tr>
-            );
-          })}
+          {filtered.map((b) => (
+            <tr key={b.id}>
+              <td><button className="link" onClick={() => onNavigate('fileExchangeDetail', { fileExchangeId: b.id })}>{b.name}</button></td>
+              <td>{b.sourceSystem} · {b.sourceTableName}</td>
+              <td>{b.targetSystem} · {b.targetTableName}</td>
+              <td>{b.fileFormat}</td>
+              <td>{b.schedule}</td>
+              <td><Tag tone={STATUS_TONE[b.status] || 'default'}>{b.status}</Tag></td>
+            </tr>
+          ))}
         </tbody>
       </table>
-      {filtered.length === 0 && <div className="empty-hint">暂无匹配的批次交换任务</div>}
+      {filtered.length === 0 && <div className="empty-hint">暂无匹配的文件交换任务</div>}
     </div>
   );
 }
