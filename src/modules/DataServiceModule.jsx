@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import data from '../data.js';
+import { useData } from '../DataContext.jsx';
 import Tag from '../components/Tag.jsx';
 import ComingSoonAction from '../components/ComingSoonAction.jsx';
 
@@ -8,6 +8,7 @@ const LATENCY_TONE = { 实时: 'ok', 准实时: 'warn' };
 const STATUS_TONE = { 已上架: 'ok' };
 
 export default function DataServiceModule({ onNavigate }) {
+  const { data } = useData();
   const [latency, setLatency] = useState('all');
   const filtered = data.services.filter((s) => latency === 'all' || s.latency === latency);
   return (

@@ -1,8 +1,9 @@
-import data from '../data.js';
+import { useData } from '../DataContext.jsx';
 import ScoreGauge from '../components/ScoreGauge.jsx';
 import Tag from '../components/Tag.jsx';
 
 export default function QualityBoardModule({ onNavigate }) {
+  const { data } = useData();
   return (
     <div>
       <h3>企业整体数据质量评分</h3>

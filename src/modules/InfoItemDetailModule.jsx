@@ -1,6 +1,7 @@
-import data from '../data.js';
+import { useData } from '../DataContext.jsx';
 
 export default function InfoItemDetailModule({ onNavigate, assetId }) {
+  const { data } = useData();
   const ii = data.infoItems.find((i) => i.id === assetId?.infoItemId);
   if (!ii) return <div className="empty-hint">未找到该信息项</div>;
   const vd = data.valueDomains.find((v) => v.id === ii.valueDomainId);

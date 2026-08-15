@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import data from '../data.js';
+import { useData } from '../DataContext.jsx';
 import Tag from '../components/Tag.jsx';
 import ComingSoonAction from '../components/ComingSoonAction.jsx';
 
 const STATUS_TONE = { 运行中: 'ok', 审批中: 'warn' };
 
 export default function BatchFileModule({ onNavigate }) {
+  const { data } = useData();
   const [status, setStatus] = useState('all');
   const filtered = data.batchFiles.filter((b) => status === 'all' || b.status === status);
   return (

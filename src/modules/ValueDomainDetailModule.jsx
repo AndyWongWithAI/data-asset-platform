@@ -1,6 +1,7 @@
-import data from '../data.js';
+import { useData } from '../DataContext.jsx';
 
 export default function ValueDomainDetailModule({ onNavigate, assetId }) {
+  const { data } = useData();
   const vd = data.valueDomains.find((v) => v.id === assetId?.valueDomainId);
   if (!vd) return <div className="empty-hint">未找到该值域</div>;
   const refs = data.infoItems.filter((i) => i.valueDomainId === vd.id);

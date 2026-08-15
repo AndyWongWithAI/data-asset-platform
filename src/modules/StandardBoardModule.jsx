@@ -1,17 +1,18 @@
-import data from '../data.js';
+import { useData } from '../DataContext.jsx';
 import ScoreGauge from '../components/ScoreGauge.jsx';
 
-const aligned = (f) => {
+const aligned = (data, f) => {
   if (!f.management.standardId) return false;
   const ii = data.infoItems.find((i) => i.id === f.management.standardId);
   return !!ii && f.business.nameCn === ii.nameCn && f.business.code === ii.nameEn;
 };
 
 export default function StandardBoardModule({ onNavigate }) {
+  const { data } = useData();
   // 贯标率 = 已对齐标准名的字段数 / 全部字段数（standardId 非空 且 中英文名精确一致）
   const fields = data.fields;
-  const applied = fields.filter(aligned);
-  const unapplied = fields.filter((f) => !aligned(f));
+  const applied = fields.filter((f) => aligned(data, f));
+  const unapplied = fields.filter((f) => !aligned(data, f));
   const rate = Math.round((applied.length / fields.length) * 100);
   return (
     <div>

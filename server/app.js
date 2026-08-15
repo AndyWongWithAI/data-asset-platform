@@ -1,12 +1,22 @@
 // Express 路由薄封装：只做 HTTP → store 的映射，不含业务逻辑
 import express from 'express';
-import { READABLE, getState, getOne, create, update } from './store.js';
+import { READABLE, ENTITIES, CREATABLE, UPDATABLE, idKeyOf, getState, getOne, create, update } from './store.js';
 
 const STATUS = { not_found: 404, not_supported: 405, invalid: 400 };
 
 export function createApp() {
   const app = express();
   app.use(express.json());
+
+  // GET /api/v1/_entities —— 实体元信息（必须在 /:entity 之前注册，否则被当成实体名）
+  app.get('/api/v1/_entities', (req, res) => {
+    res.json({
+      entities: READABLE,
+      idKeys: Object.fromEntries(ENTITIES.map((e) => [e, idKeyOf(e)])),
+      creatable: CREATABLE,
+      updatable: UPDATABLE,
+    });
+  });
 
   // GET /api/v1/:entity —— 读实体列表（全部可读实体，含 bizDomains/fields 供 P1 关联下拉）
   app.get('/api/v1/:entity', (req, res) => {

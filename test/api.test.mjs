@@ -67,25 +67,24 @@ test('create 唯一性冲突 → 报错（nameEn / code）', () => {
 
 test('create infoItems：引用校验（valueDomainId / termIds）', () => {
   freshStore();
-  // 合法：引用都存在
+  // 合法：引用都存在（nameCn/nameEn/code 由服务端按词根派生）
   const ok = create('infoItems', {
-    code: 'II9999', nameCn: '测试项', nameEn: 'test_item', type: '技术',
-    termIds: ['term_value'], valueDomainId: 'vd_varchar10', refDataId: null,
+    type: '技术', termIds: ['term_value'], valueDomainId: 'vd_varchar10', refDataId: null,
   });
   assert.equal(ok.ok, true);
+  assert.equal(ok.record.nameCn, '值');
+  assert.equal(ok.record.nameEn, 'value');
 
   // 非法 valueDomainId
   const badVd = create('infoItems', {
-    code: 'II9998', nameCn: '测试项2', nameEn: 'test_item2', type: '技术',
-    termIds: ['term_value'], valueDomainId: 'vd_not_exist',
+    type: '技术', termIds: ['term_code'], valueDomainId: 'vd_not_exist',
   });
   assert.equal(badVd.ok, false);
   assert.ok(badVd.errors.some((e) => e.includes('valueDomainId')));
 
   // 非法 termIds
   const badTerm = create('infoItems', {
-    code: 'II9997', nameCn: '测试项3', nameEn: 'test_item3', type: '技术',
-    termIds: ['term_not_exist'], valueDomainId: 'vd_varchar10',
+    type: '技术', termIds: ['term_not_exist'], valueDomainId: 'vd_varchar10',
   });
   assert.equal(badTerm.ok, false);
   assert.ok(badTerm.errors.some((e) => e.includes('termIds')));
@@ -94,11 +93,29 @@ test('create infoItems：引用校验（valueDomainId / termIds）', () => {
 test('create infoItems：枚举非法 type → 报错', () => {
   freshStore();
   const r = create('infoItems', {
-    code: 'II9996', nameCn: '测试项', nameEn: 'test_item4', type: '非法',
-    termIds: ['term_value'], valueDomainId: 'vd_varchar10',
+    type: '非法', termIds: ['term_value'], valueDomainId: 'vd_varchar10',
   });
   assert.equal(r.ok, false);
   assert.ok(r.errors.some((e) => e.includes('type')));
+});
+
+test('create infoItems：客户端注入 code 被服务端重算（堵任意 code）', () => {
+  freshStore();
+  const r = create('infoItems', {
+    code: 'ABC', type: '技术', termIds: ['term_value'], valueDomainId: 'vd_varchar10',
+  });
+  assert.equal(r.ok, true);
+  assert.notEqual(r.record.code, 'ABC');
+  assert.match(r.record.code, /^II\d{4}$/);
+});
+
+test('create infoItems：nameCn 与词根派生不一致 → 报错', () => {
+  freshStore();
+  const r = create('infoItems', {
+    nameCn: '错误名称', type: '技术', termIds: ['term_value'], valueDomainId: 'vd_varchar10',
+  });
+  assert.equal(r.ok, false);
+  assert.ok(r.errors.some((e) => e.includes('nameCn') && e.includes('不一致')));
 });
 
 test('create security → 不支持新增', () => {
@@ -199,8 +216,7 @@ test('F5：补全枚举（dataType / entityType / status 非法）', () => {
 test('F6：可空引用传空字符串不误报', () => {
   freshStore();
   const r = create('infoItems', {
-    code: 'II9994', nameCn: '空串', nameEn: 'empty_ref', type: '技术',
-    termIds: ['term_value'], valueDomainId: 'vd_varchar10', refDataId: '',
+    type: '技术', termIds: ['term_value'], valueDomainId: 'vd_varchar10', refDataId: '',
   });
   assert.equal(r.ok, true);
 });
@@ -253,4 +269,86 @@ test('HTTP 集成：GET/POST/PUT 状态码与 JSON 错误', async () => {
   } finally {
     server.close();
   }
+});
+
+test('HTTP 集成：GET /_entities 返回 entities/idKeys/creatable/updatable', async () => {
+  freshStore();
+  const app = createApp();
+  const server = app.listen(0);
+  const base = `http://localhost:${server.address().port}`;
+  try {
+    const res = await fetch(`${base}/api/v1/_entities`);
+    assert.equal(res.status, 200);
+    const meta = await res.json();
+    assert.ok(Array.isArray(meta.entities));
+    assert.ok(meta.entities.includes('baseTerms'));
+    assert.ok(meta.entities.includes('infoItems'));
+    assert.equal(meta.idKeys.baseTerms, 'id');
+    assert.equal(meta.idKeys.security, 'level');
+    assert.ok(meta.creatable.includes('baseTerms'));
+    assert.ok(!meta.creatable.includes('security'));
+    assert.deepEqual(meta.updatable, ['security']);
+  } finally {
+    server.close();
+  }
+});
+
+// ===== P2 领域规则测试 =====
+test('P2：infoItems 不传 code/nameCn/nameEn → 自动派生', () => {
+  freshStore();
+  // 注意：不能用 [term_voltage,term_level,term_code]——它与种子 ii_voltage 派生同名 nameEn，会被唯一性正确拒绝。
+  // 改用非冲突但同构的 [term_voltage,term_level,term_identifier]（末位 term_identifier 是类词）。
+  const r = create('infoItems', {
+    type: '技术', termIds: ['term_voltage', 'term_level', 'term_identifier'], valueDomainId: 'vd_varchar10',
+  });
+  assert.equal(r.ok, true);
+  assert.equal(r.record.nameCn, '电压等级标识');
+  assert.equal(r.record.nameEn, 'voltage_level_identifier');
+  assert.equal(r.record.code, 'II0011'); // 种子最大 II0010 → II0011
+  assert.equal(r.record.id, 'ii_1');
+});
+
+test('P2：infoItems 末位非类词 → 报错', () => {
+  freshStore();
+  const r = create('infoItems', {
+    type: '技术', termIds: ['term_voltage', 'term_level'], valueDomainId: 'vd_varchar10',
+  });
+  assert.equal(r.ok, false);
+  assert.ok(r.errors.some((e) => e.includes('末位词根必须是类词')));
+});
+
+test('P2：infoItems nameCn/nameEn 与词根派生不一致 → 报错', () => {
+  freshStore();
+  const r = create('infoItems', {
+    type: '技术', nameCn: '错误的名称', nameEn: 'wrong_name', termIds: ['term_voltage', 'term_level', 'term_code'], valueDomainId: 'vd_varchar10',
+  });
+  assert.equal(r.ok, false);
+  assert.ok(r.errors.some((e) => e.includes('nameCn') && e.includes('不一致')));
+  assert.ok(r.errors.some((e) => e.includes('nameEn') && e.includes('不一致')));
+});
+
+test('P2：infoItems type=业务 缺 bizDomainId → 报错；type=技术 可不传', () => {
+  freshStore();
+  const bad = create('infoItems', {
+    type: '业务', termIds: ['term_voltage', 'term_level', 'term_code'], valueDomainId: 'vd_varchar10',
+  });
+  assert.equal(bad.ok, false);
+  assert.ok(bad.errors.some((e) => e.includes('bizDomainId')));
+  assert.ok(bad.errors.some((e) => e.includes('definition')));
+
+  const ok = create('infoItems', {
+    type: '技术', termIds: ['term_value'], valueDomainId: 'vd_varchar10',
+  });
+  assert.equal(ok.ok, true);
+});
+
+test('P2：valueDomains length=0 / precision=-1 → 报错', () => {
+  freshStore();
+  const r1 = create('valueDomains', { code: 'VD-ZERO', dataType: 'varchar', length: 0, precision: 0 });
+  assert.equal(r1.ok, false);
+  assert.ok(r1.errors.some((e) => e.includes('length') && e.includes('大于 0')));
+
+  const r2 = create('valueDomains', { code: 'VD-NEG', dataType: 'decimal', length: 5, precision: -1 });
+  assert.equal(r2.ok, false);
+  assert.ok(r2.errors.some((e) => e.includes('precision') && e.includes('大于等于 0')));
 });

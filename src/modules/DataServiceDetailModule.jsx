@@ -1,4 +1,4 @@
-import data from '../data.js';
+import { useData } from '../DataContext.jsx';
 import Tag from '../components/Tag.jsx';
 
 const LEVEL_TONE = { L1: 'ok', L2: 'default', L3: 'warn', L4: 'danger' };
@@ -6,6 +6,7 @@ const LATENCY_TONE = { 实时: 'ok', 准实时: 'warn' };
 const STATUS_TONE = { 已上架: 'ok' };
 
 export default function DataServiceDetailModule({ onNavigate, assetId }) {
+  const { data } = useData();
   const s = data.services.find((x) => x.id === assetId?.dataServiceId);
   if (!s) return <div className="empty-hint">未找到该数据服务</div>;
   return (

@@ -1,11 +1,14 @@
-import data from '../data.js';
-import ComingSoonAction from '../components/ComingSoonAction.jsx';
+import { useState } from 'react';
+import { useData } from '../DataContext.jsx';
+import EntityForm from '../components/EntityForm.jsx';
 
 export default function ValueDomainModule({ onNavigate }) {
+  const { data } = useData();
+  const [showForm, setShowForm] = useState(false);
   return (
     <div>
       <div className="search-bar">
-        <ComingSoonAction label="新增值域" />
+        <button className="btn-primary" onClick={() => setShowForm(true)}>新增值域</button>
       </div>
       <table className="table">
         <thead><tr><th>值域编号</th><th>数据类型</th><th>长度</th><th>精度</th></tr></thead>
@@ -20,6 +23,7 @@ export default function ValueDomainModule({ onNavigate }) {
           ))}
         </tbody>
       </table>
+      {showForm && <EntityForm entity="valueDomains" onClose={() => setShowForm(false)} onSaved={() => setShowForm(false)} />}
     </div>
   );
 }
