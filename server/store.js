@@ -47,7 +47,9 @@ const SCHEMAS = {
     idKey: 'id', idPrefix: 'ii', creatable: true, updatable: false,
     required: ['code', 'nameCn', 'nameEn', 'type', 'termIds', 'valueDomainId'],
     unique: ['code', 'nameEn'],
-    enum: { type: ['技术', '业务'] },
+    // securityLevel 用枚举兜底而非 refs：refs 校验按 `state[target].map(x => x.id)` 取集合，
+    // 而 security 主键是 `level`（无 id 字段），refs 会误报所有 L1-L4 引用不存在。
+    enum: { type: ['技术', '业务'], securityLevel: ['L1', 'L2', 'L3', 'L4'] },
     types: { termIds: 'array' },
     refs: { valueDomainId: 'valueDomains', refDataId: 'refDatas', bizDomainId: 'bizDomains', termIds: 'baseTerms' },
   },

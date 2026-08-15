@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import data from '../src/data.js';
+import { LEVEL_RANK } from '../src/fieldSecurity.js';
 
 const D = data;
 const ids = (arr) => new Set(arr.map((x) => x.id));
@@ -59,10 +60,31 @@ test('qualityRules/qualityResults 引用完整', () => {
   }
 });
 
-test('maskExamples 每条 level 合法', () => {
+test('maskExamples 已删除（需求 1）', () => {
+  assert.equal('maskExamples' in data, false, 'data 不应再有 maskExamples 键');
+  assert.equal(D.maskExamples, undefined);
+  assert.equal(D.meta.stats.maskExamples, undefined, 'meta.stats 不应再有 maskExamples 计数');
+});
+
+test('infoItems 每条 securityLevel ∈ L1-L4 且引用 security.level（需求 3）', () => {
   const secLevels = new Set(D.security.map((s) => s.level));
-  for (const m of D.maskExamples) {
-    assert.ok(secLevels.has(m.level), `maskExample ${m.field} level ${m.level} 不存在`);
+  for (const ii of D.infoItems) {
+    assert.ok(ii.securityLevel, `infoItem ${ii.id} 缺 securityLevel`);
+    assert.ok(secLevels.has(ii.securityLevel), `infoItem ${ii.id} securityLevel ${ii.securityLevel} 非法（应 ∈ security.level）`);
+  }
+});
+
+test('全字段一致性：字段分级不低于关联信息项分级（不允许 conflict）', () => {
+  const iiMap = new Map(D.infoItems.map((i) => [i.id, i]));
+  for (const f of D.fields) {
+    const sid = f.management.standardId;
+    if (!sid) continue;
+    const ii = iiMap.get(sid);
+    if (!ii || !ii.securityLevel) continue;
+    assert.ok(
+      LEVEL_RANK[f.management.securityLevel] >= LEVEL_RANK[ii.securityLevel],
+      `field ${f.id} securityLevel ${f.management.securityLevel} 低于信息项 ${sid} 的 ${ii.securityLevel}（conflict）`
+    );
   }
 });
 
