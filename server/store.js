@@ -1,5 +1,6 @@
 // 数据存储与校验核心逻辑，纯 Node，可单测（不依赖 Express）
 import seed from '../src/data.js';
+import { analyzeNameCn } from '../src/infoItemNaming.js';
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
@@ -59,7 +60,7 @@ const SCHEMAS = {
     refs: { targetFieldId: 'fields' },
   },
   masterData: {
-    idKey: 'id', idPrefix: 'md', creatable: true, updatable: false,
+    idKey: 'id', idPrefix: 'md', creatable: false, updatable: false,
     required: ['code', 'entityType', 'name', 'attrs'],
     unique: ['code'],
     enum: { entityType: ['风机', '海缆', '升压站', '项目', '供应商'] },
@@ -201,32 +202,10 @@ export function validate(entity, payload, { isUpdate = false, existing = null } 
 // 信息项命名派生：nameCn/nameEn 按 termIds 词根派生，code 缺失时自增，末位词根必须是类词。
 // 返回 { ok, errors, derived }：derived 仅含实际派生出的字段，客户端显式传且与派生值不一致时按错误处理。
 function deriveInfoItem(payload) {
-  const errors = [];
-  const termIds = payload.termIds;
-  const termById = new Map(state.baseTerms.map((t) => [t.id, t]));
-
-  let nameCn = null;
-  let nameEn = null;
-
-  // 规则 B：从 termIds 顺序取词根拼接 nameCn/nameEn；规则 C：末位必须是类词
-  if (Array.isArray(termIds) && termIds.length) {
-    const terms = termIds.map((id) => termById.get(id));
-    if (terms.every(Boolean)) {
-      nameCn = terms.map((t) => t.nameCn).join('');
-      nameEn = terms.map((t) => t.nameEn).join('_');
-      if (terms[terms.length - 1].isClassWord !== true) {
-        errors.push('末位词根必须是类词');
-      }
-    }
-  }
-
-  // 规则 D：一致性校验（客户端传了 nameCn/nameEn 但与词根派生值不一致）
-  if (nameCn !== null && payload.nameCn !== undefined && payload.nameCn !== '' && payload.nameCn !== nameCn) {
-    errors.push(`字段 nameCn 与词根派生值「${nameCn}」不一致`);
-  }
-  if (nameEn !== null && payload.nameEn !== undefined && payload.nameEn !== '' && payload.nameEn !== nameEn) {
-    errors.push(`字段 nameEn 与词根派生值「${nameEn}」不一致`);
-  }
+  // 规则 B/C：由输入的中文名拆词翻译，派生 nameEn + termIds；缺词根 / 末位非类词硬校验
+  const nameCn = String(payload.nameCn ?? '').trim();
+  const analysis = analyzeNameCn(nameCn, state.baseTerms);
+  const errors = [...analysis.errors];
 
   // 规则 A：code 始终由服务端生成（II + 四位补零递增），客户端不可控制，堵住任意 code 注入
   let max = 0;
@@ -238,11 +217,21 @@ function deriveInfoItem(payload) {
 
   if (errors.length) return { ok: false, errors, code: 'invalid' };
 
-  const derived = {};
-  derived.code = code;
-  if (nameCn !== null) derived.nameCn = nameCn;
-  if (nameEn !== null) derived.nameEn = nameEn;
-  return { ok: true, errors: [], derived };
+  return {
+    ok: true,
+    errors: [],
+    derived: { code, nameCn, nameEn: analysis.nameEn, termIds: analysis.termIds },
+  };
+}
+
+// 参考数据编号服务端自增（CK + 四位补零递增），客户端不可控制
+function nextRefDataCode() {
+  let max = 0;
+  for (const it of state.refDatas) {
+    const m = String(it.code).match(/^CK(\d{4})$/);
+    if (m) max = Math.max(max, parseInt(m[1], 10));
+  }
+  return `CK${String(max + 1).padStart(4, '0')}`;
 }
 
 // 条件必填 + 数值约束（跨实体）
@@ -272,6 +261,10 @@ export function create(entity, payload = {}) {
     const derived = deriveInfoItem(payload);
     if (!derived.ok) return derived;
     finalPayload = { ...payload, ...derived.derived };
+  }
+  if (entity === 'refDatas') {
+    // 编号服务端自增，客户端不可注入
+    finalPayload = { ...payload, code: nextRefDataCode() };
   }
   const domain = domainErrors(entity, finalPayload);
   if (domain.length) return { ok: false, errors: domain, code: 'invalid' };

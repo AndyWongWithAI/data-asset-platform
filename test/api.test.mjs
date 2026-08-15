@@ -31,8 +31,8 @@ test('init 加载种子：7 实体 + 数量正确', () => {
   assert.equal(s.security.length, 4);
 });
 
-test('CREATABLE 6 实体 / UPDATABLE 仅 security', () => {
-  assert.deepEqual(CREATABLE.sort(), ['baseTerms', 'infoItems', 'masterData', 'qualityRules', 'refDatas', 'valueDomains'].sort());
+test('CREATABLE 5 实体 / UPDATABLE 仅 security', () => {
+  assert.deepEqual(CREATABLE.sort(), ['baseTerms', 'infoItems', 'qualityRules', 'refDatas', 'valueDomains'].sort());
   assert.deepEqual(UPDATABLE, ['security']);
 });
 
@@ -65,35 +65,29 @@ test('create 唯一性冲突 → 报错（nameEn / code）', () => {
   assert.ok(r.errors.some((e) => e.includes('nameEn') && e.includes('重复')));
 });
 
-test('create infoItems：引用校验（valueDomainId / termIds）', () => {
+test('create infoItems：nameCn 拆词派生 + 引用校验（valueDomainId）', () => {
   freshStore();
-  // 合法：引用都存在（nameCn/nameEn/code 由服务端按词根派生）
+  // 合法：中文名拆词全命中（风机+标识），nameEn/termIds/code 由服务端派生
   const ok = create('infoItems', {
-    type: '技术', termIds: ['term_value'], valueDomainId: 'vd_varchar10', refDataId: null,
+    nameCn: '风机标识', type: '技术', valueDomainId: 'vd_varchar10', refDataId: null,
   });
   assert.equal(ok.ok, true);
-  assert.equal(ok.record.nameCn, '值');
-  assert.equal(ok.record.nameEn, 'value');
+  assert.equal(ok.record.nameCn, '风机标识');
+  assert.equal(ok.record.nameEn, 'turbine_identifier');
+  assert.deepEqual(ok.record.termIds, ['term_turbine', 'term_identifier']);
 
   // 非法 valueDomainId
   const badVd = create('infoItems', {
-    type: '技术', termIds: ['term_code'], valueDomainId: 'vd_not_exist',
+    nameCn: '风机标识', type: '技术', valueDomainId: 'vd_not_exist',
   });
   assert.equal(badVd.ok, false);
   assert.ok(badVd.errors.some((e) => e.includes('valueDomainId')));
-
-  // 非法 termIds
-  const badTerm = create('infoItems', {
-    type: '技术', termIds: ['term_not_exist'], valueDomainId: 'vd_varchar10',
-  });
-  assert.equal(badTerm.ok, false);
-  assert.ok(badTerm.errors.some((e) => e.includes('termIds')));
 });
 
 test('create infoItems：枚举非法 type → 报错', () => {
   freshStore();
   const r = create('infoItems', {
-    type: '非法', termIds: ['term_value'], valueDomainId: 'vd_varchar10',
+    nameCn: '风机标识', type: '非法', valueDomainId: 'vd_varchar10',
   });
   assert.equal(r.ok, false);
   assert.ok(r.errors.some((e) => e.includes('type')));
@@ -102,20 +96,21 @@ test('create infoItems：枚举非法 type → 报错', () => {
 test('create infoItems：客户端注入 code 被服务端重算（堵任意 code）', () => {
   freshStore();
   const r = create('infoItems', {
-    code: 'ABC', type: '技术', termIds: ['term_value'], valueDomainId: 'vd_varchar10',
+    code: 'ABC', nameCn: '风机标识', type: '技术', valueDomainId: 'vd_varchar10',
   });
   assert.equal(r.ok, true);
   assert.notEqual(r.record.code, 'ABC');
   assert.match(r.record.code, /^II\d{4}$/);
 });
 
-test('create infoItems：nameCn 与词根派生不一致 → 报错', () => {
+test('create infoItems：缺词根 → 报错（阻止提交），末位缺失不误报末位非类词', () => {
   freshStore();
   const r = create('infoItems', {
-    nameCn: '错误名称', type: '技术', termIds: ['term_value'], valueDomainId: 'vd_varchar10',
+    nameCn: '风机转速', type: '技术', valueDomainId: 'vd_varchar10',
   });
   assert.equal(r.ok, false);
-  assert.ok(r.errors.some((e) => e.includes('nameCn') && e.includes('不一致')));
+  assert.ok(r.errors.some((e) => e.includes('缺少词根') && e.includes('转速')));
+  assert.ok(!r.errors.some((e) => e.includes('末位')), '末尾缺词根时不应误报末位非类词');
 });
 
 test('create security → 不支持新增', () => {
@@ -182,29 +177,22 @@ test('F3：update 局部更新不误报（只传 desc）', () => {
   assert.equal(getState().security.find((s) => s.level === 'L1').desc, '只改描述');
 });
 
-test('F4：类型校验（termIds 传字符串 / length 传字符串）', () => {
+test('F4：类型校验（length 传字符串）', () => {
   freshStore();
-  const r1 = create('infoItems', {
-    code: 'II9995', nameCn: '类型错', nameEn: 'type_err', type: '技术',
-    termIds: 'term_value', valueDomainId: 'vd_varchar10', // termIds 应为数组
-  });
-  assert.equal(r1.ok, false);
-  assert.ok(r1.errors.some((e) => e.includes('termIds') && e.includes('类型')));
-
   const r2 = create('valueDomains', { code: 'VD-X', dataType: 'varchar', length: 'abc', precision: 0 });
   assert.equal(r2.ok, false);
   assert.ok(r2.errors.some((e) => e.includes('length') && e.includes('类型')));
 });
 
-test('F5：补全枚举（dataType / entityType / status 非法）', () => {
+test('F5：补全枚举（dataType / status 非法）+ masterData 不支持新增', () => {
   freshStore();
   const r1 = create('valueDomains', { code: 'VD-X', dataType: 'int', length: 5, precision: 0 });
   assert.equal(r1.ok, false);
   assert.ok(r1.errors.some((e) => e.includes('dataType')));
 
-  const r2 = create('masterData', { code: 'XX-0001', entityType: '未知类型', name: 'x', attrs: {} });
+  const r2 = create('masterData', { code: 'XX-0001', entityType: '风机', name: 'x', attrs: {} });
   assert.equal(r2.ok, false);
-  assert.ok(r2.errors.some((e) => e.includes('entityType')));
+  assert.ok(r2.errors.some((e) => e.includes('不支持新增')));
 
   const r3 = create('qualityRules', {
     name: 'x', type: '准确性', targetFieldId: 'f_wind_speed', expr: 'x', threshold: '100%', severity: '严重', status: '未知状态',
@@ -216,7 +204,7 @@ test('F5：补全枚举（dataType / entityType / status 非法）', () => {
 test('F6：可空引用传空字符串不误报', () => {
   freshStore();
   const r = create('infoItems', {
-    type: '技术', termIds: ['term_value'], valueDomainId: 'vd_varchar10', refDataId: '',
+    nameCn: '风机标识', type: '技术', valueDomainId: 'vd_varchar10', refDataId: '',
   });
   assert.equal(r.ok, true);
 });
@@ -294,50 +282,50 @@ test('HTTP 集成：GET /_entities 返回 entities/idKeys/creatable/updatable', 
 });
 
 // ===== P2 领域规则测试 =====
-test('P2：infoItems 不传 code/nameCn/nameEn → 自动派生', () => {
+test('P2：infoItems 传 nameCn → 自动派生 nameEn/termIds/code', () => {
   freshStore();
-  // 注意：不能用 [term_voltage,term_level,term_code]——它与种子 ii_voltage 派生同名 nameEn，会被唯一性正确拒绝。
-  // 改用非冲突但同构的 [term_voltage,term_level,term_identifier]（末位 term_identifier 是类词）。
   const r = create('infoItems', {
-    type: '技术', termIds: ['term_voltage', 'term_level', 'term_identifier'], valueDomainId: 'vd_varchar10',
+    nameCn: '电压等级标识', type: '技术', valueDomainId: 'vd_varchar10',
   });
   assert.equal(r.ok, true);
   assert.equal(r.record.nameCn, '电压等级标识');
   assert.equal(r.record.nameEn, 'voltage_level_identifier');
   assert.equal(r.record.code, 'II0011'); // 种子最大 II0010 → II0011
   assert.equal(r.record.id, 'ii_1');
+  assert.deepEqual(r.record.termIds, ['term_voltage', 'term_level', 'term_identifier']);
 });
 
 test('P2：infoItems 末位非类词 → 报错', () => {
   freshStore();
   const r = create('infoItems', {
-    type: '技术', termIds: ['term_voltage', 'term_level'], valueDomainId: 'vd_varchar10',
+    nameCn: '电压等级', type: '技术', valueDomainId: 'vd_varchar10',
   });
   assert.equal(r.ok, false);
-  assert.ok(r.errors.some((e) => e.includes('末位词根必须是类词')));
+  assert.ok(r.errors.some((e) => e.includes('末位') && e.includes('类词')));
 });
 
-test('P2：infoItems nameCn/nameEn 与词根派生不一致 → 报错', () => {
+test('P2：infoItems 末位非类词 → 给出可选类词清单', () => {
   freshStore();
   const r = create('infoItems', {
-    type: '技术', nameCn: '错误的名称', nameEn: 'wrong_name', termIds: ['term_voltage', 'term_level', 'term_code'], valueDomainId: 'vd_varchar10',
+    nameCn: '风机机型', type: '技术', valueDomainId: 'vd_varchar10',
   });
   assert.equal(r.ok, false);
-  assert.ok(r.errors.some((e) => e.includes('nameCn') && e.includes('不一致')));
-  assert.ok(r.errors.some((e) => e.includes('nameEn') && e.includes('不一致')));
+  const msg = r.errors.find((e) => e.includes('末位') && e.includes('类词'));
+  assert.ok(msg, '应报末位非类词');
+  assert.ok(msg.includes('标识'), '类词清单应含「标识」');
 });
 
 test('P2：infoItems type=业务 缺 bizDomainId → 报错；type=技术 可不传', () => {
   freshStore();
   const bad = create('infoItems', {
-    type: '业务', termIds: ['term_voltage', 'term_level', 'term_code'], valueDomainId: 'vd_varchar10',
+    nameCn: '风机标识', type: '业务', valueDomainId: 'vd_varchar10',
   });
   assert.equal(bad.ok, false);
   assert.ok(bad.errors.some((e) => e.includes('bizDomainId')));
   assert.ok(bad.errors.some((e) => e.includes('definition')));
 
   const ok = create('infoItems', {
-    type: '技术', termIds: ['term_value'], valueDomainId: 'vd_varchar10',
+    nameCn: '海缆标识', type: '技术', valueDomainId: 'vd_varchar10',
   });
   assert.equal(ok.ok, true);
 });
@@ -351,4 +339,46 @@ test('P2：valueDomains length=0 / precision=-1 → 报错', () => {
   const r2 = create('valueDomains', { code: 'VD-NEG', dataType: 'decimal', length: 5, precision: -1 });
   assert.equal(r2.ok, false);
   assert.ok(r2.errors.some((e) => e.includes('precision') && e.includes('大于等于 0')));
+});
+
+test('P2：refDatas 编号自增（CK+四位补零，客户端不可注入）', () => {
+  freshStore();
+  const r1 = create('refDatas', { code: 'HACK', name: '测试码表', values: [{ code: 'A', name: 'a' }] });
+  assert.equal(r1.ok, true);
+  assert.equal(r1.record.code, 'CK0006'); // 种子最大 CK0005 → CK0006
+
+  const r2 = create('refDatas', { name: '第二个码表', values: [{ code: 'B', name: 'b' }] });
+  assert.equal(r2.ok, true);
+  assert.equal(r2.record.code, 'CK0007');
+});
+
+test('P2：拆词最大正向匹配（四字词根优先：日期时间 不被 日期 抢先）', () => {
+  freshStore();
+  const r = create('infoItems', {
+    nameCn: '预测日期时间', type: '技术', valueDomainId: 'vd_varchar10',
+  });
+  assert.equal(r.ok, true);
+  assert.equal(r.record.nameEn, 'forecast_datetime');
+  assert.deepEqual(r.record.termIds, ['term_forecast', 'term_datetime']);
+});
+
+test('P2：单字类词末位（值）合法', () => {
+  freshStore();
+  const r = create('infoItems', {
+    nameCn: '功率值', type: '技术', valueDomainId: 'vd_dec52',
+  });
+  assert.equal(r.ok, true);
+  assert.equal(r.record.nameEn, 'power_value');
+  assert.deepEqual(r.record.termIds, ['term_power', 'term_value']);
+});
+
+test('P2：infoItems 客户端注入 nameEn/termIds 被服务端覆盖', () => {
+  freshStore();
+  const r = create('infoItems', {
+    nameCn: '风机标识', type: '技术', valueDomainId: 'vd_varchar10',
+    nameEn: 'hacked_name', termIds: ['term_hack'],
+  });
+  assert.equal(r.ok, true);
+  assert.equal(r.record.nameEn, 'turbine_identifier');
+  assert.deepEqual(r.record.termIds, ['term_turbine', 'term_identifier']);
 });

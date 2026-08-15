@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useData } from '../DataContext.jsx';
 import { FORM_SCHEMAS, ENTITY_TITLES } from '../schema.js';
+import { analyzeNameCn } from '../infoItemNaming.js';
 
 // 通用标签取值：按引用目标实体的可读字段渲染下拉/复选选项文本。
 export function labelOf(entity, item) {
@@ -82,21 +83,8 @@ export default function EntityForm({ entity, mode = 'create', record = null, tit
   const heading = title || `${mode === 'update' ? '编辑' : '新增'}${ENTITY_TITLES[entity] || entity}`;
   const recordId = record?.id ?? record?.level;
 
-  // 实时派生：infoItems 的 nameCn / nameEn 由选中词根顺序拼接
-  const deriveInfoItem = () => {
-    if (entity !== 'infoItems') return { nameCn: '', nameEn: '', terms: [] };
-    const terms = (values.termIds || [])
-      .map((id) => data.baseTerms?.find((t) => t.id === id))
-      .filter(Boolean);
-    return {
-      nameCn: terms.map((t) => t.nameCn).join(''),
-      nameEn: terms.map((t) => t.nameEn).join('_'),
-      terms,
-    };
-  };
-  const derived = deriveInfoItem();
-  const lastTermNotClassWord =
-    entity === 'infoItems' && derived.terms.length > 0 && !derived.terms[derived.terms.length - 1].isClassWord;
+  // 信息项命名分析：由输入的中文名实时拆词翻译（缺词根 / 末位非类词在此判定）
+  const naming = entity === 'infoItems' ? analyzeNameCn(values.nameCn, data.baseTerms || []) : null;
 
   const setValue = (key, val) => {
     setValues((v) => {
@@ -139,10 +127,8 @@ export default function EntityForm({ entity, mode = 'create', record = null, tit
 
   const derivedValue = (f) => {
     if (f.type !== 'derived') return '';
-    if (entity === 'infoItems') {
-      if (f.key === 'nameCn') return derived.nameCn;
-      if (f.key === 'nameEn') return derived.nameEn;
-    }
+    if (entity === 'infoItems' && f.key === 'nameEn') return naming?.nameEn || '';
+    if (entity === 'refDatas' && f.key === 'code') return '自动生成（保存后分配）';
     return '';
   };
 
@@ -160,6 +146,10 @@ export default function EntityForm({ entity, mode = 'create', record = null, tit
     if (entity === 'infoItems' && values.type === '业务') {
       if (!values.bizDomainId) errs.bizDomainId = '类型为「业务」时业务域必填';
       if (!values.definition) errs.definition = '类型为「业务」时定义必填';
+    }
+    // infoItems 命名硬校验：缺词根 / 末位非类词（阻止提交）
+    if (entity === 'infoItems' && naming && naming.errors.length) {
+      errs.nameCn = naming.errors.join('；');
     }
     return errs;
   };
@@ -322,7 +312,12 @@ export default function EntityForm({ entity, mode = 'create', record = null, tit
           {f.label}{f.required && <span className="req">*</span>}
         </label>
         {control}
-        {f.key === 'termIds' && lastTermNotClassWord && <div className="form-warn">末位词根必须是类词</div>}
+        {f.key === 'nameCn' && entity === 'infoItems' && naming && naming.errors.length > 0 && !err && (
+          <div className="form-error">{naming.errors.join('；')}</div>
+        )}
+        {f.key === 'nameCn' && entity === 'infoItems' && naming && naming.termIds.length > 0 && (
+          <div className="form-help">识别词根：{naming.segments.filter((s) => s.hit).map((s) => s.text).join(' + ')}</div>
+        )}
         {f.help && !err && <div className="form-help">{f.help}</div>}
         {err && <div className="form-error">{err}</div>}
       </div>

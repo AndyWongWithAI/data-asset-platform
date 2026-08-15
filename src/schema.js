@@ -19,7 +19,7 @@ export const FORM_SCHEMAS = {
   ],
 
   refDatas: [
-    { key: 'code', label: '编号', type: 'text', required: true },
+    { key: 'code', label: '编号', type: 'derived', help: '自动生成（CK + 四位递增）' },
     { key: 'name', label: '名称', type: 'text', required: true },
     { key: 'values', label: '枚举值', type: 'subtable', required: true, rows: [
       { key: 'code', label: '编码', type: 'text' },
@@ -28,8 +28,7 @@ export const FORM_SCHEMAS = {
   ],
 
   infoItems: [
-    { key: 'termIds', label: '词根', type: 'multiref', ref: 'baseTerms', required: true, help: '末位词根须为类词' },
-    { key: 'nameCn', label: '中文名', type: 'derived' },
+    { key: 'nameCn', label: '中文名', type: 'text', required: true, placeholder: '如：风机标识', help: '输入后自动拆词翻译，英文名与词根自动派生' },
     { key: 'nameEn', label: '英文名', type: 'derived' },
     { key: 'type', label: '类型', type: 'enum', required: true, enum: ['技术', '业务'] },
     { key: 'bizDomainId', label: '业务域', type: 'ref', ref: 'bizDomains', help: 'type=业务时必填' },
@@ -48,18 +47,7 @@ export const FORM_SCHEMAS = {
     { key: 'status', label: '状态', type: 'enum', required: true, enum: ['启用', '停用'] },
   ],
 
-  masterData: [
-    { key: 'code', label: '唯一编码', type: 'text', required: true, placeholder: 'WTG-0001' },
-    { key: 'entityType', label: '实体类型', type: 'enum', required: true, enum: ['风机', '海缆', '升压站', '项目', '供应商'] },
-    { key: 'name', label: '名称', type: 'text', required: true },
-    { key: 'attrs', label: '权威字段', type: 'dynamic', required: true, dynamicBy: 'entityType', dynamicOptions: {
-      风机: [{ key: '额定功率' }, { key: '叶轮直径' }],
-      海缆: [{ key: '电压等级' }, { key: '截面' }],
-      升压站: [{ key: '主变容量' }, { key: '接线方式' }],
-      项目: [{ key: '规模' }, { key: '阶段' }],
-      供应商: [{ key: '资质' }, { key: '供货范围' }],
-    } },
-  ],
+  // 主数据由外部系统同步，不在平台内新增/编辑，故无表单契约（从 FORM_SCHEMAS 移除）
 
   security: [
     { key: 'level', label: '级别', type: 'text', readonly: true },
@@ -76,6 +64,5 @@ export const ENTITY_TITLES = {
   refDatas: '参考数据',
   infoItems: '信息项',
   qualityRules: '质量规则',
-  masterData: '主数据',
   security: '安全分级',
 };
