@@ -1,8 +1,8 @@
-# 数据资源管理平台 MVP 实现计划
+# 数据资产管理平台 MVP 实现计划
 
 > **For agentic workers:** REQUIRED SUB-SKILL: 用 superpowers:subagent-driven-development（推荐）或 superpowers:executing-plans 逐任务实现。步骤用 `- [ ]` checkbox 跟踪。
 
-**Goal:** 交付一个「数据资源管理平台」React SPA 展示版 —— 左侧导航 + 右侧多 tab 工作区，实现 M1 资产目录 + M0 治理看板（质量/标准子看板），跑通「编目 → 治理监控」逻辑闭环。
+**Goal:** 交付一个「数据资产管理平台」React SPA 展示版 —— 左侧导航 + 右侧多 tab 工作区，实现 M1 资产目录 + M0 治理看板（质量/标准子看板），跑通「编目 → 治理监控」逻辑闭环。
 
 **Architecture:** 单一 `src/data.js` 承载全部 mock 数据（10 表 + 字段三类元数据 + 跨模块引用），`src/state.js` 纯逻辑维护 tab 状态机与 `navigate` 跨模块转跳，React 组件只做渲染。数据与展示分离，引用完整性靠 `node --test` 兜底。
 
@@ -117,7 +117,7 @@ export default defineConfig({
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>数据资源管理平台 · GDEPDI 海上风电</title>
+    <title>数据资产管理平台 · GDEPDI 海上风电</title>
   </head>
   <body>
     <div id="root"></div>
@@ -263,7 +263,7 @@ export default D;
 ```js
 const D = {
   meta: {
-    title: '数据资源管理平台 · GDEPDI 海上风电',
+    title: '数据资产管理平台 · GDEPDI 海上风电',
     subtitle: '数据资产目录 · 数据治理看板 —— 设计态/生产态两态分层的治理闭环演示',
     disclaimer: '⚠ 参考模型声明：基于广东院公开业务信息构建的演示模型，非广东院实际部署、仅供演示。不虚构内部运营数据。',
     stats: { applications: 5, databases: 5, tables: 10, fields: 0, rules: 8, standards: 6, masterData: 5 },

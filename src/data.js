@@ -1,6 +1,6 @@
 const D = {
   meta: {
-    title: '数据资源管理平台 · GDEPDI 海上风电',
+    title: '数据资产管理平台 · GDEPDI 海上风电',
     subtitle: '结构化元数据 · 数据治理看板 —— 设计态/生产态两态分层的治理闭环演示',
     disclaimer: '⚠ 参考模型声明：基于广东院公开业务信息构建的演示模型，非广东院实际部署、仅供演示。不虚构内部运营数据。',
     stats: { applications: 5, databases: 5, tables: 10, fields: 51, rules: 8, baseTerms: 28, valueDomains: 6, refDatas: 5, infoItems: 10, masterData: 5, maskExamples: 4, lineage: 9, batchFiles: 5, services: 5 },
