@@ -209,3 +209,68 @@ test('字段名与信息项标准名对齐（6 字段已贯标）', () => {
   const expected = new Set(['f_wind_speed', 'f_scada_temp', 'f_prog_progress', 'f_cable_voltage', 'f_scada_power', 'f_turbine_model']);
   assert.deepEqual([...aligned].sort(), [...expected].sort(), '已对齐字段集合应精确等于这 6 个字段');
 });
+
+test('databases 每条有非空 type', () => {
+  assert.ok(D.databases.length >= 5);
+  for (const db of D.databases) {
+    assert.ok(typeof db.type === 'string' && db.type.trim().length > 0, `database ${db.id} 缺 type`);
+  }
+});
+
+test('tables 分区/索引/版本历史元数据完整 + 字段引用完整', () => {
+  const codesByTable = new Map(D.tables.map((t) => [t.id, new Set(D.fields.filter((f) => f.tableId === t.id).map((f) => f.business.code))]));
+  const pkCodesByTable = new Map(D.tables.map((t) => [t.id, new Set(D.fields.filter((f) => f.tableId === t.id && f.technical.isPK).map((f) => f.business.code))]));
+  const partTypes = new Set(['RANGE', 'LIST', 'HASH']);
+  const granularities = new Set(['日', '月', '年']);
+  const idxTypes = new Set(['主键', '唯一', '普通']);
+  for (const t of D.tables) {
+    const codes = codesByTable.get(t.id);
+
+    // partitions：null 或数组
+    if (t.partitions !== null && t.partitions !== undefined) {
+      assert.ok(Array.isArray(t.partitions), `table ${t.id} partitions 应为数组或 null`);
+      for (const p of t.partitions) {
+        assert.ok(p.field && p.type && p.granularity && p.count && p.desc, `table ${t.id} 分区必填字段非空`);
+        assert.ok(codes.has(p.field), `table ${t.id} 分区字段 ${p.field} 不存在`);
+        assert.ok(partTypes.has(p.type), `table ${t.id} 分区 type ${p.type} 非法`);
+        assert.ok(granularities.has(p.granularity), `table ${t.id} 分区 granularity ${p.granularity} 非法`);
+        assert.ok(Number.isInteger(p.count) && p.count > 0, `table ${t.id} 分区 count 应为正整数`);
+      }
+    }
+
+    // indexes：每张表至少 1 个主键索引
+    assert.ok(Array.isArray(t.indexes) && t.indexes.length >= 1, `table ${t.id} 缺 indexes`);
+    assert.ok(t.indexes.some((i) => i.type === '主键'), `table ${t.id} 应至少 1 个主键索引`);
+    for (const idx of t.indexes) {
+      assert.ok(idx.name && Array.isArray(idx.fields) && idx.fields.length >= 1 && idx.type && typeof idx.unique === 'boolean', `table ${t.id} 索引必填字段非空`);
+      assert.ok(idxTypes.has(idx.type), `table ${t.id} 索引 type ${idx.type} 非法`);
+      for (const f of idx.fields) assert.ok(codes.has(f), `table ${t.id} 索引字段 ${f} 不存在`);
+      if (idx.type === '主键') {
+        assert.ok(idx.fields.some((f) => pkCodesByTable.get(t.id).has(f)), `table ${t.id} 主键索引字段 ${idx.fields.join(',')} 未对应任何 isPK 字段`);
+      }
+    }
+
+    // history：每张表至少 1 条
+    assert.ok(Array.isArray(t.history) && t.history.length >= 1, `table ${t.id} 缺 history`);
+    for (const h of t.history) {
+      assert.ok(h.version && h.time && h.operator && h.action && h.desc, `table ${t.id} 版本历史必填字段非空`);
+    }
+  }
+});
+
+test('masterData 元数据级字段齐全 + 审批记录完整', () => {
+  assert.equal(ids(D.masterData).size, D.masterData.length, 'masterData id 重复');
+  const mdCodes = D.masterData.map((m) => m.code);
+  assert.equal(new Set(mdCodes).size, mdCodes.length, 'masterData code 重复');
+  const approvalTypes = new Set(['新建申请', '变更申请']);
+  const approvalStatuses = new Set(['通过', '驳回']);
+  for (const md of D.masterData) {
+    assert.ok(md.code && md.name && md.entityType && md.definition && md.rule && md.owner, `masterData ${md.id} 缺 code/name/entityType/definition/rule/owner`);
+    assert.ok(Array.isArray(md.approvals), `masterData ${md.id} approvals 应为数组`);
+    for (const ap of md.approvals) {
+      assert.ok(ap.id && ap.type && ap.applicant && ap.applyTime && ap.approver && ap.status && ap.approveTime && ap.comment, `masterData ${md.id} 审批记录必填字段非空`);
+      assert.ok(approvalTypes.has(ap.type), `masterData ${md.id} 审批 type ${ap.type} 非法`);
+      assert.ok(approvalStatuses.has(ap.status), `masterData ${md.id} 审批 status ${ap.status} 非法`);
+    }
+  }
+});

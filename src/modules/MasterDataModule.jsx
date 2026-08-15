@@ -16,14 +16,15 @@ export default function MasterDataModule({ onNavigate }) {
         <button className="btn-primary" onClick={() => alert('主数据由外部系统同步，本平台不直接新增（功能开发中）')}>同步</button>
       </div>
       <table className="table">
-        <thead><tr><th>唯一编码</th><th>实体类型</th><th>名称</th><th>权威字段</th></tr></thead>
+        <thead><tr><th>资产编码</th><th>中文名</th><th>业务定义</th><th>业务规则</th><th>数据Owner</th></tr></thead>
         <tbody>
           {filtered.map((m) => (
             <tr key={m.id}>
               <td><button className="link" onClick={() => onNavigate('masterdataDetail', { masterDataId: m.id })}>{m.code}</button></td>
-              <td>{m.entityType}</td>
               <td>{m.name}</td>
-              <td>{Object.entries(m.attrs).map(([k, v]) => `${k}:${v}`).join('，')}</td>
+              <td>{m.definition ?? '—'}</td>
+              <td>{m.rule ?? '—'}</td>
+              <td>{m.owner ?? '—'}</td>
             </tr>
           ))}
         </tbody>

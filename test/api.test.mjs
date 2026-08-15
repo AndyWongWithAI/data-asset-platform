@@ -190,7 +190,7 @@ test('F5：补全枚举（dataType / status 非法）+ masterData 不支持新�
   assert.equal(r1.ok, false);
   assert.ok(r1.errors.some((e) => e.includes('dataType')));
 
-  const r2 = create('masterData', { code: 'XX-0001', entityType: '风机', name: 'x', attrs: {} });
+  const r2 = create('masterData', { code: 'XX-0001', entityType: '风机', name: 'x', definition: 'x', rule: 'x', owner: 'x' });
   assert.equal(r2.ok, false);
   assert.ok(r2.errors.some((e) => e.includes('不支持新增')));
 

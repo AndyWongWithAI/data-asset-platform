@@ -56,8 +56,8 @@ def main():
         assert page.locator('.sidebar').count() == 1
         assert page.locator('.header').count() == 1
         # 打开资产目录
-        click_menu(page, '数据资产目录')
-        assert page.locator('.tab', has_text='数据资产目录').count() == 1
+        click_menu(page, '结构化元数据')
+        assert page.locator('.tab', has_text='结构化元数据').count() == 1
         assert page.locator('.table tbody tr').count() >= 5
         # 检索区分：应用/业务域下拉 + 表名输入
         assert page.locator('.search-bar select').count() == 2
@@ -65,10 +65,15 @@ def main():
         # 表粒度清单自适应：撑满 + 无横向溢出
         assert_table_fills(page)
         assert_no_hscroll(page)
-        # 查看按钮 → 打开字段级元数据 tab
+        # 查看按钮 → 打开表详情（默认表级元数据 tab，五子 tab）
         page.locator('.table tbody tr .link').first.click()
-        assert page.locator('.field-table').count() == 1
         assert page.locator('.tab', has_text='测风数据表').count() == 1
+        assert page.locator('.sub-tabs button').count() == 5
+        assert page.locator('.detail-head').count() == 1
+        assert page.locator('.field-table').count() == 0
+        # 切到「字段元数据」子 tab
+        page.locator('.sub-tabs button', has_text='字段元数据').click()
+        assert page.locator('.field-table').count() == 1
         # 字段粒度清单自适应
         assert_table_fills(page)
         assert_no_hscroll(page)
@@ -181,9 +186,10 @@ def main():
         assert page.locator('.tab.active', has_text='参考数据详情').count() == 1
         assert page.locator('.detail-panel h3', has_text='电压等级').count() == 1
         # 关联标准转跳（需求 5）：M1 资产目录 → 测风数据表「查看」→ 点「关联标准」→ 信息项详情
-        click_menu(page, '数据资产目录')
+        click_menu(page, '结构化元数据')
         assert page.locator('.table tbody tr').count() >= 5
         page.locator('.table tbody tr', has_text='测风数据表').locator('.link', has_text='查看').click()
+        page.locator('.sub-tabs button', has_text='字段元数据').click()
         assert page.locator('.field-table').count() == 1
         page.locator('.field-table tbody tr', has_text='风速值').locator('.link', has_text='II0008').click()
         assert page.locator('.tab.active', has_text='信息项详情').count() == 1
@@ -191,8 +197,9 @@ def main():
         assert page.locator('.detail-panel h3', has_text='风速值').count() == 1
         assert page.locator('.detail-panel h3', has_text='电压等级编码').count() == 0
         # 关联规则跳转：字段明细「关联规则」列 → 具体规则详情
-        click_menu(page, '数据资产目录')
+        click_menu(page, '结构化元数据')
         page.locator('.table tbody tr', has_text='测风数据表').locator('.link', has_text='查看').click()
+        page.locator('.sub-tabs button', has_text='字段元数据').click()
         assert page.locator('.field-table').count() == 1
         page.locator('.field-table tbody tr', has_text='风速值').locator('.link', has_text='测风风速取值越界').click()
         assert page.locator('.tab.active', has_text='规则详情').count() == 1
@@ -215,16 +222,30 @@ def main():
         click_menu(page, '数据安全')
         page.locator('.sub-tabs button', has_text='脱敏前后对比').click()
         assert page.locator('.table tbody tr').count() >= 4
-        # M5 主数据管理（同步占位，不可新增）
+        # M5 主数据管理（同步占位，不可新增；清单 5 列 + 详情三 tab）
         click_menu(page, '主数据')
         assert page.locator('.tab', has_text='主数据').count() == 1
         assert page.locator('.table tbody tr').count() >= 5
+        assert page.locator('.table thead th', has_text='资产编码').count() == 1
+        assert page.locator('.table thead th', has_text='中文名').count() == 1
+        assert page.locator('.table thead th', has_text='业务定义').count() == 1
+        assert page.locator('.table thead th', has_text='业务规则').count() == 1
+        assert page.locator('.table thead th', has_text='数据Owner').count() == 1
         page.on('dialog', lambda d: d.accept())
         page.locator('button', has_text='同步').click()
-        # 点实体进详情 → 被引用字段转跳 M1
+        # 点资产编码进详情 → 默认「首页」tab（资产级元数据）
         page.locator('.table tbody tr .link').first.click()
         assert page.locator('.tab.active', has_text='主数据详情').count() == 1
         assert page.locator('.detail-panel').count() == 1
+        assert page.locator('.sub-tabs button').count() == 3   # 三 tab：首页/引用详情/审批记录
+        assert page.locator('.detail-panel', has_text='业务定义').count() >= 1
+        assert page.locator('.detail-panel', has_text='业务规则').count() >= 1
+        assert page.locator('.detail-panel', has_text='数据 Owner').count() >= 1
+        # 切到「审批记录」→ 审批表存在
+        page.locator('.sub-tabs button', has_text='审批记录').click()
+        assert page.locator('.detail-panel table', has_text='审批人').count() >= 1
+        # 切到「引用详情」→ 定位字段转跳 M1
+        page.locator('.sub-tabs button', has_text='引用详情').click()
         page.locator('.detail-panel .link', has_text='定位').first.click()
         assert page.locator('.field-table').count() == 1
         assert page.locator('.row-active').count() == 1
@@ -268,9 +289,9 @@ def main():
         # 清空
         page.locator('.lineage-field-row', has_text='主数据编码').first.click()
         assert page.locator('.lineage-edge-field').count() == 0
-        # 点表名条 → 转跳 M1 表详情
+        # 点表名条 → 转跳 M1 表详情（默认表级元数据）
         page.locator('.table-title-hitbox').first.click()
-        assert page.locator('.field-table').count() == 1
+        assert page.locator('.detail-head').count() == 1
         # ④ 批次文件（列表 + 详情 + 审批链 + 源表转跳 + 占位）
         click_menu(page, '批次文件')
         assert page.locator('.tab', has_text='批次文件').count() == 1
@@ -283,7 +304,7 @@ def main():
         assert page.locator('.detail-panel').count() == 1
         assert page.locator('.flow-step').count() >= 3
         page.locator('.detail-panel .link', has_text='查看源表').click()
-        assert page.locator('.field-table').count() == 1
+        assert page.locator('.detail-head').count() == 1   # 表详情默认表级元数据
         assert page.locator('.row-active').count() == 0   # 表详情非字段定位，无高亮
         # ⑤ 数据服务（列表 + 详情 + 审批链 + 封装资产转跳 + 占位）
         click_menu(page, '数据服务')
@@ -297,7 +318,7 @@ def main():
         assert page.locator('.detail-panel').count() == 1
         assert page.locator('.flow-step').count() >= 3
         page.locator('.detail-panel .link', has_text='查看').first.click()
-        assert page.locator('.field-table').count() == 1
+        assert page.locator('.detail-head').count() == 1
 
         # 跨模块转跳：质量看板 → 定位字段 → 打开表详情 tab
         page.locator('.tab', has_text='数据质量看板').click()
