@@ -316,7 +316,7 @@ def main():
         click_menu(page, '数据服务')
         assert page.locator('.tab', has_text='数据服务').count() == 1
         assert page.locator('.table tbody tr').count() >= 5
-        page.locator('button', has_text='发起服务申请').click()
+        page.locator('.table tbody tr button', has_text='申请/订阅').first.click()
         assert page.locator('.modal').count() == 1
         page.locator('.modal button', has_text='知道了').click()
         page.locator('.table tbody tr .link').first.click()

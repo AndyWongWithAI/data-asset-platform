@@ -1,5 +1,6 @@
 import { useData } from '../DataContext.jsx';
 import Tag from '../components/Tag.jsx';
+import ComingSoonAction from '../components/ComingSoonAction.jsx';
 
 const LEVEL_TONE = { L1: 'ok', L2: 'default', L3: 'warn', L4: 'danger' };
 const LATENCY_TONE = { 实时: 'ok', 准实时: 'warn' };
@@ -11,7 +12,10 @@ export default function DataServiceDetailModule({ onNavigate, assetId }) {
   if (!s) return <div className="empty-hint">未找到该数据服务</div>;
   return (
     <div className="detail-panel">
-      <h3>{s.name}</h3>
+      <div className="detail-title-row">
+        <h3>{s.name}</h3>
+        <ComingSoonAction label="申请订阅" />
+      </div>
       <p className="desc">{s.desc}</p>
       <div className="kv-list">
         <div><span>类型</span><b>{s.type}</b></div>
