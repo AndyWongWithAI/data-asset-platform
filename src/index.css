@@ -46,6 +46,11 @@ body { font-family: -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei",
 .sub-tabs button { padding: 6px 14px; border: 1px solid #c9cdd4; background: #fff; border-radius: 4px; cursor: pointer; }
 .sub-tabs button.sub-active { background: #165dff; color: #fff; border-color: #165dff; }
 .sub-tabs button:disabled { color: #c9cdd4; cursor: not-allowed; }
+.stat-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 16px; }
+.stat-card { background: #fff; border: 1px solid #e5e6eb; border-radius: 4px; padding: 12px 16px; }
+.stat-card .stat-num { font-size: 24px; font-weight: 700; line-height: 1.2; }
+.stat-card .stat-label { font-size: 12px; color: #86909c; margin-top: 4px; }
+.muted { color: #86909c; }
 .score-row { display: flex; align-items: center; gap: 16px; background: #fff; border: 1px solid #e5e6eb; border-radius: 4px; padding: 12px 16px; margin-bottom: 12px; }
 .score-info { display: flex; flex-direction: column; gap: 4px; font-size: 13px; }
 .score-info span { color: #86909c; }

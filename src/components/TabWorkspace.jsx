@@ -1,6 +1,7 @@
 import CatalogModule from '../modules/CatalogModule.jsx';
 import QualityBoardModule from '../modules/QualityBoardModule.jsx';
 import StandardBoardModule from '../modules/StandardBoardModule.jsx';
+import MetadataCompareModule from '../modules/MetadataCompareModule.jsx';
 import TableDetailModule from '../modules/TableDetailModule.jsx';
 import QualityModule from '../modules/QualityModule.jsx';
 import BaseTermModule from '../modules/BaseTermModule.jsx';
@@ -45,7 +46,9 @@ export default function TabWorkspace({ state, dispatch }) {
               ? <QualityBoardModule onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
               : activeTab.moduleKey === 'standardBoard'
                 ? <StandardBoardModule onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
-                : activeTab.moduleKey === 'tableDetail'
+                : activeTab.moduleKey === 'metadataCompare'
+                  ? <MetadataCompareModule onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
+                  : activeTab.moduleKey === 'tableDetail'
                   ? <TableDetailModule assetId={activeTab.assetId} onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
                   : activeTab.moduleKey === 'quality'
                     ? <QualityModule onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />

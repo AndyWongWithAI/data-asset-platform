@@ -4,6 +4,7 @@ export const MODULE_GROUPS = [
     { key: 'qualityBoard', title: '数据质量看板', implemented: true },
     { key: 'lineageBoard', title: '数据血缘看板', implemented: true },
     { key: 'standardBoard', title: '数据标准看板', implemented: true },
+    { key: 'metadataCompare', title: '元数据比对', implemented: true },
   ]},
   { name: '设计态·定义', items: [
     { key: 'catalog', title: '结构化元数据', implemented: true },

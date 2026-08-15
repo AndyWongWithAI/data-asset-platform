@@ -2,16 +2,17 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { MODULE_GROUPS, MODULES, createInitialState, openTab, closeTab, navigate } from '../src/state.js';
 
-test('MODULE_GROUPS 3 组 + standard 父级含 4 子项 + MODULES 13 叶子 + tableDetail + 7 详情共 21', () => {
+test('MODULE_GROUPS 3 组 + standard 父级含 4 子项 + MODULES 14 叶子 + tableDetail + 7 详情共 22', () => {
   assert.deepEqual(MODULE_GROUPS.map((g) => g.name), ['生产态·治理看板', '设计态·定义', '数据交换']);
   const design = MODULE_GROUPS.find((g) => g.name === '设计态·定义');
   const standard = design.items.find((i) => i.key === 'standard');
   assert.ok(standard && standard.children, 'standard 应为父级目录');
   assert.deepEqual(standard.children.map((c) => c.key), ['baseTerm', 'valueDomain', 'refData', 'infoItem']);
   const leafKeys = MODULES.map((m) => m.key);
-  assert.equal(leafKeys.length, 21); // 13 叶子模块 + tableDetail + 7 详情模块
+  assert.equal(leafKeys.length, 22); // 14 叶子模块 + tableDetail + 7 详情模块
   assert.ok(!leafKeys.includes('standard'), 'standard 父级不应是模块');
   assert.ok(leafKeys.includes('tableDetail'));
+  assert.ok(leafKeys.includes('metadataCompare'), '元数据比对应在 MODULES');
   const detailKeys = ['infoItemDetail', 'valueDomainDetail', 'refDataDetail', 'qualityDetail', 'masterdataDetail', 'fileExchangeDetail', 'dataServiceDetail'];
   for (const k of detailKeys) assert.ok(leafKeys.includes(k), `详情模块 ${k} 应在 MODULES`);
 });

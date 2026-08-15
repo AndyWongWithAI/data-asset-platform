@@ -30,7 +30,7 @@ export default function FileExchangeModule({ onNavigate }) {
                 <td><Tag tone={inbound ? 'ok' : 'default'}>{inbound ? '入站' : '出站'}</Tag></td>
                 <td>
                   {b.sourceSystem} · {inbound ? b.sourceDatabaseName : b.sourceTableName}
-                  {inbound && b.sourceDatabaseType && <span className="en">{b.sourceDatabaseType}</span>}
+                  {inbound && b.sourceDatabaseType && <span className="en">（{b.sourceDatabaseType}）</span>}
                 </td>
                 <td>{b.targetSystem} · {inbound ? b.targetDatabaseName : b.targetTableName}</td>
                 <td>{b.fileFormat}</td>
