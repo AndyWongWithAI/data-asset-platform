@@ -298,25 +298,25 @@ def main():
         # 点表名条 → 转跳 M1 表详情（默认表级元数据）
         page.locator('.table-title-hitbox').first.click()
         assert page.locator('.detail-head').count() == 1
-        # ④ 批次文件（列表 + 详情 + 审批链 + 源表转跳 + 占位）
-        click_menu(page, '批次文件')
-        assert page.locator('.tab', has_text='批次文件').count() == 1
+        # ④ 文件交换（列表 + 详情 + 审批链 + 源表转跳 + 占位）
+        click_menu(page, '文件交换')
+        assert page.locator('.tab', has_text='文件交换').count() == 1
         assert page.locator('.table tbody tr').count() >= 5
         page.locator('button', has_text='发起交换申请').click()
         assert page.locator('.modal').count() == 1
         page.locator('.modal button', has_text='知道了').click()
         page.locator('.table tbody tr .link').first.click()
-        assert page.locator('.tab.active', has_text='批次文件详情').count() == 1
+        assert page.locator('.tab.active', has_text='文件交换详情').count() == 1
         assert page.locator('.detail-panel').count() == 1
         assert page.locator('.flow-step').count() >= 3
-        page.locator('.detail-panel .link', has_text='查看源表').click()
+        page.locator('.detail-panel .link', has_text='查看').click()
         assert page.locator('.detail-head').count() == 1   # 表详情默认表级元数据
         assert page.locator('.row-active').count() == 0   # 表详情非字段定位，无高亮
         # ⑤ 数据服务（列表 + 详情 + 审批链 + 封装资产转跳 + 占位）
         click_menu(page, '数据服务')
         assert page.locator('.tab', has_text='数据服务').count() == 1
         assert page.locator('.table tbody tr').count() >= 5
-        page.locator('button', has_text='发起服务申请').click()
+        page.locator('.table tbody tr button', has_text='申请/订阅').first.click()
         assert page.locator('.modal').count() == 1
         page.locator('.modal button', has_text='知道了').click()
         page.locator('.table tbody tr .link').first.click()

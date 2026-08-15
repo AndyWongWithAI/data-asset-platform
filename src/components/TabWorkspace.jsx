@@ -10,14 +10,14 @@ import InfoItemModule from '../modules/InfoItemModule.jsx';
 import SecurityModule from '../modules/SecurityModule.jsx';
 import MasterDataModule from '../modules/MasterDataModule.jsx';
 import LineageModule from '../modules/LineageModule.jsx';
-import BatchFileModule from '../modules/BatchFileModule.jsx';
+import FileExchangeModule from '../modules/FileExchangeModule.jsx';
 import DataServiceModule from '../modules/DataServiceModule.jsx';
 import InfoItemDetailModule from '../modules/InfoItemDetailModule.jsx';
 import ValueDomainDetailModule from '../modules/ValueDomainDetailModule.jsx';
 import RefDataDetailModule from '../modules/RefDataDetailModule.jsx';
 import QualityDetailModule from '../modules/QualityDetailModule.jsx';
 import MasterDataDetailModule from '../modules/MasterDataDetailModule.jsx';
-import BatchFileDetailModule from '../modules/BatchFileDetailModule.jsx';
+import FileExchangeDetailModule from '../modules/FileExchangeDetailModule.jsx';
 import DataServiceDetailModule from '../modules/DataServiceDetailModule.jsx';
 import PlaceholderModule from '../modules/PlaceholderModule.jsx';
 
@@ -63,8 +63,8 @@ export default function TabWorkspace({ state, dispatch }) {
                                 ? <MasterDataModule onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
                                 : activeTab.moduleKey === 'lineageBoard'
                                   ? <LineageModule onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
-                                  : activeTab.moduleKey === 'batchFile'
-                                    ? <BatchFileModule onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
+                                  : activeTab.moduleKey === 'fileExchange'
+                                    ? <FileExchangeModule onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
                                     : activeTab.moduleKey === 'dataService'
                                       ? <DataServiceModule onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
                                       : activeTab.moduleKey === 'infoItemDetail'
@@ -77,8 +77,8 @@ export default function TabWorkspace({ state, dispatch }) {
                                               ? <QualityDetailModule assetId={activeTab.assetId} onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
                                               : activeTab.moduleKey === 'masterdataDetail'
                                                 ? <MasterDataDetailModule assetId={activeTab.assetId} onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
-                                                : activeTab.moduleKey === 'batchFileDetail'
-                                                  ? <BatchFileDetailModule assetId={activeTab.assetId} onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
+                                                : activeTab.moduleKey === 'fileExchangeDetail'
+                                                  ? <FileExchangeDetailModule assetId={activeTab.assetId} onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
                                                   : activeTab.moduleKey === 'dataServiceDetail'
                                                     ? <DataServiceDetailModule assetId={activeTab.assetId} onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
                                                     : <PlaceholderModule moduleKey={activeTab.moduleKey} />

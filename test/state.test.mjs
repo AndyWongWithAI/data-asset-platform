@@ -12,7 +12,7 @@ test('MODULE_GROUPS 3 组 + standard 父级含 4 子项 + MODULES 13 叶子 + ta
   assert.equal(leafKeys.length, 21); // 13 叶子模块 + tableDetail + 7 详情模块
   assert.ok(!leafKeys.includes('standard'), 'standard 父级不应是模块');
   assert.ok(leafKeys.includes('tableDetail'));
-  const detailKeys = ['infoItemDetail', 'valueDomainDetail', 'refDataDetail', 'qualityDetail', 'masterdataDetail', 'batchFileDetail', 'dataServiceDetail'];
+  const detailKeys = ['infoItemDetail', 'valueDomainDetail', 'refDataDetail', 'qualityDetail', 'masterdataDetail', 'fileExchangeDetail', 'dataServiceDetail'];
   for (const k of detailKeys) assert.ok(leafKeys.includes(k), `详情模块 ${k} 应在 MODULES`);
 });
 

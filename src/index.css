@@ -35,6 +35,7 @@ body { font-family: -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei",
 .table th, .table td { border: 1px solid #e5e6eb; padding: 8px 12px; font-size: 13px; text-align: left; overflow-wrap: anywhere; }
 .table .en { color: #86909c; font-size: 12px; margin-left: 8px; }
 .table tbody tr.row-active { background: #e8f3ff; }
+.detail-title-row { display: flex; align-items: center; justify-content: space-between; }
 .detail-head { margin-bottom: 12px; }
 .detail-head h3 { margin-bottom: 4px; }
 .detail-head .en { color: #86909c; font-size: 12px; }
