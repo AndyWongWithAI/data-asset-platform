@@ -36,10 +36,14 @@ export default function TableDetailModule({ assetId, onNavigate }) {
       {tab === '表级元数据' && (
         <div className="detail-head">
           <h3>{table.nameCn}</h3>
-          <p className="en">{table.nameEn} · {table.tableType} · {app?.name} / {db?.name} / {domain?.name}</p>
-          <p className="desc">{table.desc}</p>
           <div className="kv-list">
+            <div><span>英文名</span><code>{table.nameEn}</code></div>
+            <div><span>表类型</span><b>{table.tableType}</b></div>
+            <div><span>所属应用</span><b>{app?.name ?? '—'}</b></div>
+            <div><span>所属库</span><b>{db?.name ?? '—'}</b></div>
             <div><span>数据库类型</span><b>{db?.type ?? '—'}</b></div>
+            <div><span>业务域</span><b>{domain?.name ?? '—'}</b></div>
+            <div><span>描述</span><b>{table.desc ?? '—'}</b></div>
           </div>
         </div>
       )}
