@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import data from '../data.js';
+import { useData } from '../DataContext.jsx';
 import Tag from '../components/Tag.jsx';
 import ComingSoonAction from '../components/ComingSoonAction.jsx';
 
 const MODE_TONES = { 离线批次: 'default', 数据服务: 'ok' };
 
-function modesFor(t) {
+function modesFor(data, t) {
   const set = new Set();
   data.lineage.forEach((l) => {
     if (l.up === t.id || l.down === t.id) set.add(l.mode);
@@ -27,6 +27,7 @@ function ModeLabels({ modes }) {
 }
 
 function LineageGraph({ tableId, onNavigate }) {
+  const { data } = useData();
   const BOX_W = 180;
   const NAME_H = 30;
   const FIELD_H = 22;
@@ -267,6 +268,7 @@ function LineageGraph({ tableId, onNavigate }) {
 }
 
 export default function LineageModule({ onNavigate }) {
+  const { data } = useData();
   const [selectedTableId, setSelectedTableId] = useState(null);
   const [exchangeFilter, setExchangeFilter] = useState('全部');
   const [keyword, setKeyword] = useState('');
@@ -292,7 +294,7 @@ export default function LineageModule({ onNavigate }) {
   }
 
   const filtered = data.tables.filter((t) => {
-    const modes = modesFor(t);
+    const modes = modesFor(data, t);
     if (exchangeFilter !== '全部' && !modes.includes(exchangeFilter)) return false;
     if (keyword && !t.nameCn.includes(keyword) && !t.nameEn.includes(keyword)) return false;
     return true;
@@ -353,7 +355,7 @@ export default function LineageModule({ onNavigate }) {
                   <td>{app?.name}</td>
                   <td>{upCount}</td>
                   <td>{downCount}</td>
-                  <td><ModeLabels modes={modesFor(t)} /></td>
+                  <td><ModeLabels modes={modesFor(data, t)} /></td>
                   <td>
                     <button className="link" onClick={() => setSelectedTableId(t.id)}>查看血缘图</button>
                   </td>

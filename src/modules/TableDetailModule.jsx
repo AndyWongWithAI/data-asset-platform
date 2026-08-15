@@ -1,9 +1,10 @@
-import data from '../data.js';
+import { useData } from '../DataContext.jsx';
 import Tag from '../components/Tag.jsx';
 
 const LEVEL_TONE = { L1: 'ok', L2: 'default', L3: 'warn', L4: 'danger' };
 
 export default function TableDetailModule({ assetId, onNavigate }) {
+  const { data } = useData();
   const table = data.tables.find((t) => t.id === assetId?.tableId);
   if (!table) return <div className="empty-hint">未找到该表（tableId: {assetId?.tableId ?? '—'}）</div>;
 

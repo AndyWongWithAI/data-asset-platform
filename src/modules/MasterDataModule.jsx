@@ -1,9 +1,11 @@
 import { useState } from 'react';
-import data from '../data.js';
-import ComingSoonAction from '../components/ComingSoonAction.jsx';
+import { useData } from '../DataContext.jsx';
+import EntityForm from '../components/EntityForm.jsx';
 
 export default function MasterDataModule({ onNavigate }) {
+  const { data } = useData();
   const [type, setType] = useState('all');
+  const [showForm, setShowForm] = useState(false);
   const filtered = data.masterData.filter((m) => type === 'all' || m.entityType === type);
   const types = [...new Set(data.masterData.map((m) => m.entityType))];
   return (
@@ -13,7 +15,7 @@ export default function MasterDataModule({ onNavigate }) {
           <option value="all">全部类型</option>
           {types.map((t) => <option key={t} value={t}>{t}</option>)}
         </select>
-        <ComingSoonAction label="新增实体" />
+        <button className="btn-primary" onClick={() => setShowForm(true)}>新增实体</button>
       </div>
       <table className="table">
         <thead><tr><th>唯一编码</th><th>实体类型</th><th>名称</th><th>权威字段</th></tr></thead>
@@ -28,6 +30,7 @@ export default function MasterDataModule({ onNavigate }) {
           ))}
         </tbody>
       </table>
+      {showForm && <EntityForm entity="masterData" onClose={() => setShowForm(false)} onSaved={() => setShowForm(false)} />}
     </div>
   );
 }

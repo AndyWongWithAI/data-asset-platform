@@ -1,6 +1,7 @@
-import data from '../data.js';
+import { useData } from '../DataContext.jsx';
 
 export default function MasterDataDetailModule({ onNavigate, assetId }) {
+  const { data } = useData();
   const md = data.masterData.find((m) => m.id === assetId?.masterDataId);
   if (!md) return <div className="empty-hint">未找到该主数据实体</div>;
   const refs = data.fields.filter((f) => f.business.masterDataId === md.id);

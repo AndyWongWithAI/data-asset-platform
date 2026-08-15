@@ -197,16 +197,89 @@ export function validate(entity, payload, { isUpdate = false, existing = null } 
   return errors;
 }
 
+// ===== P2 领域规则（结构校验之上）=====
+// 信息项命名派生：nameCn/nameEn 按 termIds 词根派生，code 缺失时自增，末位词根必须是类词。
+// 返回 { ok, errors, derived }：derived 仅含实际派生出的字段，客户端显式传且与派生值不一致时按错误处理。
+function deriveInfoItem(payload) {
+  const errors = [];
+  const termIds = payload.termIds;
+  const termById = new Map(state.baseTerms.map((t) => [t.id, t]));
+
+  let nameCn = null;
+  let nameEn = null;
+
+  // 规则 B：从 termIds 顺序取词根拼接 nameCn/nameEn；规则 C：末位必须是类词
+  if (Array.isArray(termIds) && termIds.length) {
+    const terms = termIds.map((id) => termById.get(id));
+    if (terms.every(Boolean)) {
+      nameCn = terms.map((t) => t.nameCn).join('');
+      nameEn = terms.map((t) => t.nameEn).join('_');
+      if (terms[terms.length - 1].isClassWord !== true) {
+        errors.push('末位词根必须是类词');
+      }
+    }
+  }
+
+  // 规则 D：一致性校验（客户端传了 nameCn/nameEn 但与词根派生值不一致）
+  if (nameCn !== null && payload.nameCn !== undefined && payload.nameCn !== '' && payload.nameCn !== nameCn) {
+    errors.push(`字段 nameCn 与词根派生值「${nameCn}」不一致`);
+  }
+  if (nameEn !== null && payload.nameEn !== undefined && payload.nameEn !== '' && payload.nameEn !== nameEn) {
+    errors.push(`字段 nameEn 与词根派生值「${nameEn}」不一致`);
+  }
+
+  // 规则 A：code 始终由服务端生成（II + 四位补零递增），客户端不可控制，堵住任意 code 注入
+  let max = 0;
+  for (const it of state.infoItems) {
+    const m = String(it.code).match(/^II(\d{4})$/);
+    if (m) max = Math.max(max, parseInt(m[1], 10));
+  }
+  const code = `II${String(max + 1).padStart(4, '0')}`;
+
+  if (errors.length) return { ok: false, errors, code: 'invalid' };
+
+  const derived = {};
+  derived.code = code;
+  if (nameCn !== null) derived.nameCn = nameCn;
+  if (nameEn !== null) derived.nameEn = nameEn;
+  return { ok: true, errors: [], derived };
+}
+
+// 条件必填 + 数值约束（跨实体）
+function domainErrors(entity, payload) {
+  const errors = [];
+  if (entity === 'infoItems' && payload.type === '业务') {
+    if (isEmpty(payload.bizDomainId)) errors.push('字段 bizDomainId 必填（业务类信息项）');
+    if (isEmpty(payload.definition)) errors.push('字段 definition 必填（业务类信息项）');
+  }
+  if (entity === 'valueDomains') {
+    if (typeof payload.length === 'number' && payload.length <= 0) errors.push('字段 length 必须大于 0');
+    if (typeof payload.precision === 'number' && payload.precision < 0) errors.push('字段 precision 必须大于等于 0');
+  }
+  return errors;
+}
+
 // ===== CRUD =====
 export function create(entity, payload = {}) {
   ensureInit();
   const schema = SCHEMAS[entity];
   if (!schema) return { ok: false, errors: [`未知实体 ${entity}`], code: 'not_found' };
   if (!schema.creatable) return { ok: false, errors: [`实体 ${entity} 不支持新增`], code: 'not_supported' };
-  const errors = validate(entity, payload);
+
+  // P2 领域规则：先派生（信息项命名），再做条件必填/数值约束，最后走结构校验
+  let finalPayload = payload;
+  if (entity === 'infoItems') {
+    const derived = deriveInfoItem(payload);
+    if (!derived.ok) return derived;
+    finalPayload = { ...payload, ...derived.derived };
+  }
+  const domain = domainErrors(entity, finalPayload);
+  if (domain.length) return { ok: false, errors: domain, code: 'invalid' };
+
+  const errors = validate(entity, finalPayload);
   if (errors.length) return { ok: false, errors, code: 'invalid' };
   const id = nextId(entity);
-  const record = { ...payload, [schema.idKey]: id }; // 服务端生成 id 优先，客户端不可注入
+  const record = { ...finalPayload, [schema.idKey]: id }; // 服务端生成 id 优先，客户端不可注入
   state[entity].push(record);
   persist();
   return { ok: true, record };

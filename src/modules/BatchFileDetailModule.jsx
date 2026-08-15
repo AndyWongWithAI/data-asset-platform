@@ -1,9 +1,10 @@
-import data from '../data.js';
+import { useData } from '../DataContext.jsx';
 import Tag from '../components/Tag.jsx';
 
 const STATUS_TONE = { 运行中: 'ok', 审批中: 'warn' };
 
 export default function BatchFileDetailModule({ onNavigate, assetId }) {
+  const { data } = useData();
   const b = data.batchFiles.find((x) => x.id === assetId?.batchFileId);
   if (!b) return <div className="empty-hint">未找到该批次任务</div>;
   const sourceTable = data.tables.find((t) => t.id === b.sourceTableId);

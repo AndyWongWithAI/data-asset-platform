@@ -85,10 +85,10 @@ def main():
         click_menu(page, '数据质量')
         assert page.locator('.tab.active', has_text='数据质量').count() == 1
         assert page.locator('.table tbody tr').count() >= 8
-        # 占位按钮 → 弹框 → 关闭
+        # 新增规则 → 表单弹窗 → 取消关闭
         page.locator('button', has_text='新增规则').click()
-        assert page.locator('.modal').count() == 1
-        page.locator('.modal button', has_text='知道了').click()
+        assert page.locator('.modal-lg').count() == 1
+        page.locator('.modal button', has_text='取消').click()
         assert page.locator('.modal').count() == 0
         # 点规则进详情 → 定位字段转跳 M1
         page.locator('.table tbody tr .link').first.click()
@@ -110,8 +110,8 @@ def main():
         assert page.locator('.tab.active', has_text='基础术语').count() == 1
         assert page.locator('.table tbody tr').count() >= 20
         page.locator('button', has_text='新增术语').click()
-        assert page.locator('.modal').count() == 1
-        page.locator('.modal button', has_text='知道了').click()
+        assert page.locator('.modal-lg').count() == 1
+        page.locator('.modal button', has_text='取消').click()
         assert page.locator('.modal').count() == 0
         # 去下钻：点中文名第一列后仍无 .detail-panel
         page.locator('.table tbody tr').first.locator('td').first.click()
@@ -121,8 +121,8 @@ def main():
         assert page.locator('.tab.active', has_text='值域').count() == 1
         assert page.locator('.table tbody tr').count() >= 6
         page.locator('button', has_text='新增值域').click()
-        assert page.locator('.modal').count() == 1
-        page.locator('.modal button', has_text='知道了').click()
+        assert page.locator('.modal-lg').count() == 1
+        page.locator('.modal button', has_text='取消').click()
         assert page.locator('.modal').count() == 0
         page.locator('.table tbody tr .link').first.click()
         assert page.locator('.tab.active', has_text='值域详情').count() == 1
@@ -136,8 +136,8 @@ def main():
         assert page.locator('.tab.active', has_text='参考数据').count() == 1
         assert page.locator('.table tbody tr').count() >= 5
         page.locator('button', has_text='新增参考数据').click()
-        assert page.locator('.modal').count() == 1
-        page.locator('.modal button', has_text='知道了').click()
+        assert page.locator('.modal-lg').count() == 1
+        page.locator('.modal button', has_text='取消').click()
         assert page.locator('.modal').count() == 0
         page.locator('.table tbody tr .link').first.click()
         assert page.locator('.tab.active', has_text='参考数据详情').count() == 1
@@ -152,8 +152,8 @@ def main():
         assert page.locator('.table tbody tr').count() >= 10
         assert page.locator('.table thead th', has_text='类型').count() == 1   # 列表含「类型」列
         page.locator('button', has_text='新增信息项').click()
-        assert page.locator('.modal').count() == 1
-        page.locator('.modal button', has_text='知道了').click()
+        assert page.locator('.modal-lg').count() == 1
+        page.locator('.modal button', has_text='取消').click()
         assert page.locator('.modal').count() == 0
         # 点信息项进详情（第一条 ii_voltage 电压等级编码）→ 无词根链 + 类型/业务域/定义 + 被引用字段转跳 M1
         page.locator('.table tbody tr .link').first.click()
@@ -201,9 +201,9 @@ def main():
         click_menu(page, '数据安全')
         assert page.locator('.tab', has_text='数据安全').count() == 1
         assert page.locator('.score-row').count() >= 4   # L1-L4 分级总览
-        page.locator('button', has_text='分级调整').click()
-        assert page.locator('.modal').count() == 1
-        page.locator('.modal button', has_text='知道了').click()
+        page.locator('.score-row .link', has_text='调整').first.click()
+        assert page.locator('.modal-lg').count() == 1
+        page.locator('.modal button', has_text='取消').click()
         # 切到高风险清单 → 定位字段转跳 M1
         page.locator('.sub-tabs button', has_text='高风险清单').click()
         assert page.locator('.table tbody tr').count() >= 1
@@ -220,8 +220,8 @@ def main():
         assert page.locator('.tab', has_text='主数据').count() == 1
         assert page.locator('.table tbody tr').count() >= 5
         page.locator('button', has_text='新增实体').click()
-        assert page.locator('.modal').count() == 1
-        page.locator('.modal button', has_text='知道了').click()
+        assert page.locator('.modal-lg').count() == 1
+        page.locator('.modal button', has_text='取消').click()
         # 点实体进详情 → 被引用字段转跳 M1
         page.locator('.table tbody tr .link').first.click()
         assert page.locator('.tab.active', has_text='主数据详情').count() == 1

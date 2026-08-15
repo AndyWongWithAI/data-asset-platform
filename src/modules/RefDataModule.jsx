@@ -1,11 +1,14 @@
-import data from '../data.js';
-import ComingSoonAction from '../components/ComingSoonAction.jsx';
+import { useState } from 'react';
+import { useData } from '../DataContext.jsx';
+import EntityForm from '../components/EntityForm.jsx';
 
 export default function RefDataModule({ onNavigate }) {
+  const { data } = useData();
+  const [showForm, setShowForm] = useState(false);
   return (
     <div>
       <div className="search-bar">
-        <ComingSoonAction label="新增参考数据" />
+        <button className="btn-primary" onClick={() => setShowForm(true)}>新增参考数据</button>
       </div>
       <table className="table">
         <thead><tr><th>编号</th><th>名称</th><th>枚举值数</th></tr></thead>
@@ -19,6 +22,7 @@ export default function RefDataModule({ onNavigate }) {
           ))}
         </tbody>
       </table>
+      {showForm && <EntityForm entity="refDatas" onClose={() => setShowForm(false)} onSaved={() => setShowForm(false)} />}
     </div>
   );
 }

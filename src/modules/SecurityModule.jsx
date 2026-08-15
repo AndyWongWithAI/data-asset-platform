@@ -1,12 +1,14 @@
 import { useState } from 'react';
-import data from '../data.js';
+import { useData } from '../DataContext.jsx';
 import Tag from '../components/Tag.jsx';
-import ComingSoonAction from '../components/ComingSoonAction.jsx';
+import EntityForm from '../components/EntityForm.jsx';
 
 const LEVEL_TONE = { L1: 'ok', L2: 'default', L3: 'warn', L4: 'danger' };
 
 export default function SecurityModule({ onNavigate }) {
+  const { data } = useData();
   const [tab, setTab] = useState('overview');
+  const [editingLevel, setEditingLevel] = useState(null);
   const countByLevel = (lv) => data.fields.filter((f) => f.management.securityLevel === lv).length;
   const highRisk = data.fields.filter((f) => f.management.securityLevel === 'L3' || f.management.securityLevel === 'L4');
 
@@ -20,7 +22,6 @@ export default function SecurityModule({ onNavigate }) {
 
       {tab === 'overview' && (
         <div>
-          <div className="search-bar"><ComingSoonAction label="分级调整" /></div>
           {data.security.map((s) => (
             <div key={s.level} className="score-row">
               <Tag tone={LEVEL_TONE[s.level]}>{s.level} · {s.name}</Tag>
@@ -29,6 +30,7 @@ export default function SecurityModule({ onNavigate }) {
                 <span>脱敏策略：{s.mask || '无'}</span>
                 <span>字段数：{countByLevel(s.level)}</span>
               </div>
+              <button className="link" onClick={() => setEditingLevel(s)}>调整</button>
             </div>
           ))}
         </div>
@@ -69,6 +71,7 @@ export default function SecurityModule({ onNavigate }) {
           </tbody>
         </table>
       )}
+      {editingLevel && <EntityForm entity="security" mode="update" record={editingLevel} onClose={() => setEditingLevel(null)} onSaved={() => setEditingLevel(null)} />}
     </div>
   );
 }

@@ -1,13 +1,16 @@
-import data from '../data.js';
-import ComingSoonAction from '../components/ComingSoonAction.jsx';
+import { useState } from 'react';
+import { useData } from '../DataContext.jsx';
+import EntityForm from '../components/EntityForm.jsx';
 
 export default function InfoItemModule({ onNavigate }) {
+  const { data } = useData();
+  const [showForm, setShowForm] = useState(false);
   const vdCode = (id) => data.valueDomains.find((v) => v.id === id)?.code ?? '—';
   const rdName = (id) => (id ? data.refDatas.find((r) => r.id === id)?.name ?? '—' : '—');
   return (
     <div>
       <div className="search-bar">
-        <ComingSoonAction label="新增信息项" />
+        <button className="btn-primary" onClick={() => setShowForm(true)}>新增信息项</button>
       </div>
       <table className="table">
         <thead><tr><th>信息项编号</th><th>中文名</th><th>英文名</th><th>类型</th><th>值域</th><th>参考数据</th></tr></thead>
@@ -24,6 +27,7 @@ export default function InfoItemModule({ onNavigate }) {
           ))}
         </tbody>
       </table>
+      {showForm && <EntityForm entity="infoItems" onClose={() => setShowForm(false)} onSaved={() => setShowForm(false)} />}
     </div>
   );
 }

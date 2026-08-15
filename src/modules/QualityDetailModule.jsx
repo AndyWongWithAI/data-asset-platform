@@ -1,9 +1,10 @@
-import data from '../data.js';
+import { useData } from '../DataContext.jsx';
 import Tag from '../components/Tag.jsx';
 
 const SEVERITY_TONE = { 严重: 'danger', 警告: 'warn', 提示: 'default' };
 
 export default function QualityDetailModule({ onNavigate, assetId }) {
+  const { data } = useData();
   const rule = data.qualityRules.find((r) => r.id === assetId?.qualityRuleId);
   if (!rule) return <div className="empty-hint">未找到该规则</div>;
   const field = data.fields.find((f) => f.id === rule.targetFieldId);

@@ -1,10 +1,12 @@
 import { useState } from 'react';
-import data from '../data.js';
+import { useData } from '../DataContext.jsx';
 import Tag from '../components/Tag.jsx';
-import ComingSoonAction from '../components/ComingSoonAction.jsx';
+import EntityForm from '../components/EntityForm.jsx';
 
 export default function BaseTermModule() {
+  const { data } = useData();
   const [kind, setKind] = useState('all');
+  const [showForm, setShowForm] = useState(false);
 
   const filtered = data.baseTerms.filter((t) =>
     kind === 'all' || (kind === 'classWord' ? t.isClassWord : !t.isClassWord)
@@ -21,7 +23,7 @@ export default function BaseTermModule() {
           <option value="classWord">类词</option>
           <option value="nonClassWord">非类词</option>
         </select>
-        <ComingSoonAction label="新增术语" />
+        <button className="btn-primary" onClick={() => setShowForm(true)}>新增术语</button>
       </div>
       <table className="table">
         <thead><tr><th>中文名</th><th>英文名</th><th>同义词</th><th>是否类词</th></tr></thead>
@@ -36,6 +38,7 @@ export default function BaseTermModule() {
           ))}
         </tbody>
       </table>
+      {showForm && <EntityForm entity="baseTerms" onClose={() => setShowForm(false)} onSaved={() => setShowForm(false)} />}
     </div>
   );
 }

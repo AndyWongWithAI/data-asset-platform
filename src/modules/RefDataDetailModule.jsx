@@ -1,6 +1,7 @@
-import data from '../data.js';
+import { useData } from '../DataContext.jsx';
 
 export default function RefDataDetailModule({ onNavigate, assetId }) {
+  const { data } = useData();
   const rd = data.refDatas.find((r) => r.id === assetId?.refDataId);
   if (!rd) return <div className="empty-hint">未找到该参考数据</div>;
   const refs = data.infoItems.filter((i) => i.refDataId === rd.id);

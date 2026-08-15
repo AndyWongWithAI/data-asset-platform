@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import data from '../data.js';
+import { useData } from '../DataContext.jsx';
 
 export default function CatalogModule({ onNavigate }) {
+  const { data } = useData();
   const [appId, setAppId] = useState('all');
   const [domainId, setDomainId] = useState('all');
   const [keyword, setKeyword] = useState('');
