@@ -3,7 +3,7 @@ const D = {
     title: '数据资产管理平台 · GDEPDI 海上风电',
     subtitle: '结构化元数据 · 数据治理看板 —— 设计态/生产态两态分层的治理闭环演示',
     disclaimer: '⚠ 参考模型声明：基于广东院公开业务信息构建的演示模型，非广东院实际部署、仅供演示。不虚构内部运营数据。',
-    stats: { applications: 5, databases: 5, tables: 10, fields: 51, rules: 8, baseTerms: 28, valueDomains: 6, refDatas: 5, infoItems: 10, masterData: 5, maskExamples: 4, lineage: 9, batchFiles: 8, prodMetadatas: 3, services: 5 },
+    stats: { applications: 5, databases: 5, tables: 10, fields: 51, rules: 8, baseTerms: 28, valueDomains: 6, refDatas: 5, infoItems: 10, masterData: 5, lineage: 9, batchFiles: 8, prodMetadatas: 3, services: 5 },
   },
   applications: [
     { id: 'app_res', name: '风资源评估系统', desc: '测风/气象数据采集与分析' },
@@ -133,16 +133,16 @@ const D = {
     ] },
   ],
   infoItems: [
-    { id: 'ii_voltage', code: 'II0001', nameCn: '电压等级编码', nameEn: 'voltage_level_code', termIds: ['term_voltage', 'term_level', 'term_code'], valueDomainId: 'vd_varchar10', refDataId: 'rd_voltage', type: '业务', bizDomainId: 'bd_design', definition: '海上风电设备/海缆的电压等级标准取值' },
-    { id: 'ii_active_power', code: 'II0002', nameCn: '有功功率值', nameEn: 'active_power_value', termIds: ['term_active', 'term_power', 'term_value'], valueDomainId: 'vd_dec52', refDataId: null, type: '业务', bizDomainId: 'bd_ops', definition: '风电机组有功功率的标准取值' },
-    { id: 'ii_turbine_model', code: 'II0003', nameCn: '风机机型名称', nameEn: 'turbine_model_name', termIds: ['term_turbine', 'term_model', 'term_name'], valueDomainId: 'vd_name', refDataId: 'rd_turbine', type: '业务', bizDomainId: 'bd_design', definition: '风机机型的标准名称' },
-    { id: 'ii_foundation', code: 'II0004', nameCn: '基础型式名称', nameEn: 'foundation_pattern_name', termIds: ['term_foundation', 'term_pattern', 'term_name'], valueDomainId: 'vd_name', refDataId: 'rd_foundation', type: '业务', bizDomainId: 'bd_design', definition: '风机基础结构型式的标准名称' },
-    { id: 'ii_sea_area', code: 'II0005', nameCn: '海域编码', nameEn: 'sea_area_code', termIds: ['term_sea_area', 'term_code'], valueDomainId: 'vd_code', refDataId: 'rd_sea_area', type: '业务', bizDomainId: 'bd_survey', definition: '海上风电场所在海域的标准编码' },
-    { id: 'ii_cable_type', code: 'II0006', nameCn: '海缆类型名称', nameEn: 'cable_type_name', termIds: ['term_cable', 'term_type', 'term_name'], valueDomainId: 'vd_name', refDataId: 'rd_cable', type: '业务', bizDomainId: 'bd_design', definition: '海缆类型的标准名称' },
-    { id: 'ii_accuracy', code: 'II0007', nameCn: '预测精度百分比', nameEn: 'forecast_accuracy_percent', termIds: ['term_forecast', 'term_accuracy', 'term_percent'], valueDomainId: 'vd_percent', refDataId: null, type: '业务', bizDomainId: 'bd_ops', definition: '功率预测精度的标准百分比' },
-    { id: 'ii_wind_speed', code: 'II0008', nameCn: '风速值', nameEn: 'wind_speed_value', termIds: ['term_wind_speed', 'term_value'], valueDomainId: 'vd_dec52', refDataId: null, type: '技术', bizDomainId: null, definition: null },
-    { id: 'ii_temperature', code: 'II0009', nameCn: '温度值', nameEn: 'temperature_value', termIds: ['term_temperature', 'term_value'], valueDomainId: 'vd_dec51', refDataId: null, type: '技术', bizDomainId: null, definition: null },
-    { id: 'ii_progress', code: 'II0010', nameCn: '进度百分比', nameEn: 'progress_percent', termIds: ['term_progress', 'term_percent'], valueDomainId: 'vd_percent', refDataId: null, type: '业务', bizDomainId: 'bd_build', definition: '施工作业进度的标准百分比' },
+    { id: 'ii_voltage', code: 'II0001', nameCn: '电压等级编码', nameEn: 'voltage_level_code', termIds: ['term_voltage', 'term_level', 'term_code'], valueDomainId: 'vd_varchar10', refDataId: 'rd_voltage', type: '业务', bizDomainId: 'bd_design', definition: '海上风电设备/海缆的电压等级标准取值', securityLevel: 'L2' },
+    { id: 'ii_active_power', code: 'II0002', nameCn: '有功功率值', nameEn: 'active_power_value', termIds: ['term_active', 'term_power', 'term_value'], valueDomainId: 'vd_dec52', refDataId: null, type: '业务', bizDomainId: 'bd_ops', definition: '风电机组有功功率的标准取值', securityLevel: 'L2' },
+    { id: 'ii_turbine_model', code: 'II0003', nameCn: '风机机型名称', nameEn: 'turbine_model_name', termIds: ['term_turbine', 'term_model', 'term_name'], valueDomainId: 'vd_name', refDataId: 'rd_turbine', type: '业务', bizDomainId: 'bd_design', definition: '风机机型的标准名称', securityLevel: 'L2' },
+    { id: 'ii_foundation', code: 'II0004', nameCn: '基础型式名称', nameEn: 'foundation_pattern_name', termIds: ['term_foundation', 'term_pattern', 'term_name'], valueDomainId: 'vd_name', refDataId: 'rd_foundation', type: '业务', bizDomainId: 'bd_design', definition: '风机基础结构型式的标准名称', securityLevel: 'L2' },
+    { id: 'ii_sea_area', code: 'II0005', nameCn: '海域编码', nameEn: 'sea_area_code', termIds: ['term_sea_area', 'term_code'], valueDomainId: 'vd_code', refDataId: 'rd_sea_area', type: '业务', bizDomainId: 'bd_survey', definition: '海上风电场所在海域的标准编码', securityLevel: 'L4' },
+    { id: 'ii_cable_type', code: 'II0006', nameCn: '海缆类型名称', nameEn: 'cable_type_name', termIds: ['term_cable', 'term_type', 'term_name'], valueDomainId: 'vd_name', refDataId: 'rd_cable', type: '业务', bizDomainId: 'bd_design', definition: '海缆类型的标准名称', securityLevel: 'L3' },
+    { id: 'ii_accuracy', code: 'II0007', nameCn: '预测精度百分比', nameEn: 'forecast_accuracy_percent', termIds: ['term_forecast', 'term_accuracy', 'term_percent'], valueDomainId: 'vd_percent', refDataId: null, type: '业务', bizDomainId: 'bd_ops', definition: '功率预测精度的标准百分比', securityLevel: 'L2' },
+    { id: 'ii_wind_speed', code: 'II0008', nameCn: '风速值', nameEn: 'wind_speed_value', termIds: ['term_wind_speed', 'term_value'], valueDomainId: 'vd_dec52', refDataId: null, type: '技术', bizDomainId: null, definition: null, securityLevel: 'L2' },
+    { id: 'ii_temperature', code: 'II0009', nameCn: '温度值', nameEn: 'temperature_value', termIds: ['term_temperature', 'term_value'], valueDomainId: 'vd_dec51', refDataId: null, type: '技术', bizDomainId: null, definition: null, securityLevel: 'L2' },
+    { id: 'ii_progress', code: 'II0010', nameCn: '进度百分比', nameEn: 'progress_percent', termIds: ['term_progress', 'term_percent'], valueDomainId: 'vd_percent', refDataId: null, type: '业务', bizDomainId: 'bd_build', definition: '施工作业进度的标准百分比', securityLevel: 'L2' },
   ],
   qualityRules: [
     { id: 'qr_001', name: 'SCADA 有功功率取值范围', type: '准确性', targetFieldId: 'f_scada_power', expr: '0 <= active_power <= 16', threshold: '100%', severity: '严重', status: '启用' },
@@ -508,12 +508,6 @@ const D = {
     { id: 'qres_app_ops', appId: 'app_ops', score: 78, dimension: '准确性', issues: [
       { id: 'issue_002', fieldId: 'f_scada_power', ruleId: 'qr_001', desc: '6 台机组有功功率越界（>16MW）', severity: '严重' },
     ]},
-  ],
-  maskExamples: [
-    { field: '场址精确坐标', level: 'L4', original: '21.5021°N, 111.3047°E', masked: '21.5°N, 111.3°E', strategy: '坐标模糊化' },
-    { field: '海缆路由坐标', level: 'L3', original: '21.4832°N, 111.2891°E', masked: '21.48°N, 111.29°E', strategy: '坐标偏移' },
-    { field: '岩土钻孔坐标', level: 'L3', original: '21.4618°N, 111.2716°E', masked: '21.46°N, 111.27°E', strategy: '坐标偏移' },
-    { field: 'SCADA 机组编号', level: 'L2', original: 'WTG-A12-07', masked: 'WTG-****-07', strategy: '字段掩码' },
   ],
   lineage: [
     { id: 'lg_001', up: 't_wind', down: 't_forecast', relation: '功率预测输入', mode: '离线批次', desc: '测风数据离线批次同步至功率预测模型',
