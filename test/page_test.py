@@ -298,7 +298,19 @@ def main():
         # 点表名条 → 转跳 M1 表详情（默认表级元数据）
         page.locator('.table-title-hitbox').first.click()
         assert page.locator('.detail-head').count() == 1
-        # ④ 文件交换（列表 + 详情 + 审批链 + 源表转跳 + 占位）
+        # ④ 元数据比对（生产态差异清单，只读）
+        click_menu(page, '元数据比对')
+        assert page.locator('.tab', has_text='元数据比对').count() == 1
+        # 5 个计数卡片
+        for label in ['未登记表', '疑似下线表', '未登记字段', '疑似下线字段', '漂移字段']:
+            assert page.locator('.stat-card', has_text=label).count() == 1, f'缺计数卡片 {label}'
+        # 表级差异明细：未登记表 scada_alarm_raw
+        assert page.locator('.table tbody tr', has_text='scada_alarm_raw').count() == 1
+        # 字段级差异明细：漂移字段 active_power_value
+        assert page.locator('.table tbody tr', has_text='active_power_value').count() == 1
+        # 只读：无写操作按钮
+        assert page.locator('button', has_text='新增').count() == 0
+        # ⑤ 文件交换（列表 + 详情 + 审批链 + 源表转跳 + 占位）
         click_menu(page, '文件交换')
         assert page.locator('.tab', has_text='文件交换').count() == 1
         assert page.locator('.table tbody tr').count() >= 5
@@ -329,7 +341,7 @@ def main():
         assert page.locator('.detail-panel', has_text='scada_alarm_raw').count() == 1
         page.locator('.detail-panel .link', has_text='查看目录').click()
         assert page.locator('.tab.active', has_text='结构化元数据').count() == 1
-        # ⑤ 数据服务（列表 + 详情 + 审批链 + 封装资产转跳 + 占位）
+        # ⑥ 数据服务（列表 + 详情 + 审批链 + 封装资产转跳 + 占位）
         click_menu(page, '数据服务')
         assert page.locator('.tab', has_text='数据服务').count() == 1
         assert page.locator('.table tbody tr').count() >= 5
