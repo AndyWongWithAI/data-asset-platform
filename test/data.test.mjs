@@ -91,26 +91,60 @@ test('lineage 每条边含字段级 fieldMapping（字段归表一致）', () =>
   }
 });
 
-test('batchFiles 双向字段完整 + 引用完整 + 审批链完整', () => {
+test('batchFiles 方向字段完整 + 引用完整 + 审批链完整', () => {
   const tableIds = ids(D.tables);
+  const dbIds = ids(D.databases);
   assert.ok(D.batchFiles.length >= 8);
   for (const b of D.batchFiles) {
-    // 双向字段：源系统/源表/目标系统/目标表缺一不可
+    assert.ok(b.direction === 'outbound' || b.direction === 'inbound', `batchFile ${b.id} direction 非法`);
     assert.ok(typeof b.sourceSystem === 'string' && b.sourceSystem.trim(), `batchFile ${b.id} 缺 sourceSystem`);
-    assert.ok(typeof b.sourceTableName === 'string' && b.sourceTableName.trim(), `batchFile ${b.id} 缺 sourceTableName`);
     assert.ok(typeof b.targetSystem === 'string' && b.targetSystem.trim(), `batchFile ${b.id} 缺 targetSystem`);
-    assert.ok(typeof b.targetTableName === 'string' && b.targetTableName.trim(), `batchFile ${b.id} 缺 targetTableName`);
-    // 平台内表引用完整性：有 tableId 必须在 tables 内；null 允许（外部表）
-    if (b.sourceTableId != null) assert.ok(tableIds.has(b.sourceTableId), `batchFile ${b.id} sourceTableId 不存在`);
-    if (b.targetTableId != null) assert.ok(tableIds.has(b.targetTableId), `batchFile ${b.id} targetTableId 不存在`);
-    // 双向：至少一端落在平台内（有 tableId）
-    assert.ok(b.sourceTableId != null || b.targetTableId != null, `batchFile ${b.id} 两端均为外部表，应至少一端为平台内表`);
+    if (b.direction === 'outbound') {
+      // 出站：表级字段，字段不变
+      assert.ok(typeof b.sourceTableName === 'string' && b.sourceTableName.trim(), `batchFile ${b.id} 缺 sourceTableName`);
+      assert.ok(typeof b.targetTableName === 'string' && b.targetTableName.trim(), `batchFile ${b.id} 缺 targetTableName`);
+      if (b.sourceTableId != null) assert.ok(tableIds.has(b.sourceTableId), `batchFile ${b.id} sourceTableId 不存在`);
+      if (b.targetTableId != null) assert.ok(tableIds.has(b.targetTableId), `batchFile ${b.id} targetTableId 不存在`);
+    } else {
+      // 入站：库级字段，不应再有表级字段
+      assert.ok(typeof b.sourceDatabaseName === 'string' && b.sourceDatabaseName.trim(), `batchFile ${b.id} 缺 sourceDatabaseName`);
+      assert.ok(typeof b.sourceDatabaseType === 'string' && b.sourceDatabaseType.trim(), `batchFile ${b.id} 缺 sourceDatabaseType`);
+      assert.ok(typeof b.targetDatabaseId === 'string' && b.targetDatabaseId.trim(), `batchFile ${b.id} 缺 targetDatabaseId`);
+      assert.ok(typeof b.targetDatabaseName === 'string' && b.targetDatabaseName.trim(), `batchFile ${b.id} 缺 targetDatabaseName`);
+      assert.ok(dbIds.has(b.targetDatabaseId), `batchFile ${b.id} targetDatabaseId ${b.targetDatabaseId} 不存在`);
+      assert.equal(b.sourceTableId, undefined, `batchFile ${b.id} 入站不应有 sourceTableId`);
+      assert.equal(b.sourceTableName, undefined, `batchFile ${b.id} 入站不应有 sourceTableName`);
+      assert.equal(b.targetTableId, undefined, `batchFile ${b.id} 入站不应有 targetTableId`);
+      assert.equal(b.targetTableName, undefined, `batchFile ${b.id} 入站不应有 targetTableName`);
+    }
     for (const s of b.applyFlow) assert.ok(s.step && s.result, `batchFile ${b.id} applyFlow 缺 step/result`);
   }
-  // 入站任务：sourceTableId 为 null，targetTableId 指向平台内表
-  const inbound = D.batchFiles.filter((b) => b.sourceTableId == null);
-  assert.ok(inbound.length >= 3, '应至少 3 条入站任务（sourceTableId 为 null）');
-  for (const b of inbound) assert.ok(tableIds.has(b.targetTableId), `入站任务 ${b.id} targetTableId 应指向平台内表`);
+  const outbound = D.batchFiles.filter((b) => b.direction === 'outbound');
+  const inbound = D.batchFiles.filter((b) => b.direction === 'inbound');
+  assert.equal(outbound.length, 5, '应 5 条出站任务');
+  assert.equal(inbound.length, 3, '应 3 条入站任务');
+});
+
+test('prodMetadatas 3 条 + batchFileId 引用完整 + 表/字段结构完整', () => {
+  assert.equal(D.prodMetadatas.length, 3);
+  const batchIds = ids(D.batchFiles);
+  const pmIds = ids(D.prodMetadatas);
+  assert.equal(pmIds.size, D.prodMetadatas.length, 'prodMetadatas id 重复');
+  for (const pm of D.prodMetadatas) {
+    assert.ok(batchIds.has(pm.batchFileId), `prodMetadata ${pm.id} batchFileId ${pm.batchFileId} 不存在`);
+    // batchFileId 关联的必须是入站任务
+    const bf = D.batchFiles.find((b) => b.id === pm.batchFileId);
+    assert.equal(bf.direction, 'inbound', `prodMetadata ${pm.id} batchFileId 应关联入站任务`);
+    assert.ok(typeof pm.targetDatabaseId === 'string' && pm.targetDatabaseId.trim(), `prodMetadata ${pm.id} 缺 targetDatabaseId`);
+    assert.ok(Array.isArray(pm.tables) && pm.tables.length >= 1, `prodMetadata ${pm.id} 缺 tables`);
+    for (const t of pm.tables) {
+      assert.ok(t.nameEn && t.nameCn, `prodMetadata ${pm.id} 表缺 nameEn/nameCn`);
+      assert.ok(Array.isArray(t.fields) && t.fields.length >= 1, `prodMetadata ${pm.id} 表 ${t.nameEn} 缺 fields`);
+      for (const f of t.fields) {
+        assert.ok(f.code && f.nameCn && f.type, `prodMetadata ${pm.id} 表 ${t.nameEn} 字段缺 code/nameCn/type`);
+      }
+    }
+  }
 });
 
 test('services 引用完整 + securityLevel 合法 + 审批链完整', () => {
