@@ -27,8 +27,25 @@ export function fieldSecuritySource(field, infoItems) {
   return { level, source };
 }
 
-// 字段 → 数据安全分类目录条目（fieldIds 反向查找，纯函数）。
-// 字段未登记进任何分类（如主数据引用字段）→ null。
-export function fieldSecurityCatalog(fieldId, securityCatalog) {
-  return (securityCatalog || []).find((c) => (c.fieldIds || []).includes(fieldId)) || null;
+// 字段 → 数据安全分类目录条目（字段侧 securityCatalogId 正向引用，纯函数）。
+// 字段未关联分类（如主数据引用字段）→ null。
+export function fieldSecurityCatalog(field, securityCatalog) {
+  const cid = field?.management?.securityCatalogId ?? null;
+  if (!cid) return null;
+  return (securityCatalog || []).find((c) => c.id === cid) || null;
+}
+
+// 字段 vs 数据安全分类目录的分级来源（治理自上而下：定位字段分级不得低于分类等级）。
+// 返回 { level, source }，source ∈ inherit-catalog / custom-upgrade / conflict / custom；未关联分类 → null。
+export function fieldSecurityCatalogSource(field, securityCatalog) {
+  const cat = fieldSecurityCatalog(field, securityCatalog);
+  if (!cat) return null;
+  const level = field?.management?.securityLevel ?? null;
+  if (level == null) return { level, source: 'custom' };
+  const fieldRank = LEVEL_RANK[level];
+  const catRank = LEVEL_RANK[cat.level];
+  if (fieldRank === undefined || catRank === undefined) return { level, source: 'custom' };
+  if (fieldRank === catRank) return { level, source: 'inherit-catalog' };
+  if (fieldRank > catRank) return { level, source: 'custom-upgrade' };
+  return { level, source: 'conflict' };
 }

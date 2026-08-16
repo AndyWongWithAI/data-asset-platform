@@ -93,18 +93,18 @@ test('importRows 表头正确 → 按表头对齐导入', async () => {
 });
 
 // ===== 字段（嵌套结构 + defaults 注入）=====
-const FIELD_HEADERS = ['字段编码', '字段中文名', '业务定义', '关联主数据', '技术类型', '长度', '主键', '外键', '关联标准', '安全分级', '责任人', '更新频率'];
+const FIELD_HEADERS = ['字段编码', '字段中文名', '业务定义', '关联主数据', '技术类型', '长度', '主键', '外键', '关联标准', '关联数据安全分类', '安全分级', '责任人', '更新频率'];
 
 test('buildColumns fields 排除 defaults 注入的 tableId', () => {
   const cols = buildColumns('fields', ['tableId']);
-  assert.deepEqual(cols.map((c) => c.key), ['business.code', 'business.nameCn', 'business.definition', 'business.masterDataId', 'technical.type', 'technical.length', 'technical.isPK', 'technical.isFK', 'management.standardId', 'management.securityLevel', 'management.owner', 'management.updateFrequency']);
+  assert.deepEqual(cols.map((c) => c.key), ['business.code', 'business.nameCn', 'business.definition', 'business.masterDataId', 'technical.type', 'technical.length', 'technical.isPK', 'technical.isFK', 'management.standardId', 'management.securityCatalogId', 'management.securityLevel', 'management.owner', 'management.updateFrequency']);
   assert.ok(!cols.some((c) => c.key === 'tableId'), 'tableId 应从模板列排除');
 });
 
 test('rowToPayloadMapped fields：点号 key unflatten 成嵌套对象', () => {
   const { mapping, missing } = mapHeaders(FIELD_HEADERS, 'fields', ['tableId']);
   assert.equal(missing.length, 0);
-  const p = rowToPayloadMapped('fields', mapping, ['test_field', '测试字段', '测风塔风速', '', 'decimal(5,2)', '7', 'false', 'false', '', 'L2', '测试组', '10分钟']);
+  const p = rowToPayloadMapped('fields', mapping, ['test_field', '测试字段', '测风塔风速', '', 'decimal(5,2)', '7', 'false', 'false', '', 'sc_003', 'L2', '测试组', '10分钟']);
   assert.equal(p.business.code, 'test_field');
   assert.equal(p.business.nameCn, '测试字段');
   assert.equal(p.business.definition, '测风塔风速');
@@ -112,6 +112,7 @@ test('rowToPayloadMapped fields：点号 key unflatten 成嵌套对象', () => {
   assert.equal(p.technical.type, 'decimal(5,2)');
   assert.equal(p.technical.length, 7);
   assert.equal(p.technical.isPK, false);
+  assert.equal(p.management.securityCatalogId, 'sc_003');
   assert.equal(p.management.securityLevel, 'L2');
   assert.equal(p.management.owner, '测试组');
   assert.equal(p.management.updateFrequency, '10分钟');
@@ -121,8 +122,8 @@ test('importRows fields 带 defaults：tableId 注入每条', async () => {
   const created = [];
   const createFn = async (entity, payload) => { created.push(payload); return payload; };
   const res = await importRows('fields', FIELD_HEADERS, [
-    ['f_a', '字段A', '', '', 'int', '', 'false', 'false', '', '', '甲组', ''],
-    ['f_b', '字段B', '', '', 'varchar', '', 'false', 'false', '', '', '乙组', ''],
+    ['f_a', '字段A', '', '', 'int', '', 'false', 'false', '', '', '', '甲组', ''],
+    ['f_b', '字段B', '', '', 'varchar', '', 'false', 'false', '', '', '', '乙组', ''],
   ], createFn, { tableId: 't_wind' });
   assert.equal(res.headerError, undefined);
   assert.equal(res.errors.length, 0);
@@ -132,4 +133,30 @@ test('importRows fields 带 defaults：tableId 注入每条', async () => {
   assert.equal(created[0].management.owner, '甲组');
   assert.equal(created[1].tableId, 't_wind');
   assert.equal(created[1].business.code, 'f_b');
+});
+
+// ===== securityCatalog 批量导入（category2 级联字段按普通文本列）=====
+const SC_HEADERS = ['一级分类', '二级分类', '数据类型', '数据分级'];
+
+test('buildColumns securityCatalog：含 category2 cascadeRef 列（按文本导入）', () => {
+  const cols = buildColumns('securityCatalog');
+  assert.deepEqual(cols.map((c) => c.key), ['category1', 'category2', 'dataType', 'level']);
+});
+
+test('importRows securityCatalog：按表头对齐导入', async () => {
+  const created = [];
+  const createFn = async (entity, payload) => { created.push(payload); return payload; };
+  const res = await importRows('securityCatalog', SC_HEADERS, [
+    ['项目经营域', '商机管理', '商机档案', 'L2'],
+    ['设计研发域', '勘测', '岩土勘察', 'L3'],
+  ], createFn);
+  assert.equal(res.headerError, undefined);
+  assert.equal(res.errors.length, 0);
+  assert.equal(created.length, 2);
+  assert.equal(created[0].category1, '项目经营域');
+  assert.equal(created[0].category2, '商机管理');
+  assert.equal(created[0].dataType, '商机档案');
+  assert.equal(created[0].level, 'L2');
+  assert.equal(created[1].category1, '设计研发域');
+  assert.equal(created[1].level, 'L3');
 });

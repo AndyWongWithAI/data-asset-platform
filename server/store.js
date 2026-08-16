@@ -83,6 +83,17 @@ const SCHEMAS = {
     types: {},
     refs: {},
   },
+  // 数据安全分类目录（字段级定位）。category1/category2 是能力地图标签（中文名），dataType 唯一标识一条分类。
+  // 字段定位改由字段侧 management.securityCatalogId 引用（见 fields.refs），本实体不再持有 fieldIds。
+  securityCatalog: {
+    idKey: 'id', idPrefix: 'sc', creatable: true, updatable: true,
+    required: ['category1', 'category2', 'dataType', 'level'],
+    unique: ['dataType'],
+    enum: { level: ['L1', 'L2', 'L3', 'L4'], status: ['启用', '停用'] },
+    types: {},
+    refs: {},
+    default: { status: '启用' },
+  },
   tables: {
     idKey: 'id', idPrefix: 't', creatable: true, updatable: true,
     required: ['nameCn', 'nameEn', 'tableType', 'appId', 'dbId', 'bizDomainId', 'subjectId'],
@@ -100,11 +111,11 @@ const SCHEMAS = {
     unique: [],
     enum: { 'management.securityLevel': ['L1', 'L2', 'L3', 'L4'] },
     types: { 'technical.length': 'number', 'technical.isPK': 'bool', 'technical.isFK': 'bool' },
-    refs: { tableId: 'tables', 'management.standardId': 'infoItems', 'business.masterDataId': 'masterData' },
+    refs: { tableId: 'tables', 'management.standardId': 'infoItems', 'business.masterDataId': 'masterData', 'management.securityCatalogId': 'securityCatalog' },
     editable: {
       business: ['nameCn', 'definition', 'masterDataId'],
       technical: ['type', 'length', 'isPK', 'isFK'],
-      management: ['standardId', 'securityLevel', 'owner', 'updateFrequency'],
+      management: ['standardId', 'securityCatalogId', 'securityLevel', 'owner', 'updateFrequency'],
     },
   },
   portalAssets: {
@@ -377,6 +388,15 @@ function domainErrors(entity, payload, ctx = {}) {
       const itemLevel = item?.securityLevel;
       if (itemLevel && LEVEL_RANK[securityLevel] != null && LEVEL_RANK[itemLevel] != null && LEVEL_RANK[securityLevel] < LEVEL_RANK[itemLevel]) {
         errors.push(`安全分级 ${securityLevel} 低于关联信息项「${item.nameCn}」的 ${itemLevel}，需上调或先解除关联标准`);
+      }
+    }
+    // 数据安全分类目录：定位字段最终分级不得低于分类等级（治理自上而下，分类等级是定位字段的下限）
+    const catalogId = getNested(final, 'management.securityCatalogId');
+    if (catalogId && securityLevel) {
+      const cat = state.securityCatalog.find((c) => c.id === catalogId);
+      const catLevel = cat?.level;
+      if (catLevel && LEVEL_RANK[securityLevel] != null && LEVEL_RANK[catLevel] != null && LEVEL_RANK[securityLevel] < LEVEL_RANK[catLevel]) {
+        errors.push(`安全分级 ${securityLevel} 低于关联数据安全分类「${cat.dataType}」的 ${catLevel}，需上调或先解除关联分类`);
       }
     }
   }

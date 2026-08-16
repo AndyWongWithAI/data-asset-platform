@@ -4,11 +4,11 @@ import Tag from '../components/Tag.jsx';
 import ComingSoonAction from '../components/ComingSoonAction.jsx';
 import EntityForm from '../components/EntityForm.jsx';
 import BulkImport from '../components/BulkImport.jsx';
-import { fieldSecuritySource, fieldSecurityCatalog } from '../fieldSecurity.js';
+import { fieldSecuritySource, fieldSecurityCatalog, fieldSecurityCatalogSource } from '../fieldSecurity.js';
 
 const LEVEL_TONE = { L1: 'ok', L2: 'default', L3: 'warn', L4: 'danger' };
-const SOURCE_LABEL = { inherit: '继承自信息项', 'custom-upgrade': '自定义升级', custom: '自定义', conflict: '冲突' };
-const SOURCE_TONE = { inherit: 'default', 'custom-upgrade': 'warn', custom: 'default', conflict: 'danger' };
+const SOURCE_LABEL = { inherit: '继承自信息项', 'inherit-catalog': '继承自分类目录', 'custom-upgrade': '自定义升级', custom: '自定义', conflict: '冲突' };
+const SOURCE_TONE = { inherit: 'default', 'inherit-catalog': 'default', 'custom-upgrade': 'warn', custom: 'default', conflict: 'danger' };
 const TABS = ['表级元数据', '字段元数据', '分区', '索引', '版本历史'];
 
 export default function TableDetailModule({ assetId, onNavigate }) {
@@ -79,8 +79,9 @@ export default function TableDetailModule({ assetId, onNavigate }) {
               const md = f.business.masterDataId
                 ? data.masterData.find((m) => m.id === f.business.masterDataId) : null;
               const sec = data.security.find((s) => s.level === f.management.securityLevel);
-              const secSrc = fieldSecuritySource(f, data.infoItems);
-              const secCat = fieldSecurityCatalog(f.id, data.securityCatalog);
+              const secCat = fieldSecurityCatalog(f, data.securityCatalog);
+              // 分级来源：字段关联分类目录时优先展示分类来源（继承自分类目录），否则展示信息项继承链来源
+              const secSrc = secCat ? fieldSecurityCatalogSource(f, data.securityCatalog) : fieldSecuritySource(f, data.infoItems);
               return (
                 <tr key={f.id} className={f.id === assetId?.fieldId ? 'row-active' : ''}>
                   <td>{f.seq}</td>

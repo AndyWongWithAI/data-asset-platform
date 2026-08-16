@@ -57,6 +57,14 @@ export const FORM_SCHEMAS = {
     { key: 'mask', label: '脱敏策略', type: 'text' },
   ],
 
+  // 数据安全分类目录：category1/category2 级联（对齐能力地图 capabilityMap），dataType 唯一标识（编辑只读）。
+  securityCatalog: [
+    { key: 'category1', label: '一级分类', type: 'enum', required: true, enum: ['项目经营域', '设计研发域', '工程交付域', '专业技术域', '支撑服务域'], help: '5 能力域' },
+    { key: 'category2', label: '二级分类', type: 'cascadeRef', required: true, source: 'capabilityMap', sourceKey: 'items', filterBy: 'category1', help: '随一级分类联动（27 能力项）' },
+    { key: 'dataType', label: '数据类型', type: 'text', required: true, readonlyOnUpdate: true, help: '分类唯一标识，编辑时只读' },
+    { key: 'level', label: '数据分级', type: 'enum', required: true, enum: ['L1', 'L2', 'L3', 'L4'], help: '定位字段的分级不得低于此等级' },
+  ],
+
   portalAssets: [
     { key: 'name', label: '资产名', type: 'text', required: true },
     { key: 'category', label: '业务分类', type: 'enum', required: true, enum: ['风资源', '海洋勘测', '风机设备', '运营监测', '海域环境'] },
@@ -96,7 +104,8 @@ export const FORM_SCHEMAS = {
     { key: 'technical.isPK', label: '主键', type: 'bool' },
     { key: 'technical.isFK', label: '外键', type: 'bool' },
     { key: 'management.standardId', label: '关联标准', type: 'ref', ref: 'infoItems', help: '贯标信息项，可选' },
-    { key: 'management.securityLevel', label: '安全分级', type: 'enum', enum: ['L1', 'L2', 'L3', 'L4'], help: '不得低于关联信息项分级' },
+    { key: 'management.securityCatalogId', label: '关联数据安全分类', type: 'ref', ref: 'securityCatalog', help: '字段级定位到分类目录，可选' },
+    { key: 'management.securityLevel', label: '安全分级', type: 'enum', enum: ['L1', 'L2', 'L3', 'L4'], help: '不得低于关联信息项/分类目录分级' },
     { key: 'management.owner', label: '责任人', type: 'text', required: true },
     { key: 'management.updateFrequency', label: '更新频率', type: 'text' },
   ],
@@ -110,6 +119,7 @@ export const ENTITY_TITLES = {
   infoItems: '信息项',
   qualityRules: '质量规则',
   security: '安全分级',
+  securityCatalog: '数据安全分类',
   portalAssets: '门户资产',
   tables: '表',
   fields: '字段',

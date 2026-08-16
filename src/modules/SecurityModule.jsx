@@ -2,15 +2,19 @@ import { useState } from 'react';
 import { useData } from '../DataContext.jsx';
 import Tag from '../components/Tag.jsx';
 import EntityForm from '../components/EntityForm.jsx';
-import ComingSoonAction from '../components/ComingSoonAction.jsx';
+import BulkImport from '../components/BulkImport.jsx';
 
 const LEVEL_TONE = { L1: 'ok', L2: 'default', L3: 'warn', L4: 'danger' };
 
 export default function SecurityModule({ onNavigate }) {
-  const { data } = useData();
+  const { data, updateRecord } = useData();
   const [tab, setTab] = useState('overview');
   const [editingLevel, setEditingLevel] = useState(null);
   const [category1, setCategory1] = useState('all');
+  const [showForm, setShowForm] = useState(false);
+  const [showImport, setShowImport] = useState(false);
+  const [editItem, setEditItem] = useState(null);
+  const toggleStatus = (sc) => updateRecord('securityCatalog', sc.id, { status: sc.status === '停用' ? '启用' : '停用' });
   const countByLevel = (lv) => data.fields.filter((f) => f.management.securityLevel === lv).length;
   const category1Options = [...new Set(data.securityCatalog.map((sc) => sc.category1))];
   const filteredCatalog = data.securityCatalog.filter((sc) => category1 === 'all' || sc.category1 === category1);
@@ -46,10 +50,11 @@ export default function SecurityModule({ onNavigate }) {
               <option value="all">全部</option>
               {category1Options.map((c) => <option key={c} value={c}>{c}</option>)}
             </select>
-            <ComingSoonAction label="新增分类" /> <ComingSoonAction label="批量导入" />
+            <button className="btn-primary" onClick={() => setShowForm(true)}>新增分类</button>
+            <button className="btn-secondary" onClick={() => setShowImport(true)}>批量导入</button>
           </div>
           <table className="table">
-            <thead><tr><th>一级分类</th><th>二级分类</th><th>数据类型</th><th>数据分级</th><th>操作</th></tr></thead>
+            <thead><tr><th>一级分类</th><th>二级分类</th><th>数据类型</th><th>数据分级</th><th>状态</th><th>操作</th></tr></thead>
             <tbody>
               {filteredCatalog.map((sc) => (
                 <tr key={sc.id}>
@@ -57,7 +62,8 @@ export default function SecurityModule({ onNavigate }) {
                   <td>{sc.category2}</td>
                   <td>{sc.dataType}</td>
                   <td><Tag tone={LEVEL_TONE[sc.level]}>{sc.level}</Tag></td>
-                  <td><button className="link" onClick={() => onNavigate('securityCatalogDetail', { catalogId: sc.id })}>查看明细</button> <ComingSoonAction label="编辑" variant="link" /> <ComingSoonAction label="删除" variant="link" /></td>
+                  <td>{sc.status === '停用' ? <Tag tone="warn">停用</Tag> : <Tag tone="ok">启用</Tag>}</td>
+                  <td><button className="link" onClick={() => onNavigate('securityCatalogDetail', { catalogId: sc.id })}>查看明细</button> <button className="link" onClick={() => setEditItem(sc)}>编辑</button> <button className="link" onClick={() => toggleStatus(sc)}>{sc.status === '停用' ? '启用' : '停用'}</button></td>
                 </tr>
               ))}
             </tbody>
@@ -66,6 +72,9 @@ export default function SecurityModule({ onNavigate }) {
         </div>
       )}
       {editingLevel && <EntityForm entity="security" mode="update" record={editingLevel} onClose={() => setEditingLevel(null)} onSaved={() => setEditingLevel(null)} />}
+      {showForm && <EntityForm entity="securityCatalog" onClose={() => setShowForm(false)} onSaved={() => setShowForm(false)} />}
+      {editItem && <EntityForm entity="securityCatalog" mode="update" record={editItem} onClose={() => setEditItem(null)} onSaved={() => setEditItem(null)} />}
+      {showImport && <BulkImport entity="securityCatalog" onClose={() => setShowImport(false)} onSaved={() => setShowImport(false)} />}
     </div>
   );
 }
