@@ -14,6 +14,7 @@ export function labelOf(entity, item) {
     case 'bizDomains': return item.name;
     case 'valueDomains': return item.code;
     case 'refDatas': return item.name;
+    case 'securityCatalog': return item.dataType;
     default: return item.nameCn ?? item.name ?? item.code ?? item.id;
   }
 }

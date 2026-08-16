@@ -15,11 +15,11 @@ function freshStore() {
   return dataFile;
 }
 
-test('init 加载种子：10 实体 + 数量正确', () => {
+test('init 加载种子：11 实体 + 数量正确', () => {
   freshStore();
   const s = getState();
-  assert.equal(ENTITIES.length, 10);
-  assert.deepEqual(ENTITIES.sort(), ['baseTerms', 'fields', 'infoItems', 'masterData', 'portalAssets', 'qualityRules', 'refDatas', 'security', 'tables', 'valueDomains'].sort());
+  assert.equal(ENTITIES.length, 11);
+  assert.deepEqual(ENTITIES.sort(), ['baseTerms', 'fields', 'infoItems', 'masterData', 'portalAssets', 'qualityRules', 'refDatas', 'security', 'securityCatalog', 'tables', 'valueDomains'].sort());
   assert.equal(s.applications.length, 5);
   assert.equal(s.tables.length, 10);
   assert.equal(s.fields.length, 51);
@@ -30,12 +30,14 @@ test('init 加载种子：10 实体 + 数量正确', () => {
   assert.equal(s.qualityRules.length, 8);
   assert.equal(s.masterData.length, 5);
   assert.equal(s.security.length, 4);
+  assert.equal(s.securityCatalog.length, 13);
+  assert.equal(s.capabilityMap.length, 5);
   assert.equal(s.portalAssets.length, 8);
 });
 
-test('CREATABLE 8 实体 / UPDATABLE 8 实体', () => {
-  assert.deepEqual(CREATABLE.sort(), ['baseTerms', 'fields', 'infoItems', 'portalAssets', 'qualityRules', 'refDatas', 'tables', 'valueDomains'].sort());
-  assert.deepEqual(UPDATABLE.sort(), ['baseTerms', 'fields', 'infoItems', 'qualityRules', 'refDatas', 'security', 'tables', 'valueDomains'].sort());
+test('CREATABLE 9 实体 / UPDATABLE 9 实体', () => {
+  assert.deepEqual(CREATABLE.sort(), ['baseTerms', 'fields', 'infoItems', 'portalAssets', 'qualityRules', 'refDatas', 'securityCatalog', 'tables', 'valueDomains'].sort());
+  assert.deepEqual(UPDATABLE.sort(), ['baseTerms', 'fields', 'infoItems', 'qualityRules', 'refDatas', 'security', 'securityCatalog', 'tables', 'valueDomains'].sort());
 });
 
 test('create tables：成功 + id 生成 + 服务端派生 history/partitions/indexes', () => {
@@ -315,7 +317,7 @@ test('HTTP 集成：GET /_entities 返回 entities/idKeys/creatable/updatable', 
     assert.equal(meta.idKeys.security, 'level');
     assert.ok(meta.creatable.includes('baseTerms'));
     assert.ok(!meta.creatable.includes('security'));
-    assert.deepEqual(meta.updatable.sort(), ['baseTerms', 'fields', 'infoItems', 'qualityRules', 'refDatas', 'security', 'tables', 'valueDomains'].sort());
+    assert.deepEqual(meta.updatable.sort(), ['baseTerms', 'fields', 'infoItems', 'qualityRules', 'refDatas', 'security', 'securityCatalog', 'tables', 'valueDomains'].sort());
   } finally {
     server.close();
   }
@@ -608,6 +610,61 @@ test('create fields：securityLevel 低于关联信息项 → 继承链拦截', 
   });
   assert.equal(r.ok, false);
   assert.ok(r.errors.some((e) => e.includes('安全分级')));
+});
+
+// ===== 数据安全分类目录（securityCatalog）写操作 + 字段级定位分级约束 =====
+test('create securityCatalog：成功 + id 自增 + status 默认启用', () => {
+  freshStore();
+  const r = create('securityCatalog', { category1: '项目经营域', category2: '商机管理', dataType: '商机档案', level: 'L2' });
+  assert.equal(r.ok, true);
+  assert.equal(r.record.id, 'sc_14');
+  assert.equal(r.record.status, '启用');
+  assert.equal(r.record.dataType, '商机档案');
+});
+
+test('create securityCatalog：dataType 唯一 → 报错', () => {
+  freshStore();
+  const r = create('securityCatalog', { category1: '设计研发域', category2: '资源评估', dataType: '测风数据', level: 'L2' });
+  assert.equal(r.ok, false);
+  assert.ok(r.errors.some((e) => e.includes('dataType')));
+});
+
+test('create securityCatalog：level 非法 → 报错', () => {
+  freshStore();
+  const r = create('securityCatalog', { category1: '支撑服务域', category2: '财务', dataType: '财务报表', level: 'L5' });
+  assert.equal(r.ok, false);
+  assert.ok(r.errors.some((e) => e.includes('level')));
+});
+
+test('update securityCatalog：改 level + 停用/启用可逆', () => {
+  freshStore();
+  const r = update('securityCatalog', 'sc_003', { level: 'L3' });
+  assert.equal(r.ok, true);
+  assert.equal(r.record.level, 'L3');
+  const off = update('securityCatalog', 'sc_003', { status: '停用' });
+  assert.equal(off.ok, true);
+  assert.equal(off.record.status, '停用');
+  const on = update('securityCatalog', 'sc_003', { status: '启用' });
+  assert.equal(on.ok, true);
+  assert.equal(on.record.status, '启用');
+});
+
+test('update fields：securityLevel 低于关联分类等级 → 拦截', () => {
+  freshStore();
+  // f_topo_depth 关联 sc_005（L4），改 L2 低于分类等级 → 治理自上而下拦截
+  const r = update('fields', 'f_topo_depth', { management: { securityLevel: 'L2' } });
+  assert.equal(r.ok, false);
+  assert.ok(r.errors.some((e) => e.includes('安全分级') && e.includes('分类')));
+});
+
+test('update fields：解除分类关联后可降级', () => {
+  freshStore();
+  // 先解除 sc_005 关联，分类约束不再生效，再降级到 L2 → 成功
+  const unlink = update('fields', 'f_topo_depth', { management: { securityCatalogId: null } });
+  assert.equal(unlink.ok, true);
+  const r = update('fields', 'f_topo_depth', { management: { securityLevel: 'L2' } });
+  assert.equal(r.ok, true);
+  assert.equal(r.record.management.securityLevel, 'L2');
 });
 
 // ===== schemaVersion 版本迁移测试 =====

@@ -123,6 +123,7 @@ def main():
         assert page.locator('.modal h3', has_text='编辑字段').count() == 1
         assert page.locator('.modal label', has_text='字段中文名').count() == 1
         assert page.locator('.modal label', has_text='安全分级').count() == 1
+        assert page.locator('.modal label', has_text='关联数据安全分类').count() == 1
         page.locator('.modal button', has_text='取消').click()
         assert page.locator('.modal').count() == 0
         # 字段新增 + 批量导入（真写入口）
@@ -360,6 +361,18 @@ def main():
         assert page.locator('.table thead th', has_text='定位').count() == 0   # 定位列已删
         assert page.locator('.table tbody tr').count() == 13
         assert page.locator('.search-bar select').count() == 1
+        # 二十期：分类目录 新增/编辑/停用（真写入口，非「开发中」占位）
+        page.locator('button', has_text='新增分类').click()
+        assert page.locator('.modal h3', has_text='新增数据安全分类').count() == 1
+        assert page.locator('.modal label', has_text='一级分类').count() == 1
+        assert page.locator('.modal label', has_text='二级分类').count() == 1
+        page.locator('.modal button', has_text='取消').click()
+        page.locator('.table tbody tr', has_text='测风数据').locator('button', has_text='编辑').first.click()
+        assert page.locator('.modal h3', has_text='编辑数据安全分类').count() == 1
+        page.locator('.modal button', has_text='取消').click()
+        # 状态列 + 停用/启用切换（可逆不物理删）
+        assert page.locator('.table thead th', has_text='状态').count() == 1
+        assert page.locator('.table tbody tr', has_text='测风数据').locator('button', has_text='停用').count() == 1
         # 分类目录「海底地形测绘数据」查看明细 → 数据安全分类详情（扁平字段列表：表名/字段中文名/字段英文名/字段安全分级来源/操作，5 字段）
         page.locator('.table tbody tr', has_text='海底地形测绘数据').locator('.link', has_text='查看明细').click()
         assert page.locator('.tab.active', has_text='数据安全分类详情').count() == 1

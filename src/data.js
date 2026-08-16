@@ -1,768 +1,4615 @@
 const D = {
-  meta: {
-    title: '数据资产管理平台',
+  "meta": {
+    "title": "数据资产管理平台",
     // 种子结构版本：后端持久化 data.json 版本落后/缺失时自动重种，避免 stale 数据掩盖新增字段。
     // ⚠️ 任何改动种子结构（增删实体/字段/枚举）都必须 +1，否则线上旧 data.json 不会被重种。
-    schemaVersion: 1,
-    disclaimer: '⚠ 参考模型声明：基于广东院公开业务信息构建的演示模型，非广东院实际部署、仅供演示。不虚构内部运营数据。',
-    stats: { applications: 5, databases: 5, tables: 10, fields: 51, rules: 8, baseTerms: 28, valueDomains: 6, refDatas: 5, infoItems: 10, masterData: 5, lineage: 9, batchFiles: 8, prodMetadatas: 3, services: 5, securityCatalog: 13, portalAssets: 8, portalRequests: 4 },
+    "schemaVersion": 2,
+    "disclaimer": "⚠ 参考模型声明：基于广东院公开业务信息构建的演示模型，非广东院实际部署、仅供演示。不虚构内部运营数据。",
+    "stats": {
+      "applications": 5,
+      "databases": 5,
+      "tables": 10,
+      "fields": 51,
+      "rules": 8,
+      "baseTerms": 28,
+      "valueDomains": 6,
+      "refDatas": 5,
+      "infoItems": 10,
+      "masterData": 5,
+      "lineage": 9,
+      "batchFiles": 8,
+      "prodMetadatas": 3,
+      "services": 5,
+      "securityCatalog": 13,
+      "portalAssets": 8,
+      "portalRequests": 4
+    }
   },
-  applications: [
-    { id: 'app_res', name: '风资源评估系统', desc: '测风/气象数据采集与分析' },
-    { id: 'app_survey', name: '海洋勘测系统', desc: '地质/测绘/岩土数据' },
-    { id: 'app_design', name: '工程设计系统', desc: '风机/海缆/升压站设计' },
-    { id: 'app_build', name: '施工管理系统', desc: '船机调度/作业进度' },
-    { id: 'app_ops', name: '智慧运维系统', desc: 'SCADA 遥测/功率预测/备件' },
+  "applications": [
+    {
+      "id": "app_res",
+      "name": "风资源评估系统",
+      "desc": "测风/气象数据采集与分析"
+    },
+    {
+      "id": "app_survey",
+      "name": "海洋勘测系统",
+      "desc": "地质/测绘/岩土数据"
+    },
+    {
+      "id": "app_design",
+      "name": "工程设计系统",
+      "desc": "风机/海缆/升压站设计"
+    },
+    {
+      "id": "app_build",
+      "name": "施工管理系统",
+      "desc": "船机调度/作业进度"
+    },
+    {
+      "id": "app_ops",
+      "name": "智慧运维系统",
+      "desc": "SCADA 遥测/功率预测/备件"
+    }
   ],
-  databases: [
-    { id: 'db_res', appId: 'app_res', name: '资源评估库', type: 'PostgreSQL' },
-    { id: 'db_survey', appId: 'app_survey', name: '勘测库', type: 'PostgreSQL' },
-    { id: 'db_design', appId: 'app_design', name: '设计库', type: 'Oracle' },
-    { id: 'db_build', appId: 'app_build', name: '施工库', type: 'MySQL' },
-    { id: 'db_ops', appId: 'app_ops', name: '运维库', type: 'Hive' },
+  "databases": [
+    {
+      "id": "db_res",
+      "appId": "app_res",
+      "name": "资源评估库",
+      "type": "PostgreSQL"
+    },
+    {
+      "id": "db_survey",
+      "appId": "app_survey",
+      "name": "勘测库",
+      "type": "PostgreSQL"
+    },
+    {
+      "id": "db_design",
+      "appId": "app_design",
+      "name": "设计库",
+      "type": "Oracle"
+    },
+    {
+      "id": "db_build",
+      "appId": "app_build",
+      "name": "施工库",
+      "type": "MySQL"
+    },
+    {
+      "id": "db_ops",
+      "appId": "app_ops",
+      "name": "运维库",
+      "type": "Hive"
+    }
   ],
-  bizDomains: [
-    { id: 'bd_resource', name: '资源评估域', subjects: [{ id: 'bs_wind', name: '测风' }] },
-    { id: 'bd_survey', name: '勘测域', subjects: [{ id: 'bs_geo', name: '地质' }, { id: 'bs_topo', name: '测绘' }] },
-    { id: 'bd_design', name: '设计域', subjects: [{ id: 'bs_device', name: '设备设计' }] },
-    { id: 'bd_build', name: '工程建设域', subjects: [{ id: 'bs_schedule', name: '进度' }] },
-    { id: 'bd_ops', name: '生产运营域', subjects: [{ id: 'bs_scada', name: '遥测' }, { id: 'bs_forecast', name: '功率预测' }, { id: 'bs_spare', name: '备件' }] },
+  "bizDomains": [
+    {
+      "id": "bd_resource",
+      "name": "资源评估域",
+      "subjects": [
+        {
+          "id": "bs_wind",
+          "name": "测风"
+        }
+      ]
+    },
+    {
+      "id": "bd_survey",
+      "name": "勘测域",
+      "subjects": [
+        {
+          "id": "bs_geo",
+          "name": "地质"
+        },
+        {
+          "id": "bs_topo",
+          "name": "测绘"
+        }
+      ]
+    },
+    {
+      "id": "bd_design",
+      "name": "设计域",
+      "subjects": [
+        {
+          "id": "bs_device",
+          "name": "设备设计"
+        }
+      ]
+    },
+    {
+      "id": "bd_build",
+      "name": "工程建设域",
+      "subjects": [
+        {
+          "id": "bs_schedule",
+          "name": "进度"
+        }
+      ]
+    },
+    {
+      "id": "bd_ops",
+      "name": "生产运营域",
+      "subjects": [
+        {
+          "id": "bs_scada",
+          "name": "遥测"
+        },
+        {
+          "id": "bs_forecast",
+          "name": "功率预测"
+        },
+        {
+          "id": "bs_spare",
+          "name": "备件"
+        }
+      ]
+    }
   ],
-  security: [
-    { level: 'L1', name: '公开', desc: '可对外公开', mask: null },
-    { level: 'L2', name: '内部', desc: '企业内部共享', mask: null },
-    { level: 'L3', name: '敏感', desc: '受限共享，脱敏后使用', mask: '字段掩码/坐标偏移' },
-    { level: 'L4', name: '涉密', desc: '涉密，导出受管控', mask: '坐标模糊化' },
+  "security": [
+    {
+      "level": "L1",
+      "name": "公开",
+      "desc": "可对外公开",
+      "mask": null
+    },
+    {
+      "level": "L2",
+      "name": "内部",
+      "desc": "企业内部共享",
+      "mask": null
+    },
+    {
+      "level": "L3",
+      "name": "敏感",
+      "desc": "受限共享，脱敏后使用",
+      "mask": "字段掩码/坐标偏移"
+    },
+    {
+      "level": "L4",
+      "name": "涉密",
+      "desc": "涉密，导出受管控",
+      "mask": "坐标模糊化"
+    }
   ],
-  securityCatalog: [
-    { id: 'sc_001', category1: '项目经营域', category2: '投标管理', dataType: '投标书', level: 'L2', fieldIds: [] },
-    { id: 'sc_002', category1: '项目经营域', category2: '合同管理', dataType: '合同', level: 'L3', fieldIds: [] },
-    { id: 'sc_003', category1: '设计研发域', category2: '资源评估', dataType: '测风数据', level: 'L2', fieldIds: ['f_wind_speed', 'f_wind_dir', 'f_wind_turbulence', 'f_wind_time'] },
-    { id: 'sc_004', category1: '设计研发域', category2: '勘测', dataType: '地质钻孔数据', level: 'L3', fieldIds: ['f_geo_stratum', 'f_geo_depth', 'f_geo_soil', 'f_geo_bearing'] },
-    { id: 'sc_005', category1: '设计研发域', category2: '勘测', dataType: '海底地形测绘数据', level: 'L4', fieldIds: ['f_topo_coord', 'f_topo_depth', 'f_topo_survey', 'f_topo_route', 'f_cable_route'] },
-    { id: 'sc_006', category1: '设计研发域', category2: '专业设计', dataType: '风机设备数据', level: 'L2', fieldIds: ['f_turbine_model', 'f_turbine_power', 'f_turbine_foundation'] },
-    { id: 'sc_007', category1: '设计研发域', category2: '专业设计', dataType: '海缆参数数据', level: 'L3', fieldIds: ['f_cable_type', 'f_cable_voltage', 'f_cable_temp'] },
-    { id: 'sc_008', category1: '设计研发域', category2: '专业设计', dataType: '升压站主变数据', level: 'L2', fieldIds: ['f_sub_capacity', 'f_sub_voltage', 'f_sub_oil_temp'] },
-    { id: 'sc_009', category1: '工程交付域', category2: '施工管理', dataType: '施工作业进度数据', level: 'L2', fieldIds: ['f_prog_task', 'f_prog_progress', 'f_prog_vessel', 'f_prog_seastate'] },
-    { id: 'sc_010', category1: '工程交付域', category2: '运营管理', dataType: 'SCADA遥测数据', level: 'L2', fieldIds: ['f_scada_power', 'f_scada_temp', 'f_scada_vibration', 'f_scada_time'] },
-    { id: 'sc_011', category1: '工程交付域', category2: '运营管理', dataType: '功率预测结果数据', level: 'L2', fieldIds: ['f_forecast_time', 'f_forecast_power', 'f_forecast_accuracy', 'f_forecast_model'] },
-    { id: 'sc_012', category1: '专业技术域', category2: '新能源发电设计', dataType: '发电量测算报告', level: 'L2', fieldIds: [] },
-    { id: 'sc_013', category1: '支撑服务域', category2: '供应链', dataType: '备品备件数据', level: 'L2', fieldIds: ['f_spare_name', 'f_spare_qty', 'f_spare_turbine'] },
+  "securityCatalog": [
+    {
+      "id": "sc_001",
+      "category1": "项目经营域",
+      "category2": "投标管理",
+      "dataType": "投标书",
+      "level": "L2",
+      "status": "启用"
+    },
+    {
+      "id": "sc_002",
+      "category1": "项目经营域",
+      "category2": "合同管理",
+      "dataType": "合同",
+      "level": "L3",
+      "status": "启用"
+    },
+    {
+      "id": "sc_003",
+      "category1": "设计研发域",
+      "category2": "资源评估",
+      "dataType": "测风数据",
+      "level": "L2",
+      "status": "启用"
+    },
+    {
+      "id": "sc_004",
+      "category1": "设计研发域",
+      "category2": "勘测",
+      "dataType": "地质钻孔数据",
+      "level": "L3",
+      "status": "启用"
+    },
+    {
+      "id": "sc_005",
+      "category1": "设计研发域",
+      "category2": "勘测",
+      "dataType": "海底地形测绘数据",
+      "level": "L4",
+      "status": "启用"
+    },
+    {
+      "id": "sc_006",
+      "category1": "设计研发域",
+      "category2": "专业设计",
+      "dataType": "风机设备数据",
+      "level": "L2",
+      "status": "启用"
+    },
+    {
+      "id": "sc_007",
+      "category1": "设计研发域",
+      "category2": "专业设计",
+      "dataType": "海缆参数数据",
+      "level": "L3",
+      "status": "启用"
+    },
+    {
+      "id": "sc_008",
+      "category1": "设计研发域",
+      "category2": "专业设计",
+      "dataType": "升压站主变数据",
+      "level": "L2",
+      "status": "启用"
+    },
+    {
+      "id": "sc_009",
+      "category1": "工程交付域",
+      "category2": "施工管理",
+      "dataType": "施工作业进度数据",
+      "level": "L2",
+      "status": "启用"
+    },
+    {
+      "id": "sc_010",
+      "category1": "工程交付域",
+      "category2": "运营管理",
+      "dataType": "SCADA遥测数据",
+      "level": "L2",
+      "status": "启用"
+    },
+    {
+      "id": "sc_011",
+      "category1": "工程交付域",
+      "category2": "运营管理",
+      "dataType": "功率预测结果数据",
+      "level": "L2",
+      "status": "启用"
+    },
+    {
+      "id": "sc_012",
+      "category1": "专业技术域",
+      "category2": "新能源发电设计",
+      "dataType": "发电量测算报告",
+      "level": "L2",
+      "status": "启用"
+    },
+    {
+      "id": "sc_013",
+      "category1": "支撑服务域",
+      "category2": "供应链",
+      "dataType": "备品备件数据",
+      "level": "L2",
+      "status": "启用"
+    }
   ],
-  masterData: [
-    { id: 'md_turbine', code: 'MD-001', name: '风机主数据', entityType: '风机',
-      definition: '风电机组的权威主数据，统一机组机型、额定功率与基础型式等核心属性',
-      rule: '风机编码全局唯一；机型参数变更须走主数据变更审批；退役机组冻结状态保留历史',
-      owner: '设计组',
-      approvals: [
-        { id: 'ap_md_turbine_1', type: '新建申请', applicant: '设计组', applyTime: '2024-02-01', approver: '数据治理组', status: '通过', approveTime: '2024-02-05', comment: '风机主数据编码规则通过，纳入主数据目录' },
-        { id: 'ap_md_turbine_2', type: '变更申请', applicant: '设计组', applyTime: '2025-05-10', approver: '数据治理组', status: '通过', approveTime: '2025-05-15', comment: '新增 16.6MW 漂浮式机型编码' },
-        { id: 'ap_md_turbine_3', type: '变更申请', applicant: '运维组', applyTime: '2025-11-20', approver: '数据治理组', status: '驳回', approveTime: '2025-11-25', comment: '退役机组主数据变更材料不全，驳回补充' },
-      ] },
-    { id: 'md_cable', code: 'MD-002', name: '海缆主数据', entityType: '海缆',
-      definition: '海缆的权威主数据，统一海缆类型、电压等级与截面等核心属性',
-      rule: '海缆编码全局唯一；电压等级/截面变更须走审批；退役海缆冻结保留历史',
-      owner: '设计组',
-      approvals: [
-        { id: 'ap_md_cable_1', type: '新建申请', applicant: '设计组', applyTime: '2024-02-20', approver: '数据治理组', status: '通过', approveTime: '2024-02-24', comment: '海缆主数据编码规则通过' },
-        { id: 'ap_md_cable_2', type: '变更申请', applicant: '设计组', applyTime: '2025-06-01', approver: '数据治理组', status: '通过', approveTime: '2025-06-05', comment: '新增 500kV 三芯海缆规格编码' },
-      ] },
-    { id: 'md_substation', code: 'MD-003', name: '升压站主数据', entityType: '升压站',
-      definition: '海上升压站的权威主数据，统一主变容量、电压等级与接线方式等核心属性',
-      rule: '升压站编码全局唯一；主变容量变更须走审批；退役站点冻结保留历史',
-      owner: '设计组',
-      approvals: [
-        { id: 'ap_md_substation_1', type: '新建申请', applicant: '设计组', applyTime: '2024-03-01', approver: '数据治理组', status: '通过', approveTime: '2024-03-05', comment: '升压站主数据编码规则通过' },
-        { id: 'ap_md_substation_2', type: '变更申请', applicant: '工程组', applyTime: '2025-07-10', approver: '数据治理组', status: '通过', approveTime: '2025-07-15', comment: '主变容量扩容变更通过' },
-      ] },
-    { id: 'md_project', code: 'MD-004', name: '项目主数据', entityType: '项目',
-      definition: '海上风电项目的权威主数据，统一项目名称、规模与阶段等核心属性',
-      rule: '项目编码全局唯一；项目阶段变更须走审批；并网/退役状态冻结',
-      owner: '工程组',
-      approvals: [
-        { id: 'ap_md_project_1', type: '新建申请', applicant: '工程组', applyTime: '2024-01-15', approver: '数据治理组', status: '通过', approveTime: '2024-01-20', comment: '项目主数据编码规则通过' },
-        { id: 'ap_md_project_2', type: '变更申请', applicant: '工程组', applyTime: '2025-09-01', approver: '数据治理组', status: '通过', approveTime: '2025-09-05', comment: '项目阶段由建设变更为运维' },
-      ] },
-    { id: 'md_supplier', code: 'MD-005', name: '供应商主数据', entityType: '供应商',
-      definition: '设备与材料供应商的权威主数据，统一供应商资质与供货范围等核心属性',
-      rule: '供应商编码全局唯一；资质变更须走审批；不良供应商冻结停用',
-      owner: '工程组',
-      approvals: [
-        { id: 'ap_md_supplier_1', type: '新建申请', applicant: '工程组', applyTime: '2024-01-25', approver: '数据治理组', status: '通过', approveTime: '2024-01-30', comment: '供应商主数据编码规则通过' },
-        { id: 'ap_md_supplier_2', type: '变更申请', applicant: '工程组', applyTime: '2025-10-12', approver: '数据治理组', status: '通过', approveTime: '2025-10-16', comment: '供应商资质与供货范围变更通过' },
-      ] },
+  "masterData": [
+    {
+      "id": "md_turbine",
+      "code": "MD-001",
+      "name": "风机主数据",
+      "entityType": "风机",
+      "definition": "风电机组的权威主数据，统一机组机型、额定功率与基础型式等核心属性",
+      "rule": "风机编码全局唯一；机型参数变更须走主数据变更审批；退役机组冻结状态保留历史",
+      "owner": "设计组",
+      "approvals": [
+        {
+          "id": "ap_md_turbine_1",
+          "type": "新建申请",
+          "applicant": "设计组",
+          "applyTime": "2024-02-01",
+          "approver": "数据治理组",
+          "status": "通过",
+          "approveTime": "2024-02-05",
+          "comment": "风机主数据编码规则通过，纳入主数据目录"
+        },
+        {
+          "id": "ap_md_turbine_2",
+          "type": "变更申请",
+          "applicant": "设计组",
+          "applyTime": "2025-05-10",
+          "approver": "数据治理组",
+          "status": "通过",
+          "approveTime": "2025-05-15",
+          "comment": "新增 16.6MW 漂浮式机型编码"
+        },
+        {
+          "id": "ap_md_turbine_3",
+          "type": "变更申请",
+          "applicant": "运维组",
+          "applyTime": "2025-11-20",
+          "approver": "数据治理组",
+          "status": "驳回",
+          "approveTime": "2025-11-25",
+          "comment": "退役机组主数据变更材料不全，驳回补充"
+        }
+      ]
+    },
+    {
+      "id": "md_cable",
+      "code": "MD-002",
+      "name": "海缆主数据",
+      "entityType": "海缆",
+      "definition": "海缆的权威主数据，统一海缆类型、电压等级与截面等核心属性",
+      "rule": "海缆编码全局唯一；电压等级/截面变更须走审批；退役海缆冻结保留历史",
+      "owner": "设计组",
+      "approvals": [
+        {
+          "id": "ap_md_cable_1",
+          "type": "新建申请",
+          "applicant": "设计组",
+          "applyTime": "2024-02-20",
+          "approver": "数据治理组",
+          "status": "通过",
+          "approveTime": "2024-02-24",
+          "comment": "海缆主数据编码规则通过"
+        },
+        {
+          "id": "ap_md_cable_2",
+          "type": "变更申请",
+          "applicant": "设计组",
+          "applyTime": "2025-06-01",
+          "approver": "数据治理组",
+          "status": "通过",
+          "approveTime": "2025-06-05",
+          "comment": "新增 500kV 三芯海缆规格编码"
+        }
+      ]
+    },
+    {
+      "id": "md_substation",
+      "code": "MD-003",
+      "name": "升压站主数据",
+      "entityType": "升压站",
+      "definition": "海上升压站的权威主数据，统一主变容量、电压等级与接线方式等核心属性",
+      "rule": "升压站编码全局唯一；主变容量变更须走审批；退役站点冻结保留历史",
+      "owner": "设计组",
+      "approvals": [
+        {
+          "id": "ap_md_substation_1",
+          "type": "新建申请",
+          "applicant": "设计组",
+          "applyTime": "2024-03-01",
+          "approver": "数据治理组",
+          "status": "通过",
+          "approveTime": "2024-03-05",
+          "comment": "升压站主数据编码规则通过"
+        },
+        {
+          "id": "ap_md_substation_2",
+          "type": "变更申请",
+          "applicant": "工程组",
+          "applyTime": "2025-07-10",
+          "approver": "数据治理组",
+          "status": "通过",
+          "approveTime": "2025-07-15",
+          "comment": "主变容量扩容变更通过"
+        }
+      ]
+    },
+    {
+      "id": "md_project",
+      "code": "MD-004",
+      "name": "项目主数据",
+      "entityType": "项目",
+      "definition": "海上风电项目的权威主数据，统一项目名称、规模与阶段等核心属性",
+      "rule": "项目编码全局唯一；项目阶段变更须走审批；并网/退役状态冻结",
+      "owner": "工程组",
+      "approvals": [
+        {
+          "id": "ap_md_project_1",
+          "type": "新建申请",
+          "applicant": "工程组",
+          "applyTime": "2024-01-15",
+          "approver": "数据治理组",
+          "status": "通过",
+          "approveTime": "2024-01-20",
+          "comment": "项目主数据编码规则通过"
+        },
+        {
+          "id": "ap_md_project_2",
+          "type": "变更申请",
+          "applicant": "工程组",
+          "applyTime": "2025-09-01",
+          "approver": "数据治理组",
+          "status": "通过",
+          "approveTime": "2025-09-05",
+          "comment": "项目阶段由建设变更为运维"
+        }
+      ]
+    },
+    {
+      "id": "md_supplier",
+      "code": "MD-005",
+      "name": "供应商主数据",
+      "entityType": "供应商",
+      "definition": "设备与材料供应商的权威主数据，统一供应商资质与供货范围等核心属性",
+      "rule": "供应商编码全局唯一；资质变更须走审批；不良供应商冻结停用",
+      "owner": "工程组",
+      "approvals": [
+        {
+          "id": "ap_md_supplier_1",
+          "type": "新建申请",
+          "applicant": "工程组",
+          "applyTime": "2024-01-25",
+          "approver": "数据治理组",
+          "status": "通过",
+          "approveTime": "2024-01-30",
+          "comment": "供应商主数据编码规则通过"
+        },
+        {
+          "id": "ap_md_supplier_2",
+          "type": "变更申请",
+          "applicant": "工程组",
+          "applyTime": "2025-10-12",
+          "approver": "数据治理组",
+          "status": "通过",
+          "approveTime": "2025-10-16",
+          "comment": "供应商资质与供货范围变更通过"
+        }
+      ]
+    }
   ],
-  baseTerms: [
-    // 类词（10，isClassWord=true）
-    { id: 'term_name', nameCn: '名称', nameEn: 'name', synonyms: ['名'], isClassWord: true, status: '启用' },
-    { id: 'term_code', nameCn: '编码', nameEn: 'code', synonyms: ['编号', '代码'], isClassWord: true, status: '启用' },
-    { id: 'term_quantity', nameCn: '量', nameEn: 'quantity', synonyms: ['数量'], isClassWord: true, status: '启用' },
-    { id: 'term_value', nameCn: '值', nameEn: 'value', synonyms: ['数值'], isClassWord: true, status: '启用' },
-    { id: 'term_date', nameCn: '日期', nameEn: 'date', synonyms: [], isClassWord: true, status: '启用' },
-    { id: 'term_time', nameCn: '时间', nameEn: 'time', synonyms: [], isClassWord: true, status: '启用' },
-    { id: 'term_datetime', nameCn: '日期时间', nameEn: 'datetime', synonyms: ['时间戳'], isClassWord: true, status: '启用' },
-    { id: 'term_identifier', nameCn: '标识', nameEn: 'identifier', synonyms: ['ID', '标识符'], isClassWord: true, status: '启用' },
-    { id: 'term_percent', nameCn: '百分比', nameEn: 'percent', synonyms: ['百分比值', '百分数'], isClassWord: true, status: '启用' },
-    { id: 'term_rate', nameCn: '率', nameEn: 'rate', synonyms: ['比率'], isClassWord: true, status: '启用' },
-    // 修饰词根（18，isClassWord=false）
-    { id: 'term_voltage', nameCn: '电压', nameEn: 'voltage', synonyms: ['电压值'], isClassWord: false, status: '启用' },
-    { id: 'term_level', nameCn: '等级', nameEn: 'level', synonyms: ['级别'], isClassWord: false, status: '启用' },
-    { id: 'term_active', nameCn: '有功', nameEn: 'active', synonyms: [], isClassWord: false, status: '启用' },
-    { id: 'term_power', nameCn: '功率', nameEn: 'power', synonyms: [], isClassWord: false, status: '启用' },
-    { id: 'term_turbine', nameCn: '风机', nameEn: 'turbine', synonyms: ['风力发电机', '机组'], isClassWord: false, status: '启用' },
-    { id: 'term_model', nameCn: '机型', nameEn: 'model', synonyms: ['型号'], isClassWord: false, status: '启用' },
-    { id: 'term_foundation', nameCn: '基础', nameEn: 'foundation', synonyms: ['基础结构'], isClassWord: false, status: '启用' },
-    { id: 'term_pattern', nameCn: '型式', nameEn: 'pattern', synonyms: ['形式'], isClassWord: false, status: '启用' },
-    { id: 'term_cable', nameCn: '海缆', nameEn: 'cable', synonyms: ['海底电缆', '电缆'], isClassWord: false, status: '启用' },
-    { id: 'term_type', nameCn: '类型', nameEn: 'type', synonyms: ['类别'], isClassWord: false, status: '启用' },
-    { id: 'term_sea_area', nameCn: '海域', nameEn: 'sea_area', synonyms: ['海区'], isClassWord: false, status: '启用' },
-    { id: 'term_forecast', nameCn: '预测', nameEn: 'forecast', synonyms: ['预报'], isClassWord: false, status: '启用' },
-    { id: 'term_accuracy', nameCn: '精度', nameEn: 'accuracy', synonyms: ['准确度'], isClassWord: false, status: '启用' },
-    { id: 'term_wind_speed', nameCn: '风速', nameEn: 'wind_speed', synonyms: ['测风风速'], isClassWord: false, status: '启用' },
-    { id: 'term_temperature', nameCn: '温度', nameEn: 'temperature', synonyms: ['温度值'], isClassWord: false, status: '启用' },
-    { id: 'term_progress', nameCn: '进度', nameEn: 'progress', synonyms: ['进度值'], isClassWord: false, status: '启用' },
-    { id: 'term_project', nameCn: '项目', nameEn: 'project', synonyms: ['工程项目'], isClassWord: false, status: '启用' },
-    { id: 'term_master_data', nameCn: '主数据', nameEn: 'master_data', synonyms: ['主数据编码'], isClassWord: false, status: '启用' },
-  ],
-  valueDomains: [
-    { id: 'vd_varchar10', code: 'VD-VARCHAR10', dataType: 'varchar', length: 10, precision: 0, status: '启用' },
-    { id: 'vd_dec52', code: 'VD-DEC52', dataType: 'decimal', length: 7, precision: 2, status: '启用' },
-    { id: 'vd_dec51', code: 'VD-DEC51', dataType: 'decimal', length: 6, precision: 1, status: '启用' },
-    { id: 'vd_name', code: 'VD-NAME', dataType: 'varchar', length: 64, precision: 0, status: '启用' },
-    { id: 'vd_code', code: 'VD-CODE', dataType: 'varchar', length: 32, precision: 0, status: '启用' },
-    { id: 'vd_percent', code: 'VD-PERCENT', dataType: 'decimal', length: 6, precision: 2, status: '启用' },
-  ],
-  refDatas: [
-    { id: 'rd_voltage', code: 'CK0001', name: '电压等级', status: '启用', values: [
-      { code: '01', name: '35kV' }, { code: '02', name: '66kV' }, { code: '03', name: '220kV' }, { code: '04', name: '500kV' }, { code: '05', name: '±500kV' },
-    ] },
-    { id: 'rd_turbine', code: 'CK0002', name: '风机机型', status: '启用', values: [
-      { code: '01', name: '8MW' }, { code: '02', name: '12MW' }, { code: '03', name: '16MW' }, { code: '04', name: '16.6MW漂浮式' },
-    ] },
-    { id: 'rd_foundation', code: 'CK0003', name: '基础型式', status: '启用', values: [
-      { code: '01', name: '单桩' }, { code: '02', name: '导管架' }, { code: '03', name: '多桩' }, { code: '04', name: '漂浮式' },
-    ] },
-    { id: 'rd_sea_area', code: 'CK0004', name: '海域', status: '启用', values: [
-      { code: '01', name: '粤东' }, { code: '02', name: '粤西' }, { code: '03', name: '珠三角' },
-    ] },
-    { id: 'rd_cable', code: 'CK0005', name: '海缆类型', status: '启用', values: [
-      { code: '01', name: '集电' }, { code: '02', name: '送出' }, { code: '03', name: '三芯' }, { code: '04', name: '单芯' },
-    ] },
-  ],
-  infoItems: [
-    { id: 'ii_voltage', code: 'II0001', nameCn: '电压等级编码', nameEn: 'voltage_level_code', termIds: ['term_voltage', 'term_level', 'term_code'], valueDomainId: 'vd_varchar10', refDataId: 'rd_voltage', type: '业务', bizDomainId: 'bd_design', definition: '海上风电设备/海缆的电压等级标准取值', securityLevel: 'L2', status: '启用' },
-    { id: 'ii_active_power', code: 'II0002', nameCn: '有功功率值', nameEn: 'active_power_value', termIds: ['term_active', 'term_power', 'term_value'], valueDomainId: 'vd_dec52', refDataId: null, type: '业务', bizDomainId: 'bd_ops', definition: '风电机组有功功率的标准取值', securityLevel: 'L2', status: '启用' },
-    { id: 'ii_turbine_model', code: 'II0003', nameCn: '风机机型名称', nameEn: 'turbine_model_name', termIds: ['term_turbine', 'term_model', 'term_name'], valueDomainId: 'vd_name', refDataId: 'rd_turbine', type: '业务', bizDomainId: 'bd_design', definition: '风机机型的标准名称', securityLevel: 'L2', status: '启用' },
-    { id: 'ii_foundation', code: 'II0004', nameCn: '基础型式名称', nameEn: 'foundation_pattern_name', termIds: ['term_foundation', 'term_pattern', 'term_name'], valueDomainId: 'vd_name', refDataId: 'rd_foundation', type: '业务', bizDomainId: 'bd_design', definition: '风机基础结构型式的标准名称', securityLevel: 'L2', status: '启用' },
-    { id: 'ii_sea_area', code: 'II0005', nameCn: '海域编码', nameEn: 'sea_area_code', termIds: ['term_sea_area', 'term_code'], valueDomainId: 'vd_code', refDataId: 'rd_sea_area', type: '业务', bizDomainId: 'bd_survey', definition: '海上风电场所在海域的标准编码', securityLevel: 'L4', status: '启用' },
-    { id: 'ii_cable_type', code: 'II0006', nameCn: '海缆类型名称', nameEn: 'cable_type_name', termIds: ['term_cable', 'term_type', 'term_name'], valueDomainId: 'vd_name', refDataId: 'rd_cable', type: '业务', bizDomainId: 'bd_design', definition: '海缆类型的标准名称', securityLevel: 'L3', status: '启用' },
-    { id: 'ii_accuracy', code: 'II0007', nameCn: '预测精度百分比', nameEn: 'forecast_accuracy_percent', termIds: ['term_forecast', 'term_accuracy', 'term_percent'], valueDomainId: 'vd_percent', refDataId: null, type: '业务', bizDomainId: 'bd_ops', definition: '功率预测精度的标准百分比', securityLevel: 'L2', status: '启用' },
-    { id: 'ii_wind_speed', code: 'II0008', nameCn: '风速值', nameEn: 'wind_speed_value', termIds: ['term_wind_speed', 'term_value'], valueDomainId: 'vd_dec52', refDataId: null, type: '技术', bizDomainId: null, definition: null, securityLevel: 'L2', status: '启用' },
-    { id: 'ii_temperature', code: 'II0009', nameCn: '温度值', nameEn: 'temperature_value', termIds: ['term_temperature', 'term_value'], valueDomainId: 'vd_dec51', refDataId: null, type: '技术', bizDomainId: null, definition: null, securityLevel: 'L2', status: '启用' },
-    { id: 'ii_progress', code: 'II0010', nameCn: '进度百分比', nameEn: 'progress_percent', termIds: ['term_progress', 'term_percent'], valueDomainId: 'vd_percent', refDataId: null, type: '业务', bizDomainId: 'bd_build', definition: '施工作业进度的标准百分比', securityLevel: 'L2', status: '启用' },
-  ],
-  qualityRules: [
-    { id: 'qr_001', name: 'SCADA 有功功率取值范围', type: '准确性', targetFieldId: 'f_scada_power', expr: '0 <= active_power <= 16', threshold: '100%', severity: '严重', status: '启用' },
-    { id: 'qr_002', name: '测风风速取值越界', type: '准确性', targetFieldId: 'f_wind_speed', expr: '0 <= wind_speed <= 70', threshold: '100%', severity: '警告', status: '启用' },
-    { id: 'qr_003', name: '测风数据完整性', type: '完整性', targetFieldId: 'f_wind_speed', expr: '风速字段非空率 >= 95%', threshold: '95%', severity: '警告', status: '启用' },
-    { id: 'qr_004', name: '海缆监测温度一致性', type: '一致性', targetFieldId: 'f_cable_temp', expr: '温度与相邻测点偏差 <= 5℃', threshold: '100%', severity: '严重', status: '启用' },
-    { id: 'qr_005', name: '功率预测及时性', type: '及时性', targetFieldId: 'f_forecast_time', expr: '预测结果产出延迟 <= 15min', threshold: '15min', severity: '提示', status: '启用' },
-    { id: 'qr_006', name: '地质钻孔地层字段完整性', type: '完整性', targetFieldId: 'f_geo_stratum', expr: '地层编号非空率 = 100%', threshold: '100%', severity: '警告', status: '启用' },
-    { id: 'qr_007', name: '主变油温阈值', type: '准确性', targetFieldId: 'f_sub_oil_temp', expr: '0 <= oil_temp <= 105', threshold: '100%', severity: '严重', status: '启用' },
-    { id: 'qr_008', name: '备品备件库存准确性', type: '准确性', targetFieldId: 'f_spare_qty', expr: '库存数量 >= 0', threshold: '100%', severity: '提示', status: '启用' },
-  ],
-  tables: [
-    { id: 't_wind', appId: 'app_res', dbId: 'db_res', nameCn: '测风数据表', nameEn: 'wind_measurement', tableType: '业务表', bizDomainId: 'bd_resource', subjectId: 'bs_wind', masterDataId: null, desc: '测风塔实测风速/风向/湍流',
-      partitions: [
-        { field: 'MEASURE_TIME', type: 'RANGE', granularity: '日', count: 365, desc: '按测量时间日分区，保留近一年测风明细' },
-        { field: 'MEASURE_TIME', type: 'RANGE', granularity: '月', count: 12, desc: '按测量时间月分区，用于历史归档' },
+  "baseTerms": [
+    {
+      "id": "term_name",
+      "nameCn": "名称",
+      "nameEn": "name",
+      "synonyms": [
+        "名"
       ],
-      indexes: [
-        { name: 'pk_wind_measurement', fields: ['MEASURE_TIME'], type: '主键', unique: true },
-        { name: 'idx_wind_project', fields: ['PROJECT_ID'], type: '普通', unique: false },
-        { name: 'idx_wind_speed_time', fields: ['wind_speed_value', 'MEASURE_TIME'], type: '普通', unique: false },
+      "isClassWord": true,
+      "status": "启用"
+    },
+    {
+      "id": "term_code",
+      "nameCn": "编码",
+      "nameEn": "code",
+      "synonyms": [
+        "编号",
+        "代码"
       ],
-      history: [
-        { version: 'v1.0', time: '2024-03-15', operator: '数据治理组', action: '新建', desc: '建表并登记测风明细字段元数据' },
-        { version: 'v1.1', time: '2025-06-20', operator: '工程组', action: '变更', desc: '增加按测量时间日/月分区策略' },
-      ] },
-    { id: 't_geo', appId: 'app_survey', dbId: 'db_survey', nameCn: '地质钻孔表', nameEn: 'geological_borehole', tableType: '业务表', bizDomainId: 'bd_survey', subjectId: 'bs_geo', masterDataId: null, desc: '海上风电场地地质钻孔与岩土地层信息',
-      partitions: null,
-      indexes: [
-        { name: 'pk_geological_borehole', fields: ['STRATUM'], type: '主键', unique: true },
-        { name: 'idx_geo_project', fields: ['PROJECT_ID'], type: '普通', unique: false },
-        { name: 'idx_geo_depth', fields: ['DEPTH'], type: '普通', unique: false },
+      "isClassWord": true,
+      "status": "启用"
+    },
+    {
+      "id": "term_quantity",
+      "nameCn": "量",
+      "nameEn": "quantity",
+      "synonyms": [
+        "数量"
       ],
-      history: [
-        { version: 'v1.0', time: '2024-02-10', operator: '数据治理组', action: '新建', desc: '建表并登记地质钻孔岩土分层元数据' },
-        { version: 'v1.1', time: '2024-11-05', operator: '工程组', action: '变更', desc: '补充桩基持力层字段' },
-      ] },
-    { id: 't_topo', appId: 'app_survey', dbId: 'db_survey', nameCn: '海底地形测绘表', nameEn: 'seabed_topography', tableType: '业务表', bizDomainId: 'bd_survey', subjectId: 'bs_topo', masterDataId: null, desc: '海底地形测绘坐标、水深与海缆路由',
-      partitions: null,
-      indexes: [
-        { name: 'pk_seabed_topography', fields: ['COORD'], type: '主键', unique: true },
-        { name: 'idx_topo_route', fields: ['CABLE_ROUTE'], type: '普通', unique: false },
-        { name: 'idx_topo_project', fields: ['PROJECT_ID'], type: '普通', unique: false },
+      "isClassWord": true,
+      "status": "启用"
+    },
+    {
+      "id": "term_value",
+      "nameCn": "值",
+      "nameEn": "value",
+      "synonyms": [
+        "数值"
       ],
-      history: [
-        { version: 'v1.0', time: '2024-01-18', operator: '数据治理组', action: '新建', desc: '建表并登记海底地形测绘元数据（涉密 L4）' },
-        { version: 'v1.1', time: '2025-04-12', operator: '设计组', action: '变更', desc: '海缆路由字段关联海缆设计' },
-      ] },
-    { id: 't_turbine', appId: 'app_design', dbId: 'db_design', nameCn: '风机设备表', nameEn: 'turbine_device', tableType: '业务表', bizDomainId: 'bd_design', subjectId: 'bs_device', masterDataId: 'md_turbine', desc: '风机机型、额定功率与基础型式等设备参数',
-      partitions: null,
-      indexes: [
-        { name: 'pk_turbine_device', fields: ['MD_ID'], type: '主键', unique: true },
-        { name: 'idx_turbine_supplier', fields: ['SUPPLIER_ID'], type: '普通', unique: false },
-        { name: 'idx_turbine_project', fields: ['PROJECT_ID'], type: '普通', unique: false },
+      "isClassWord": true,
+      "status": "启用"
+    },
+    {
+      "id": "term_date",
+      "nameCn": "日期",
+      "nameEn": "date",
+      "synonyms": [],
+      "isClassWord": true,
+      "status": "启用"
+    },
+    {
+      "id": "term_time",
+      "nameCn": "时间",
+      "nameEn": "time",
+      "synonyms": [],
+      "isClassWord": true,
+      "status": "启用"
+    },
+    {
+      "id": "term_datetime",
+      "nameCn": "日期时间",
+      "nameEn": "datetime",
+      "synonyms": [
+        "时间戳"
       ],
-      history: [
-        { version: 'v1.0', time: '2024-03-01', operator: '设计组', action: '新建', desc: '建表并登记风机设备档案元数据' },
-        { version: 'v1.1', time: '2025-01-20', operator: '数据治理组', action: '变更', desc: '主数据编码字段改为引用风机主数据' },
-      ] },
-    { id: 't_cable', appId: 'app_design', dbId: 'db_design', nameCn: '海缆参数表', nameEn: 'submarine_cable', tableType: '业务表', bizDomainId: 'bd_design', subjectId: 'bs_device', masterDataId: 'md_cable', desc: '海缆类型、电压等级与监测温度等参数',
-      partitions: null,
-      indexes: [
-        { name: 'pk_submarine_cable', fields: ['MD_ID'], type: '主键', unique: true },
-        { name: 'idx_cable_type', fields: ['TYPE'], type: '普通', unique: false },
-        { name: 'idx_cable_route', fields: ['ROUTE'], type: '普通', unique: false },
+      "isClassWord": true,
+      "status": "启用"
+    },
+    {
+      "id": "term_identifier",
+      "nameCn": "标识",
+      "nameEn": "identifier",
+      "synonyms": [
+        "ID",
+        "标识符"
       ],
-      history: [
-        { version: 'v1.0', time: '2024-03-10', operator: '设计组', action: '新建', desc: '建表并登记海缆参数元数据' },
-        { version: 'v1.1', time: '2025-03-05', operator: '数据治理组', action: '变更', desc: '监测温度字段关联温度信息项标准' },
-      ] },
-    { id: 't_substation', appId: 'app_design', dbId: 'db_design', nameCn: '升压站主变表', nameEn: 'substation_transformer', tableType: '业务表', bizDomainId: 'bd_design', subjectId: 'bs_device', masterDataId: 'md_substation', desc: '海上升压站主变容量、电压与油温参数',
-      partitions: null,
-      indexes: [
-        { name: 'pk_substation_transformer', fields: ['MD_ID'], type: '主键', unique: true },
-        { name: 'idx_sub_project', fields: ['PROJECT_ID'], type: '普通', unique: false },
-        { name: 'idx_sub_voltage', fields: ['VOLTAGE'], type: '普通', unique: false },
+      "isClassWord": true,
+      "status": "启用"
+    },
+    {
+      "id": "term_percent",
+      "nameCn": "百分比",
+      "nameEn": "percent",
+      "synonyms": [
+        "百分比值",
+        "百分数"
       ],
-      history: [
-        { version: 'v1.0', time: '2024-04-02', operator: '设计组', action: '新建', desc: '建表并登记升压站主变元数据' },
-        { version: 'v1.1', time: '2025-05-10', operator: '数据治理组', action: '变更', desc: '主变容量字段补充主数据编码引用' },
-      ] },
-    { id: 't_progress', appId: 'app_build', dbId: 'db_build', nameCn: '作业进度表', nameEn: 'construction_progress', tableType: '业务表', bizDomainId: 'bd_build', subjectId: 'bs_schedule', masterDataId: 'md_project', desc: '船机调度与施工作业进度记录',
-      partitions: [
-        { field: 'TASK', type: 'HASH', granularity: '日', count: 8, desc: '按作业任务哈希分片，支撑每日施工进度高频写入' },
+      "isClassWord": true,
+      "status": "启用"
+    },
+    {
+      "id": "term_rate",
+      "nameCn": "率",
+      "nameEn": "rate",
+      "synonyms": [
+        "比率"
       ],
-      indexes: [
-        { name: 'pk_construction_progress', fields: ['TASK'], type: '主键', unique: true },
-        { name: 'idx_progress_project', fields: ['PROJECT_ID'], type: '普通', unique: false },
-        { name: 'idx_progress_vessel', fields: ['VESSEL'], type: '普通', unique: false },
+      "isClassWord": true,
+      "status": "启用"
+    },
+    {
+      "id": "term_voltage",
+      "nameCn": "电压",
+      "nameEn": "voltage",
+      "synonyms": [
+        "电压值"
       ],
-      history: [
-        { version: 'v1.0', time: '2024-05-06', operator: '工程组', action: '新建', desc: '建表并登记施工进度元数据' },
-        { version: 'v1.1', time: '2025-02-14', operator: '数据治理组', action: '调整', desc: '进度百分比字段贯标 progress_percent 标准' },
-      ] },
-    { id: 't_scada', appId: 'app_ops', dbId: 'db_ops', nameCn: 'SCADA 遥测表', nameEn: 'scada_telemetry', tableType: '技术表', bizDomainId: 'bd_ops', subjectId: 'bs_scada', masterDataId: null, desc: '风机 SCADA 遥测数据（功率/温度/振动）',
-      partitions: [
-        { field: 'TS', type: 'RANGE', granularity: '日', count: 365, desc: '按时间戳日分区，保留近一年 SCADA 遥测明细' },
-        { field: 'TS', type: 'RANGE', granularity: '月', count: 12, desc: '按时间戳月分区，用于遥测历史归档' },
+      "isClassWord": false,
+      "status": "启用"
+    },
+    {
+      "id": "term_level",
+      "nameCn": "等级",
+      "nameEn": "level",
+      "synonyms": [
+        "级别"
       ],
-      indexes: [
-        { name: 'pk_scada_telemetry', fields: ['TS'], type: '主键', unique: true },
-        { name: 'idx_scada_turbine', fields: ['TURBINE_ID'], type: '普通', unique: false },
-        { name: 'idx_scada_power', fields: ['active_power_value'], type: '普通', unique: false },
+      "isClassWord": false,
+      "status": "启用"
+    },
+    {
+      "id": "term_active",
+      "nameCn": "有功",
+      "nameEn": "active",
+      "synonyms": [],
+      "isClassWord": false,
+      "status": "启用"
+    },
+    {
+      "id": "term_power",
+      "nameCn": "功率",
+      "nameEn": "power",
+      "synonyms": [],
+      "isClassWord": false,
+      "status": "启用"
+    },
+    {
+      "id": "term_turbine",
+      "nameCn": "风机",
+      "nameEn": "turbine",
+      "synonyms": [
+        "风力发电机",
+        "机组"
       ],
-      history: [
-        { version: 'v1.0', time: '2024-06-01', operator: '运维组', action: '新建', desc: '建表并登记 SCADA 遥测元数据' },
-        { version: 'v1.1', time: '2025-07-15', operator: '数据治理组', action: '变更', desc: '有功功率字段贯标 active_power_value 标准' },
-      ] },
-    { id: 't_forecast', appId: 'app_ops', dbId: 'db_ops', nameCn: '功率预测结果表', nameEn: 'power_forecast', tableType: '业务表', bizDomainId: 'bd_ops', subjectId: 'bs_forecast', masterDataId: 'md_project', desc: '功率预测结果与预测精度评估',
-      partitions: [
-        { field: 'FORECAST_TIME', type: 'RANGE', granularity: '日', count: 365, desc: '按预测时间日分区，保留近一年预测结果' },
-        { field: 'FORECAST_TIME', type: 'RANGE', granularity: '月', count: 12, desc: '按预测时间月分区，用于历史归档' },
+      "isClassWord": false,
+      "status": "启用"
+    },
+    {
+      "id": "term_model",
+      "nameCn": "机型",
+      "nameEn": "model",
+      "synonyms": [
+        "型号"
       ],
-      indexes: [
-        { name: 'pk_power_forecast', fields: ['FORECAST_TIME'], type: '主键', unique: true },
-        { name: 'idx_forecast_project', fields: ['PROJECT_ID'], type: '普通', unique: false },
-        { name: 'idx_forecast_model', fields: ['MODEL'], type: '普通', unique: false },
+      "isClassWord": false,
+      "status": "启用"
+    },
+    {
+      "id": "term_foundation",
+      "nameCn": "基础",
+      "nameEn": "foundation",
+      "synonyms": [
+        "基础结构"
       ],
-      history: [
-        { version: 'v1.0', time: '2024-06-15', operator: '运维组', action: '新建', desc: '建表并登记功率预测结果元数据' },
-        { version: 'v1.1', time: '2025-08-01', operator: '数据治理组', action: '变更', desc: '预测精度字段关联精度信息项标准' },
-      ] },
-    { id: 't_spare', appId: 'app_ops', dbId: 'db_ops', nameCn: '备品备件表', nameEn: 'spare_parts', tableType: '业务表', bizDomainId: 'bd_ops', subjectId: 'bs_spare', masterDataId: null, desc: '备品备件名称、库存与适配机型',
-      partitions: null,
-      indexes: [
-        { name: 'pk_spare_parts', fields: ['NAME'], type: '主键', unique: true },
-        { name: 'idx_spare_turbine', fields: ['TURBINE_ID'], type: '普通', unique: false },
-        { name: 'idx_spare_supplier', fields: ['SUPPLIER_ID'], type: '普通', unique: false },
+      "isClassWord": false,
+      "status": "启用"
+    },
+    {
+      "id": "term_pattern",
+      "nameCn": "型式",
+      "nameEn": "pattern",
+      "synonyms": [
+        "形式"
       ],
-      history: [
-        { version: 'v1.0', time: '2024-07-05', operator: '运维组', action: '新建', desc: '建表并登记备品备件元数据' },
-        { version: 'v1.1', time: '2025-04-28', operator: '数据治理组', action: '调整', desc: '库存数量字段关联质量规则 qr_008' },
-      ] },
+      "isClassWord": false,
+      "status": "启用"
+    },
+    {
+      "id": "term_cable",
+      "nameCn": "海缆",
+      "nameEn": "cable",
+      "synonyms": [
+        "海底电缆",
+        "电缆"
+      ],
+      "isClassWord": false,
+      "status": "启用"
+    },
+    {
+      "id": "term_type",
+      "nameCn": "类型",
+      "nameEn": "type",
+      "synonyms": [
+        "类别"
+      ],
+      "isClassWord": false,
+      "status": "启用"
+    },
+    {
+      "id": "term_sea_area",
+      "nameCn": "海域",
+      "nameEn": "sea_area",
+      "synonyms": [
+        "海区"
+      ],
+      "isClassWord": false,
+      "status": "启用"
+    },
+    {
+      "id": "term_forecast",
+      "nameCn": "预测",
+      "nameEn": "forecast",
+      "synonyms": [
+        "预报"
+      ],
+      "isClassWord": false,
+      "status": "启用"
+    },
+    {
+      "id": "term_accuracy",
+      "nameCn": "精度",
+      "nameEn": "accuracy",
+      "synonyms": [
+        "准确度"
+      ],
+      "isClassWord": false,
+      "status": "启用"
+    },
+    {
+      "id": "term_wind_speed",
+      "nameCn": "风速",
+      "nameEn": "wind_speed",
+      "synonyms": [
+        "测风风速"
+      ],
+      "isClassWord": false,
+      "status": "启用"
+    },
+    {
+      "id": "term_temperature",
+      "nameCn": "温度",
+      "nameEn": "temperature",
+      "synonyms": [
+        "温度值"
+      ],
+      "isClassWord": false,
+      "status": "启用"
+    },
+    {
+      "id": "term_progress",
+      "nameCn": "进度",
+      "nameEn": "progress",
+      "synonyms": [
+        "进度值"
+      ],
+      "isClassWord": false,
+      "status": "启用"
+    },
+    {
+      "id": "term_project",
+      "nameCn": "项目",
+      "nameEn": "project",
+      "synonyms": [
+        "工程项目"
+      ],
+      "isClassWord": false,
+      "status": "启用"
+    },
+    {
+      "id": "term_master_data",
+      "nameCn": "主数据",
+      "nameEn": "master_data",
+      "synonyms": [
+        "主数据编码"
+      ],
+      "isClassWord": false,
+      "status": "启用"
+    }
   ],
-  fields: [
-    { id: 'f_wind_speed', tableId: 't_wind', seq: 1,
-      business: { code: 'wind_speed_value', nameCn: '风速值', definition: '测风塔 100m 高度实测平均风速', masterDataId: null, masterDataType: null },
-      technical: { type: 'decimal(5,2)', length: 7, isPK: false, isFK: false, qualityRuleIds: ['qr_002', 'qr_003'] },
-      management: { standardId: 'ii_wind_speed', securityLevel: 'L2', owner: '资源评估组', updateFrequency: '10分钟' } },
-    { id: 'f_wind_dir', tableId: 't_wind', seq: 2,
-      business: { code: 'WIND_DIR', nameCn: '风向', definition: '主导风向（0~360°）', masterDataId: null, masterDataType: null },
-      technical: { type: 'smallint', length: 4, isPK: false, isFK: false, qualityRuleIds: [] },
-      management: { standardId: null, securityLevel: 'L2', owner: '资源评估组', updateFrequency: '10分钟' } },
-    { id: 'f_wind_turbulence', tableId: 't_wind', seq: 3,
-      business: { code: 'TURBULENCE', nameCn: '湍流强度', definition: '湍流强度等级', masterDataId: null, masterDataType: null },
-      technical: { type: 'varchar(10)', length: 10, isPK: false, isFK: false, qualityRuleIds: [] },
-      management: { standardId: null, securityLevel: 'L2', owner: '资源评估组', updateFrequency: '10分钟' } },
-    { id: 'f_wind_time', tableId: 't_wind', seq: 4,
-      business: { code: 'MEASURE_TIME', nameCn: '测量时间', definition: '数据采集时间戳', masterDataId: null, masterDataType: null },
-      technical: { type: 'datetime', length: 0, isPK: true, isFK: false, qualityRuleIds: [] },
-      management: { standardId: null, securityLevel: 'L2', owner: '资源评估组', updateFrequency: '10分钟' } },
-    { id: 'f_wind_project', tableId: 't_wind', seq: 5,
-      business: { code: 'PROJECT_ID', nameCn: '所属项目', definition: '测风塔所属海上风电项目', masterDataId: 'md_project', masterDataType: '项目' },
-      technical: { type: 'varchar(32)', length: 32, isPK: false, isFK: true, qualityRuleIds: [] },
-      management: { standardId: null, securityLevel: 'L2', owner: '资源评估组', updateFrequency: '静态' } },
-
-    // t_geo 地质钻孔表
-    { id: 'f_geo_stratum', tableId: 't_geo', seq: 1,
-      business: { code: 'STRATUM', nameCn: '地层编号', definition: '地层编号', masterDataId: null, masterDataType: null },
-      technical: { type: 'varchar(20)', length: 20, isPK: true, isFK: false, qualityRuleIds: ['qr_006'] },
-      management: { standardId: null, securityLevel: 'L3', owner: '勘测组', updateFrequency: '静态' } },
-    { id: 'f_geo_depth', tableId: 't_geo', seq: 2,
-      business: { code: 'DEPTH', nameCn: '钻孔深度', definition: '钻孔深度', masterDataId: null, masterDataType: null },
-      technical: { type: 'decimal(6,1)', length: 7, isPK: false, isFK: false, qualityRuleIds: [] },
-      management: { standardId: null, securityLevel: 'L3', owner: '勘测组', updateFrequency: '静态' } },
-    { id: 'f_geo_soil', tableId: 't_geo', seq: 3,
-      business: { code: 'SOIL_TYPE', nameCn: '土质类型', definition: '土质类型', masterDataId: null, masterDataType: null },
-      technical: { type: 'varchar(20)', length: 20, isPK: false, isFK: false, qualityRuleIds: [] },
-      management: { standardId: null, securityLevel: 'L3', owner: '勘测组', updateFrequency: '静态' } },
-    { id: 'f_geo_bearing', tableId: 't_geo', seq: 4,
-      business: { code: 'BEARING', nameCn: '桩基持力层', definition: '桩基持力层', masterDataId: null, masterDataType: null },
-      technical: { type: 'varchar(20)', length: 20, isPK: false, isFK: false, qualityRuleIds: [] },
-      management: { standardId: null, securityLevel: 'L3', owner: '勘测组', updateFrequency: '静态' } },
-    { id: 'f_geo_project', tableId: 't_geo', seq: 5,
-      business: { code: 'PROJECT_ID', nameCn: '所属项目', definition: '所属项目', masterDataId: 'md_project', masterDataType: '项目' },
-      technical: { type: 'varchar(32)', length: 32, isPK: false, isFK: true, qualityRuleIds: [] },
-      management: { standardId: null, securityLevel: 'L3', owner: '勘测组', updateFrequency: '静态' } },
-
-    // t_topo 海底地形测绘表
-    { id: 'f_topo_coord', tableId: 't_topo', seq: 1,
-      business: { code: 'COORD', nameCn: '坐标', definition: '坐标', masterDataId: null, masterDataType: null },
-      technical: { type: 'varchar(40)', length: 40, isPK: true, isFK: false, qualityRuleIds: [] },
-      management: { standardId: 'ii_sea_area', securityLevel: 'L4', owner: '测绘组', updateFrequency: '静态' } },
-    { id: 'f_topo_depth', tableId: 't_topo', seq: 2,
-      business: { code: 'WATER_DEPTH', nameCn: '水深', definition: '水深', masterDataId: null, masterDataType: null },
-      technical: { type: 'decimal(6,1)', length: 7, isPK: false, isFK: false, qualityRuleIds: [] },
-      management: { standardId: null, securityLevel: 'L4', owner: '测绘组', updateFrequency: '静态' } },
-    { id: 'f_topo_survey', tableId: 't_topo', seq: 3,
-      business: { code: 'SURVEY_DATE', nameCn: '测绘日期', definition: '测绘日期', masterDataId: null, masterDataType: null },
-      technical: { type: 'date', length: 0, isPK: false, isFK: false, qualityRuleIds: [] },
-      management: { standardId: null, securityLevel: 'L4', owner: '测绘组', updateFrequency: '静态' } },
-    { id: 'f_topo_route', tableId: 't_topo', seq: 4,
-      business: { code: 'CABLE_ROUTE', nameCn: '海缆路由', definition: '海缆路由', masterDataId: null, masterDataType: null },
-      technical: { type: 'varchar(64)', length: 64, isPK: false, isFK: false, qualityRuleIds: [] },
-      management: { standardId: null, securityLevel: 'L4', owner: '测绘组', updateFrequency: '静态' } },
-    { id: 'f_topo_project', tableId: 't_topo', seq: 5,
-      business: { code: 'PROJECT_ID', nameCn: '所属项目', definition: '所属项目', masterDataId: 'md_project', masterDataType: '项目' },
-      technical: { type: 'varchar(32)', length: 32, isPK: false, isFK: true, qualityRuleIds: [] },
-      management: { standardId: null, securityLevel: 'L3', owner: '测绘组', updateFrequency: '静态' } },
-
-    // t_turbine 风机设备表
-    { id: 'f_turbine_model', tableId: 't_turbine', seq: 1,
-      business: { code: 'turbine_model_name', nameCn: '风机机型名称', definition: '机型', masterDataId: null, masterDataType: null },
-      technical: { type: 'varchar(20)', length: 20, isPK: false, isFK: false, qualityRuleIds: [] },
-      management: { standardId: 'ii_turbine_model', securityLevel: 'L2', owner: '设计组', updateFrequency: '静态' } },
-    { id: 'f_turbine_md', tableId: 't_turbine', seq: 2,
-      business: { code: 'MD_ID', nameCn: '主数据编码', definition: '主数据编码', masterDataId: 'md_turbine', masterDataType: '风机' },
-      technical: { type: 'varchar(32)', length: 32, isPK: true, isFK: false, qualityRuleIds: [] },
-      management: { standardId: null, securityLevel: 'L2', owner: '设计组', updateFrequency: '静态' } },
-    { id: 'f_turbine_power', tableId: 't_turbine', seq: 3,
-      business: { code: 'RATED_POWER', nameCn: '额定功率', definition: '额定功率', masterDataId: null, masterDataType: null },
-      technical: { type: 'decimal(5,2)', length: 7, isPK: false, isFK: false, qualityRuleIds: [] },
-      management: { standardId: 'ii_active_power', securityLevel: 'L2', owner: '设计组', updateFrequency: '静态' } },
-    { id: 'f_turbine_foundation', tableId: 't_turbine', seq: 4,
-      business: { code: 'FOUNDATION', nameCn: '基础型式', definition: '基础型式', masterDataId: null, masterDataType: null },
-      technical: { type: 'varchar(20)', length: 20, isPK: false, isFK: false, qualityRuleIds: [] },
-      management: { standardId: 'ii_foundation', securityLevel: 'L2', owner: '设计组', updateFrequency: '静态' } },
-    { id: 'f_turbine_supplier', tableId: 't_turbine', seq: 5,
-      business: { code: 'SUPPLIER_ID', nameCn: '供应商', definition: '供应商', masterDataId: 'md_supplier', masterDataType: '供应商' },
-      technical: { type: 'varchar(32)', length: 32, isPK: false, isFK: true, qualityRuleIds: [] },
-      management: { standardId: null, securityLevel: 'L2', owner: '设计组', updateFrequency: '静态' } },
-    { id: 'f_turbine_project', tableId: 't_turbine', seq: 6,
-      business: { code: 'PROJECT_ID', nameCn: '所属项目', definition: '所属项目', masterDataId: 'md_project', masterDataType: '项目' },
-      technical: { type: 'varchar(32)', length: 32, isPK: false, isFK: true, qualityRuleIds: [] },
-      management: { standardId: null, securityLevel: 'L2', owner: '设计组', updateFrequency: '静态' } },
-
-    // t_cable 海缆参数表
-    { id: 'f_cable_type', tableId: 't_cable', seq: 1,
-      business: { code: 'TYPE', nameCn: '海缆类型', definition: '海缆类型', masterDataId: null, masterDataType: null },
-      technical: { type: 'varchar(20)', length: 20, isPK: false, isFK: false, qualityRuleIds: [] },
-      management: { standardId: 'ii_cable_type', securityLevel: 'L3', owner: '设计组', updateFrequency: '静态' } },
-    { id: 'f_cable_md', tableId: 't_cable', seq: 2,
-      business: { code: 'MD_ID', nameCn: '主数据编码', definition: '主数据编码', masterDataId: 'md_cable', masterDataType: '海缆' },
-      technical: { type: 'varchar(32)', length: 32, isPK: true, isFK: false, qualityRuleIds: [] },
-      management: { standardId: null, securityLevel: 'L3', owner: '设计组', updateFrequency: '静态' } },
-    { id: 'f_cable_voltage', tableId: 't_cable', seq: 3,
-      business: { code: 'voltage_level_code', nameCn: '电压等级编码', definition: '电压等级', masterDataId: null, masterDataType: null },
-      technical: { type: 'varchar(10)', length: 10, isPK: false, isFK: false, qualityRuleIds: [] },
-      management: { standardId: 'ii_voltage', securityLevel: 'L3', owner: '设计组', updateFrequency: '静态' } },
-    { id: 'f_cable_temp', tableId: 't_cable', seq: 4,
-      business: { code: 'MONITOR_TEMP', nameCn: '监测温度', definition: '监测温度', masterDataId: null, masterDataType: null },
-      technical: { type: 'decimal(5,1)', length: 6, isPK: false, isFK: false, qualityRuleIds: ['qr_004'] },
-      management: { standardId: 'ii_temperature', securityLevel: 'L3', owner: '设计组', updateFrequency: '静态' } },
-    { id: 'f_cable_route', tableId: 't_cable', seq: 5,
-      business: { code: 'ROUTE', nameCn: '路由坐标', definition: '路由坐标', masterDataId: null, masterDataType: null },
-      technical: { type: 'varchar(64)', length: 64, isPK: false, isFK: false, qualityRuleIds: [] },
-      management: { standardId: null, securityLevel: 'L4', owner: '设计组', updateFrequency: '静态' } },
-
-    // t_substation 升压站主变表
-    { id: 'f_sub_md', tableId: 't_substation', seq: 1,
-      business: { code: 'MD_ID', nameCn: '主数据编码', definition: '主数据编码', masterDataId: 'md_substation', masterDataType: '升压站' },
-      technical: { type: 'varchar(32)', length: 32, isPK: true, isFK: false, qualityRuleIds: [] },
-      management: { standardId: null, securityLevel: 'L2', owner: '设计组', updateFrequency: '静态' } },
-    { id: 'f_sub_capacity', tableId: 't_substation', seq: 2,
-      business: { code: 'CAPACITY', nameCn: '主变容量', definition: '主变容量', masterDataId: null, masterDataType: null },
-      technical: { type: 'varchar(20)', length: 20, isPK: false, isFK: false, qualityRuleIds: [] },
-      management: { standardId: null, securityLevel: 'L2', owner: '设计组', updateFrequency: '静态' } },
-    { id: 'f_sub_voltage', tableId: 't_substation', seq: 3,
-      business: { code: 'VOLTAGE', nameCn: '电压等级', definition: '电压等级', masterDataId: null, masterDataType: null },
-      technical: { type: 'varchar(10)', length: 10, isPK: false, isFK: false, qualityRuleIds: [] },
-      management: { standardId: 'ii_voltage', securityLevel: 'L2', owner: '设计组', updateFrequency: '静态' } },
-    { id: 'f_sub_oil_temp', tableId: 't_substation', seq: 4,
-      business: { code: 'OIL_TEMP', nameCn: '油温', definition: '油温', masterDataId: null, masterDataType: null },
-      technical: { type: 'decimal(5,1)', length: 6, isPK: false, isFK: false, qualityRuleIds: ['qr_007'] },
-      management: { standardId: null, securityLevel: 'L2', owner: '设计组', updateFrequency: '静态' } },
-    { id: 'f_sub_project', tableId: 't_substation', seq: 5,
-      business: { code: 'PROJECT_ID', nameCn: '所属项目', definition: '所属项目', masterDataId: 'md_project', masterDataType: '项目' },
-      technical: { type: 'varchar(32)', length: 32, isPK: false, isFK: true, qualityRuleIds: [] },
-      management: { standardId: null, securityLevel: 'L2', owner: '设计组', updateFrequency: '静态' } },
-
-    // t_progress 作业进度表
-    { id: 'f_prog_task', tableId: 't_progress', seq: 1,
-      business: { code: 'TASK', nameCn: '作业任务', definition: '作业任务', masterDataId: null, masterDataType: null },
-      technical: { type: 'varchar(64)', length: 64, isPK: true, isFK: false, qualityRuleIds: [] },
-      management: { standardId: null, securityLevel: 'L2', owner: '施工管理组', updateFrequency: '每日' } },
-    { id: 'f_prog_progress', tableId: 't_progress', seq: 2,
-      business: { code: 'progress_percent', nameCn: '进度百分比', definition: '进度百分比', masterDataId: null, masterDataType: null },
-      technical: { type: 'tinyint', length: 1, isPK: false, isFK: false, qualityRuleIds: [] },
-      management: { standardId: 'ii_progress', securityLevel: 'L2', owner: '施工管理组', updateFrequency: '每日' } },
-    { id: 'f_prog_vessel', tableId: 't_progress', seq: 3,
-      business: { code: 'VESSEL', nameCn: '船机', definition: '船机', masterDataId: null, masterDataType: null },
-      technical: { type: 'varchar(32)', length: 32, isPK: false, isFK: false, qualityRuleIds: [] },
-      management: { standardId: null, securityLevel: 'L2', owner: '施工管理组', updateFrequency: '每日' } },
-    { id: 'f_prog_seastate', tableId: 't_progress', seq: 4,
-      business: { code: 'SEA_STATE', nameCn: '海况', definition: '海况', masterDataId: null, masterDataType: null },
-      technical: { type: 'varchar(20)', length: 20, isPK: false, isFK: false, qualityRuleIds: [] },
-      management: { standardId: null, securityLevel: 'L2', owner: '施工管理组', updateFrequency: '每日' } },
-    { id: 'f_prog_project', tableId: 't_progress', seq: 5,
-      business: { code: 'PROJECT_ID', nameCn: '所属项目', definition: '所属项目', masterDataId: 'md_project', masterDataType: '项目' },
-      technical: { type: 'varchar(32)', length: 32, isPK: false, isFK: true, qualityRuleIds: [] },
-      management: { standardId: null, securityLevel: 'L2', owner: '施工管理组', updateFrequency: '每日' } },
-
-    // t_scada SCADA 遥测表
-    { id: 'f_scada_power', tableId: 't_scada', seq: 1,
-      business: { code: 'active_power_value', nameCn: '有功功率值', definition: '有功功率', masterDataId: null, masterDataType: null },
-      technical: { type: 'decimal(5,2)', length: 7, isPK: false, isFK: false, qualityRuleIds: ['qr_001'] },
-      management: { standardId: 'ii_active_power', securityLevel: 'L2', owner: '运维组', updateFrequency: '1分钟' } },
-    { id: 'f_scada_turbine', tableId: 't_scada', seq: 2,
-      business: { code: 'TURBINE_ID', nameCn: '机组', definition: '机组', masterDataId: 'md_turbine', masterDataType: '风机' },
-      technical: { type: 'varchar(32)', length: 32, isPK: false, isFK: true, qualityRuleIds: [] },
-      management: { standardId: null, securityLevel: 'L2', owner: '运维组', updateFrequency: '1分钟' } },
-    { id: 'f_scada_temp', tableId: 't_scada', seq: 3,
-      business: { code: 'temperature_value', nameCn: '温度值', definition: '温度', masterDataId: null, masterDataType: null },
-      technical: { type: 'decimal(5,1)', length: 6, isPK: false, isFK: false, qualityRuleIds: [] },
-      management: { standardId: 'ii_temperature', securityLevel: 'L2', owner: '运维组', updateFrequency: '1分钟' } },
-    { id: 'f_scada_vibration', tableId: 't_scada', seq: 4,
-      business: { code: 'VIBRATION', nameCn: '振动', definition: '振动', masterDataId: null, masterDataType: null },
-      technical: { type: 'decimal(6,2)', length: 8, isPK: false, isFK: false, qualityRuleIds: [] },
-      management: { standardId: null, securityLevel: 'L2', owner: '运维组', updateFrequency: '1分钟' } },
-    { id: 'f_scada_time', tableId: 't_scada', seq: 5,
-      business: { code: 'TS', nameCn: '时间戳', definition: '时间戳', masterDataId: null, masterDataType: null },
-      technical: { type: 'datetime', length: 0, isPK: true, isFK: false, qualityRuleIds: [] },
-      management: { standardId: null, securityLevel: 'L2', owner: '运维组', updateFrequency: '1分钟' } },
-
-    // t_forecast 功率预测结果表
-    { id: 'f_forecast_time', tableId: 't_forecast', seq: 1,
-      business: { code: 'FORECAST_TIME', nameCn: '预测时间', definition: '预测时间', masterDataId: null, masterDataType: null },
-      technical: { type: 'datetime', length: 0, isPK: true, isFK: false, qualityRuleIds: ['qr_005'] },
-      management: { standardId: null, securityLevel: 'L2', owner: '运维组', updateFrequency: '15分钟' } },
-    { id: 'f_forecast_power', tableId: 't_forecast', seq: 2,
-      business: { code: 'PREDICT_POWER', nameCn: '预测功率', definition: '预测功率', masterDataId: null, masterDataType: null },
-      technical: { type: 'decimal(5,2)', length: 7, isPK: false, isFK: false, qualityRuleIds: [] },
-      management: { standardId: 'ii_active_power', securityLevel: 'L2', owner: '运维组', updateFrequency: '15分钟' } },
-    { id: 'f_forecast_project', tableId: 't_forecast', seq: 3,
-      business: { code: 'PROJECT_ID', nameCn: '所属项目', definition: '所属项目', masterDataId: 'md_project', masterDataType: '项目' },
-      technical: { type: 'varchar(32)', length: 32, isPK: false, isFK: true, qualityRuleIds: [] },
-      management: { standardId: null, securityLevel: 'L2', owner: '运维组', updateFrequency: '15分钟' } },
-    { id: 'f_forecast_accuracy', tableId: 't_forecast', seq: 4,
-      business: { code: 'ACCURACY', nameCn: '预测精度', definition: '预测精度', masterDataId: null, masterDataType: null },
-      technical: { type: 'decimal(4,2)', length: 6, isPK: false, isFK: false, qualityRuleIds: [] },
-      management: { standardId: 'ii_accuracy', securityLevel: 'L2', owner: '运维组', updateFrequency: '15分钟' } },
-    { id: 'f_forecast_model', tableId: 't_forecast', seq: 5,
-      business: { code: 'MODEL', nameCn: '算法模型', definition: '算法模型', masterDataId: null, masterDataType: null },
-      technical: { type: 'varchar(32)', length: 32, isPK: false, isFK: false, qualityRuleIds: [] },
-      management: { standardId: null, securityLevel: 'L2', owner: '运维组', updateFrequency: '15分钟' } },
-
-    // t_spare 备品备件表
-    { id: 'f_spare_name', tableId: 't_spare', seq: 1,
-      business: { code: 'NAME', nameCn: '备件名称', definition: '备件名称', masterDataId: null, masterDataType: null },
-      technical: { type: 'varchar(64)', length: 64, isPK: true, isFK: false, qualityRuleIds: [] },
-      management: { standardId: null, securityLevel: 'L2', owner: '备件组', updateFrequency: '每日' } },
-    { id: 'f_spare_qty', tableId: 't_spare', seq: 2,
-      business: { code: 'QTY', nameCn: '库存数量', definition: '库存数量', masterDataId: null, masterDataType: null },
-      technical: { type: 'int', length: 4, isPK: false, isFK: false, qualityRuleIds: ['qr_008'] },
-      management: { standardId: null, securityLevel: 'L2', owner: '备件组', updateFrequency: '每日' } },
-    { id: 'f_spare_turbine', tableId: 't_spare', seq: 3,
-      business: { code: 'TURBINE_ID', nameCn: '适配机型', definition: '适配机型', masterDataId: null, masterDataType: null },
-      technical: { type: 'varchar(32)', length: 32, isPK: false, isFK: false, qualityRuleIds: [] },
-      management: { standardId: 'ii_turbine_model', securityLevel: 'L2', owner: '备件组', updateFrequency: '每日' } },
-    { id: 'f_spare_supplier', tableId: 't_spare', seq: 4,
-      business: { code: 'SUPPLIER_ID', nameCn: '供应商', definition: '供应商', masterDataId: 'md_supplier', masterDataType: '供应商' },
-      technical: { type: 'varchar(32)', length: 32, isPK: false, isFK: true, qualityRuleIds: [] },
-      management: { standardId: null, securityLevel: 'L2', owner: '备件组', updateFrequency: '每日' } },
-    { id: 'f_spare_project', tableId: 't_spare', seq: 5,
-      business: { code: 'PROJECT_ID', nameCn: '所属项目', definition: '所属项目', masterDataId: 'md_project', masterDataType: '项目' },
-      technical: { type: 'varchar(32)', length: 32, isPK: false, isFK: true, qualityRuleIds: [] },
-      management: { standardId: null, securityLevel: 'L2', owner: '备件组', updateFrequency: '每日' } },
+  "valueDomains": [
+    {
+      "id": "vd_varchar10",
+      "code": "VD-VARCHAR10",
+      "dataType": "varchar",
+      "length": 10,
+      "precision": 0,
+      "status": "启用"
+    },
+    {
+      "id": "vd_dec52",
+      "code": "VD-DEC52",
+      "dataType": "decimal",
+      "length": 7,
+      "precision": 2,
+      "status": "启用"
+    },
+    {
+      "id": "vd_dec51",
+      "code": "VD-DEC51",
+      "dataType": "decimal",
+      "length": 6,
+      "precision": 1,
+      "status": "启用"
+    },
+    {
+      "id": "vd_name",
+      "code": "VD-NAME",
+      "dataType": "varchar",
+      "length": 64,
+      "precision": 0,
+      "status": "启用"
+    },
+    {
+      "id": "vd_code",
+      "code": "VD-CODE",
+      "dataType": "varchar",
+      "length": 32,
+      "precision": 0,
+      "status": "启用"
+    },
+    {
+      "id": "vd_percent",
+      "code": "VD-PERCENT",
+      "dataType": "decimal",
+      "length": 6,
+      "precision": 2,
+      "status": "启用"
+    }
   ],
-  qualityResults: [
-    { id: 'qres_app_res', appId: 'app_res', score: 92, dimension: '完整性', issues: [
-      { id: 'issue_001', fieldId: 'f_wind_speed', ruleId: 'qr_003', desc: '2026-07 有 3 个 10 分钟区间风速缺失', severity: '警告' },
-    ]},
-    { id: 'qres_app_ops', appId: 'app_ops', score: 78, dimension: '准确性', issues: [
-      { id: 'issue_002', fieldId: 'f_scada_power', ruleId: 'qr_001', desc: '6 台机组有功功率越界（>16MW）', severity: '严重' },
-    ]},
+  "refDatas": [
+    {
+      "id": "rd_voltage",
+      "code": "CK0001",
+      "name": "电压等级",
+      "status": "启用",
+      "values": [
+        {
+          "code": "01",
+          "name": "35kV"
+        },
+        {
+          "code": "02",
+          "name": "66kV"
+        },
+        {
+          "code": "03",
+          "name": "220kV"
+        },
+        {
+          "code": "04",
+          "name": "500kV"
+        },
+        {
+          "code": "05",
+          "name": "±500kV"
+        }
+      ]
+    },
+    {
+      "id": "rd_turbine",
+      "code": "CK0002",
+      "name": "风机机型",
+      "status": "启用",
+      "values": [
+        {
+          "code": "01",
+          "name": "8MW"
+        },
+        {
+          "code": "02",
+          "name": "12MW"
+        },
+        {
+          "code": "03",
+          "name": "16MW"
+        },
+        {
+          "code": "04",
+          "name": "16.6MW漂浮式"
+        }
+      ]
+    },
+    {
+      "id": "rd_foundation",
+      "code": "CK0003",
+      "name": "基础型式",
+      "status": "启用",
+      "values": [
+        {
+          "code": "01",
+          "name": "单桩"
+        },
+        {
+          "code": "02",
+          "name": "导管架"
+        },
+        {
+          "code": "03",
+          "name": "多桩"
+        },
+        {
+          "code": "04",
+          "name": "漂浮式"
+        }
+      ]
+    },
+    {
+      "id": "rd_sea_area",
+      "code": "CK0004",
+      "name": "海域",
+      "status": "启用",
+      "values": [
+        {
+          "code": "01",
+          "name": "粤东"
+        },
+        {
+          "code": "02",
+          "name": "粤西"
+        },
+        {
+          "code": "03",
+          "name": "珠三角"
+        }
+      ]
+    },
+    {
+      "id": "rd_cable",
+      "code": "CK0005",
+      "name": "海缆类型",
+      "status": "启用",
+      "values": [
+        {
+          "code": "01",
+          "name": "集电"
+        },
+        {
+          "code": "02",
+          "name": "送出"
+        },
+        {
+          "code": "03",
+          "name": "三芯"
+        },
+        {
+          "code": "04",
+          "name": "单芯"
+        }
+      ]
+    }
   ],
-  lineage: [
-    { id: 'lg_001', up: 't_wind', down: 't_forecast', relation: '功率预测输入', mode: '离线批次', desc: '测风数据离线批次同步至功率预测模型',
-      fieldMapping: [
-        { up: 'f_wind_speed', down: 'f_forecast_power' },
-        { up: 'f_wind_time', down: 'f_forecast_time' },
-        { up: 'f_wind_dir', down: 'f_forecast_power' },
-      ] },
-    { id: 'lg_002', up: 't_scada', down: 't_forecast', relation: '模型训练数据', mode: '应用内', desc: '运维应用内定时脚本加工训练预测模型',
-      fieldMapping: [
-        { up: 'f_scada_power', down: 'f_forecast_power' },
-        { up: 'f_scada_time', down: 'f_forecast_time' },
-      ] },
-    { id: 'lg_003', up: 't_scada', down: 't_spare', relation: '备件需求驱动', mode: '应用内', desc: '运维应用内定时脚本加工驱动备件需求',
-      fieldMapping: [
-        { up: 'f_scada_turbine', down: 'f_spare_turbine' },
-        { up: 'f_scada_vibration', down: 'f_spare_qty' },
-      ] },
-    { id: 'lg_004', up: 't_geo', down: 't_turbine', relation: '机型选址依据', mode: '离线批次', desc: '地质钻孔数据离线批次支撑机型/基础选型',
-      fieldMapping: [
-        { up: 'f_geo_bearing', down: 'f_turbine_foundation' },
-        { up: 'f_geo_stratum', down: 'f_turbine_model' },
-        { up: 'f_geo_project', down: 'f_turbine_project' },
-      ] },
-    { id: 'lg_005', up: 't_topo', down: 't_cable', relation: '海缆路由依据', mode: '离线批次', desc: '海底地形测绘离线批次支撑海缆路由设计',
-      fieldMapping: [
-        { up: 'f_topo_route', down: 'f_cable_route' },
-        { up: 'f_topo_depth', down: 'f_cable_type' },
-      ] },
-    { id: 'lg_006', up: 't_topo', down: 't_substation', relation: '站址选址依据', mode: '离线批次', desc: '海底地形测绘离线批次支撑升压站选址',
-      fieldMapping: [
-        { up: 'f_topo_coord', down: 'f_sub_md' },
-        { up: 'f_topo_depth', down: 'f_sub_capacity' },
-        { up: 'f_topo_project', down: 'f_sub_project' },
-      ] },
-    { id: 'lg_007', up: 't_turbine', down: 't_scada', relation: '采集配置', mode: '数据服务', desc: '风机设备参数经实时数据服务同步为 SCADA 采集配置',
-      fieldMapping: [
-        { up: 'f_turbine_md', down: 'f_scada_turbine' },
-        { up: 'f_turbine_power', down: 'f_scada_power' },
-      ] },
-    { id: 'lg_008', up: 't_cable', down: 't_substation', relation: '海缆监测汇聚', mode: '应用内', desc: '设计应用内定时脚本汇聚海缆监测至升压站主变表',
-      fieldMapping: [
-        { up: 'f_cable_temp', down: 'f_sub_oil_temp' },
-        { up: 'f_cable_md', down: 'f_sub_md' },
-      ] },
-    { id: 'lg_009', up: 't_forecast', down: 't_progress', relation: '作业窗口调度', mode: '数据服务', desc: '功率预测经准实时数据服务支撑施工/运维作业窗口调度',
-      fieldMapping: [
-        { up: 'f_forecast_power', down: 'f_prog_seastate' },
-        { up: 'f_forecast_time', down: 'f_prog_task' },
-        { up: 'f_forecast_project', down: 'f_prog_project' },
-      ] },
+  "infoItems": [
+    {
+      "id": "ii_voltage",
+      "code": "II0001",
+      "nameCn": "电压等级编码",
+      "nameEn": "voltage_level_code",
+      "termIds": [
+        "term_voltage",
+        "term_level",
+        "term_code"
+      ],
+      "valueDomainId": "vd_varchar10",
+      "refDataId": "rd_voltage",
+      "type": "业务",
+      "bizDomainId": "bd_design",
+      "definition": "海上风电设备/海缆的电压等级标准取值",
+      "securityLevel": "L2",
+      "status": "启用"
+    },
+    {
+      "id": "ii_active_power",
+      "code": "II0002",
+      "nameCn": "有功功率值",
+      "nameEn": "active_power_value",
+      "termIds": [
+        "term_active",
+        "term_power",
+        "term_value"
+      ],
+      "valueDomainId": "vd_dec52",
+      "refDataId": null,
+      "type": "业务",
+      "bizDomainId": "bd_ops",
+      "definition": "风电机组有功功率的标准取值",
+      "securityLevel": "L2",
+      "status": "启用"
+    },
+    {
+      "id": "ii_turbine_model",
+      "code": "II0003",
+      "nameCn": "风机机型名称",
+      "nameEn": "turbine_model_name",
+      "termIds": [
+        "term_turbine",
+        "term_model",
+        "term_name"
+      ],
+      "valueDomainId": "vd_name",
+      "refDataId": "rd_turbine",
+      "type": "业务",
+      "bizDomainId": "bd_design",
+      "definition": "风机机型的标准名称",
+      "securityLevel": "L2",
+      "status": "启用"
+    },
+    {
+      "id": "ii_foundation",
+      "code": "II0004",
+      "nameCn": "基础型式名称",
+      "nameEn": "foundation_pattern_name",
+      "termIds": [
+        "term_foundation",
+        "term_pattern",
+        "term_name"
+      ],
+      "valueDomainId": "vd_name",
+      "refDataId": "rd_foundation",
+      "type": "业务",
+      "bizDomainId": "bd_design",
+      "definition": "风机基础结构型式的标准名称",
+      "securityLevel": "L2",
+      "status": "启用"
+    },
+    {
+      "id": "ii_sea_area",
+      "code": "II0005",
+      "nameCn": "海域编码",
+      "nameEn": "sea_area_code",
+      "termIds": [
+        "term_sea_area",
+        "term_code"
+      ],
+      "valueDomainId": "vd_code",
+      "refDataId": "rd_sea_area",
+      "type": "业务",
+      "bizDomainId": "bd_survey",
+      "definition": "海上风电场所在海域的标准编码",
+      "securityLevel": "L4",
+      "status": "启用"
+    },
+    {
+      "id": "ii_cable_type",
+      "code": "II0006",
+      "nameCn": "海缆类型名称",
+      "nameEn": "cable_type_name",
+      "termIds": [
+        "term_cable",
+        "term_type",
+        "term_name"
+      ],
+      "valueDomainId": "vd_name",
+      "refDataId": "rd_cable",
+      "type": "业务",
+      "bizDomainId": "bd_design",
+      "definition": "海缆类型的标准名称",
+      "securityLevel": "L3",
+      "status": "启用"
+    },
+    {
+      "id": "ii_accuracy",
+      "code": "II0007",
+      "nameCn": "预测精度百分比",
+      "nameEn": "forecast_accuracy_percent",
+      "termIds": [
+        "term_forecast",
+        "term_accuracy",
+        "term_percent"
+      ],
+      "valueDomainId": "vd_percent",
+      "refDataId": null,
+      "type": "业务",
+      "bizDomainId": "bd_ops",
+      "definition": "功率预测精度的标准百分比",
+      "securityLevel": "L2",
+      "status": "启用"
+    },
+    {
+      "id": "ii_wind_speed",
+      "code": "II0008",
+      "nameCn": "风速值",
+      "nameEn": "wind_speed_value",
+      "termIds": [
+        "term_wind_speed",
+        "term_value"
+      ],
+      "valueDomainId": "vd_dec52",
+      "refDataId": null,
+      "type": "技术",
+      "bizDomainId": null,
+      "definition": null,
+      "securityLevel": "L2",
+      "status": "启用"
+    },
+    {
+      "id": "ii_temperature",
+      "code": "II0009",
+      "nameCn": "温度值",
+      "nameEn": "temperature_value",
+      "termIds": [
+        "term_temperature",
+        "term_value"
+      ],
+      "valueDomainId": "vd_dec51",
+      "refDataId": null,
+      "type": "技术",
+      "bizDomainId": null,
+      "definition": null,
+      "securityLevel": "L2",
+      "status": "启用"
+    },
+    {
+      "id": "ii_progress",
+      "code": "II0010",
+      "nameCn": "进度百分比",
+      "nameEn": "progress_percent",
+      "termIds": [
+        "term_progress",
+        "term_percent"
+      ],
+      "valueDomainId": "vd_percent",
+      "refDataId": null,
+      "type": "业务",
+      "bizDomainId": "bd_build",
+      "definition": "施工作业进度的标准百分比",
+      "securityLevel": "L2",
+      "status": "启用"
+    }
   ],
-  batchFiles: [
-    // ===== 出站（平台内表 → 外部系统）=====
-    { id: 'bf_001', name: '测风数据批次交换', direction: 'outbound', sourceSystem: '风资源评估系统', sourceTableId: 't_wind', sourceTableName: '测风数据表', targetSystem: '大数据开发平台·功率预测', targetTableId: null, targetTableName: '功率预测输入表', fileFormat: 'CSV', schedule: '每日 02:00', securityLevel: 'L2', status: '运行中',
-      applyFlow: [
-        { step: '申请', actor: '资源评估组', time: '2026-05-12', result: '通过' },
-        { step: '安全合规审批', actor: '数据安全组', time: '2026-05-14', result: '通过' },
-        { step: '授权', actor: '平台管理员', time: '2026-05-16', result: '已授权' },
-      ] },
-    { id: 'bf_002', name: '地质勘测数据批次交换', direction: 'outbound', sourceSystem: '海洋勘测系统', sourceTableId: 't_geo', sourceTableName: '地质钻孔表', targetSystem: '工程设计系统·机型选型', targetTableId: null, targetTableName: '基础选型参数表', fileFormat: 'CSV', schedule: '每日 02:00', securityLevel: 'L3', status: '运行中',
-      applyFlow: [ { step: '申请', actor: '勘测组', time: '2026-05-11', result: '通过' }, { step: '安全合规审批', actor: '数据安全组', time: '2026-05-13', result: '通过' }, { step: '授权', actor: '平台管理员', time: '2026-05-15', result: '已授权' } ] },
-    { id: 'bf_003', name: '海底地形批次交换', direction: 'outbound', sourceSystem: '海洋勘测系统', sourceTableId: 't_topo', sourceTableName: '海底地形测绘表', targetSystem: '工程设计系统·路由/站址', targetTableId: null, targetTableName: '路由比选表', fileFormat: 'SHP', schedule: '每周一 03:00', securityLevel: 'L3', status: '运行中',
-      applyFlow: [ { step: '申请', actor: '测绘组', time: '2026-05-10', result: '通过' }, { step: '安全合规审批', actor: '数据安全组', time: '2026-05-12', result: '通过' }, { step: '授权', actor: '平台管理员', time: '2026-05-14', result: '已授权' } ] },
-    { id: 'bf_004', name: '备件库存月度对账批次', direction: 'outbound', sourceSystem: '智慧运维系统', sourceTableId: 't_spare', sourceTableName: '备品备件表', targetSystem: '供应商协同平台', targetTableId: null, targetTableName: '备件对账表', fileFormat: 'CSV', schedule: '每月 1 日 02:00', securityLevel: 'L2', status: '审批中',
-      applyFlow: [ { step: '申请', actor: '备件组', time: '2026-08-01', result: '通过' }, { step: '安全合规审批', actor: '数据安全组', time: '2026-08-03', result: '通过' } ] },
-    { id: 'bf_005', name: '施工进度批次交换', direction: 'outbound', sourceSystem: '施工管理系统', sourceTableId: 't_progress', sourceTableName: '作业进度表', targetSystem: '项目管理系统', targetTableId: null, targetTableName: '进度汇总表', fileFormat: 'JSON', schedule: '每日 06:00', securityLevel: 'L2', status: '运行中',
-      applyFlow: [ { step: '申请', actor: '施工管理组', time: '2026-05-09', result: '通过' }, { step: '安全合规审批', actor: '数据安全组', time: '2026-05-11', result: '通过' }, { step: '授权', actor: '平台管理员', time: '2026-05-13', result: '已授权' } ] },
-    // ===== 入站（外部数据源 → 平台内表）=====
-    { id: 'bf_006', name: 'SCADA遥测数据接入', direction: 'inbound', sourceSystem: 'SCADA采集系统', sourceDatabaseName: 'scada_telemetry_db', sourceDatabaseType: 'MySQL', targetSystem: '数据资产平台', targetDatabaseId: 'db_ops', targetDatabaseName: '运维库', fileFormat: 'JSON', schedule: '每 5 分钟', securityLevel: 'L2', status: '运行中',
-      applyFlow: [ { step: '申请', actor: '运维组', time: '2026-05-20', result: '通过' }, { step: '安全合规审批', actor: '数据安全组', time: '2026-05-22', result: '通过' }, { step: '授权', actor: '平台管理员', time: '2026-05-24', result: '已授权' } ] },
-    { id: 'bf_007', name: '气象站观测数据接入', direction: 'inbound', sourceSystem: '气象站', sourceDatabaseName: 'met_station_db', sourceDatabaseType: 'MySQL', targetSystem: '数据资产平台', targetDatabaseId: 'db_res', targetDatabaseName: '资源评估库', fileFormat: 'CSV', schedule: '每日 01:00', securityLevel: 'L2', status: '运行中',
-      applyFlow: [ { step: '申请', actor: '资源评估组', time: '2026-05-19', result: '通过' }, { step: '安全合规审批', actor: '数据安全组', time: '2026-05-21', result: '通过' }, { step: '授权', actor: '平台管理员', time: '2026-05-23', result: '已授权' } ] },
-    { id: 'bf_008', name: 'BIM模型属性接入', direction: 'inbound', sourceSystem: 'BIM系统', sourceDatabaseName: 'bim_model_db', sourceDatabaseType: 'Oracle', targetSystem: '数据资产平台', targetDatabaseId: 'db_design', targetDatabaseName: '设计库', fileFormat: 'JSON', schedule: '每日 02:00', securityLevel: 'L3', status: '审批中',
-      applyFlow: [ { step: '申请', actor: '设计组', time: '2026-08-01', result: '通过' }, { step: '安全合规审批', actor: '数据安全组', time: '2026-08-03', result: '通过' }, { step: '授权', actor: '平台管理员', time: '—', result: '待审批' } ] },
+  "qualityRules": [
+    {
+      "id": "qr_001",
+      "name": "SCADA 有功功率取值范围",
+      "type": "准确性",
+      "targetFieldId": "f_scada_power",
+      "expr": "0 <= active_power <= 16",
+      "threshold": "100%",
+      "severity": "严重",
+      "status": "启用"
+    },
+    {
+      "id": "qr_002",
+      "name": "测风风速取值越界",
+      "type": "准确性",
+      "targetFieldId": "f_wind_speed",
+      "expr": "0 <= wind_speed <= 70",
+      "threshold": "100%",
+      "severity": "警告",
+      "status": "启用"
+    },
+    {
+      "id": "qr_003",
+      "name": "测风数据完整性",
+      "type": "完整性",
+      "targetFieldId": "f_wind_speed",
+      "expr": "风速字段非空率 >= 95%",
+      "threshold": "95%",
+      "severity": "警告",
+      "status": "启用"
+    },
+    {
+      "id": "qr_004",
+      "name": "海缆监测温度一致性",
+      "type": "一致性",
+      "targetFieldId": "f_cable_temp",
+      "expr": "温度与相邻测点偏差 <= 5℃",
+      "threshold": "100%",
+      "severity": "严重",
+      "status": "启用"
+    },
+    {
+      "id": "qr_005",
+      "name": "功率预测及时性",
+      "type": "及时性",
+      "targetFieldId": "f_forecast_time",
+      "expr": "预测结果产出延迟 <= 15min",
+      "threshold": "15min",
+      "severity": "提示",
+      "status": "启用"
+    },
+    {
+      "id": "qr_006",
+      "name": "地质钻孔地层字段完整性",
+      "type": "完整性",
+      "targetFieldId": "f_geo_stratum",
+      "expr": "地层编号非空率 = 100%",
+      "threshold": "100%",
+      "severity": "警告",
+      "status": "启用"
+    },
+    {
+      "id": "qr_007",
+      "name": "主变油温阈值",
+      "type": "准确性",
+      "targetFieldId": "f_sub_oil_temp",
+      "expr": "0 <= oil_temp <= 105",
+      "threshold": "100%",
+      "severity": "严重",
+      "status": "启用"
+    },
+    {
+      "id": "qr_008",
+      "name": "备品备件库存准确性",
+      "type": "准确性",
+      "targetFieldId": "f_spare_qty",
+      "expr": "库存数量 >= 0",
+      "threshold": "100%",
+      "severity": "提示",
+      "status": "启用"
+    }
   ],
-  prodMetadatas: [
-    // pm_scada：SCADA 采集整库（→ 运维库 db_ops）
-    { id: 'pm_scada', batchFileId: 'bf_006', sourceSystem: 'SCADA采集系统',
-      databaseName: 'scada_telemetry_db', databaseType: 'MySQL',
-      targetDatabaseId: 'db_ops', collectedAt: '2026-08-15 02:00',
-      tables: [
-        { nameEn: 'scada_telemetry', nameCn: 'SCADA遥测表',
-          fields: [
-            { code: 'TS', nameCn: '时间戳', type: 'datetime' },
-            { code: 'TURBINE_ID', nameCn: '机组', type: 'varchar(32)' },
-            { code: 'temperature_value', nameCn: '温度值', type: 'decimal(5,1)' },
-            { code: 'active_power_value', nameCn: '有功功率', type: 'decimal(8,2)' },
-            { code: 'gearbox_temp', nameCn: '齿轮箱温度', type: 'decimal(5,1)' },
-            { code: 'nacelle_yaw', nameCn: '机舱偏航角', type: 'decimal(6,2)' },
-          ] },
-        { nameEn: 'scada_alarm_raw', nameCn: 'SCADA告警原始表',
-          fields: [
-            { code: 'ALARM_ID', nameCn: '告警编号', type: 'varchar(32)' },
-            { code: 'ALARM_TIME', nameCn: '告警时间', type: 'datetime' },
-            { code: 'ALARM_LEVEL', nameCn: '告警等级', type: 'varchar(10)' },
-          ] },
-        { nameEn: 'scada_event_log', nameCn: 'SCADA事件日志表',
-          fields: [
-            { code: 'EVENT_ID', nameCn: '事件编号', type: 'varchar(32)' },
-            { code: 'EVENT_TIME', nameCn: '事件时间', type: 'datetime' },
-            { code: 'EVENT_TYPE', nameCn: '事件类型', type: 'varchar(20)' },
-          ] },
-      ] },
-    // pm_met：气象站采集整库（→ 资源评估库 db_res）
-    { id: 'pm_met', batchFileId: 'bf_007', sourceSystem: '气象站',
-      databaseName: 'met_station_db', databaseType: 'MySQL',
-      targetDatabaseId: 'db_res', collectedAt: '2026-08-15 01:00',
-      tables: [
-        { nameEn: 'wind_measurement', nameCn: '测风数据表',
-          fields: [
-            { code: 'MEASURE_TIME', nameCn: '测量时间', type: 'datetime' },
-            { code: 'PROJECT_ID', nameCn: '所属项目', type: 'varchar(32)' },
-            { code: 'wind_speed_value', nameCn: '风速值', type: 'decimal(5,2)' },
-            { code: 'TURBULENCE', nameCn: '湍流强度', type: 'varchar(10)' },
-            { code: 'WIND_DIR', nameCn: '风向', type: 'int' },
-            { code: 'wind_gust', nameCn: '阵风风速', type: 'decimal(5,2)' },
-          ] },
-        { nameEn: 'met_forecast_raw', nameCn: '气象预报原始表',
-          fields: [
-            { code: 'FORECAST_ID', nameCn: '预报编号', type: 'varchar(32)' },
-            { code: 'FORECAST_TIME', nameCn: '预报时间', type: 'datetime' },
-          ] },
-      ] },
-    // pm_bim：BIM 采集整库（→ 设计库 db_design）
-    { id: 'pm_bim', batchFileId: 'bf_008', sourceSystem: 'BIM系统',
-      databaseName: 'bim_model_db', databaseType: 'Oracle',
-      targetDatabaseId: 'db_design', collectedAt: '2026-08-15 02:00',
-      tables: [
-        { nameEn: 'turbine_device', nameCn: '风机设备表',
-          fields: [
-            { code: 'MD_ID', nameCn: '主数据编码', type: 'varchar(32)' },
-            { code: 'turbine_model_name', nameCn: '风机机型名称', type: 'varchar(20)' },
-            { code: 'RATED_POWER', nameCn: '额定功率', type: 'decimal(5,2)' },
-            { code: 'SUPPLIER_ID', nameCn: '供应商', type: 'varchar(32)' },
-            { code: 'PROJECT_ID', nameCn: '所属项目', type: 'varchar(32)' },
-            { code: 'FOUNDATION', nameCn: '基础形式', type: 'varchar(20)' },
-            { code: 'blade_length', nameCn: '叶片长度', type: 'decimal(5,1)' },
-          ] },
-        { nameEn: 'bim_element_attr', nameCn: 'BIM构件属性表',
-          fields: [
-            { code: 'ELEMENT_ID', nameCn: '构件编号', type: 'varchar(32)' },
-            { code: 'ATTR_NAME', nameCn: '属性名称', type: 'varchar(64)' },
-            { code: 'ATTR_VALUE', nameCn: '属性值', type: 'varchar(128)' },
-          ] },
-      ] },
+  "tables": [
+    {
+      "id": "t_wind",
+      "appId": "app_res",
+      "dbId": "db_res",
+      "nameCn": "测风数据表",
+      "nameEn": "wind_measurement",
+      "tableType": "业务表",
+      "bizDomainId": "bd_resource",
+      "subjectId": "bs_wind",
+      "masterDataId": null,
+      "desc": "测风塔实测风速/风向/湍流",
+      "partitions": [
+        {
+          "field": "MEASURE_TIME",
+          "type": "RANGE",
+          "granularity": "日",
+          "count": 365,
+          "desc": "按测量时间日分区，保留近一年测风明细"
+        },
+        {
+          "field": "MEASURE_TIME",
+          "type": "RANGE",
+          "granularity": "月",
+          "count": 12,
+          "desc": "按测量时间月分区，用于历史归档"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "pk_wind_measurement",
+          "fields": [
+            "MEASURE_TIME"
+          ],
+          "type": "主键",
+          "unique": true
+        },
+        {
+          "name": "idx_wind_project",
+          "fields": [
+            "PROJECT_ID"
+          ],
+          "type": "普通",
+          "unique": false
+        },
+        {
+          "name": "idx_wind_speed_time",
+          "fields": [
+            "wind_speed_value",
+            "MEASURE_TIME"
+          ],
+          "type": "普通",
+          "unique": false
+        }
+      ],
+      "history": [
+        {
+          "version": "v1.0",
+          "time": "2024-03-15",
+          "operator": "数据治理组",
+          "action": "新建",
+          "desc": "建表并登记测风明细字段元数据"
+        },
+        {
+          "version": "v1.1",
+          "time": "2025-06-20",
+          "operator": "工程组",
+          "action": "变更",
+          "desc": "增加按测量时间日/月分区策略"
+        }
+      ]
+    },
+    {
+      "id": "t_geo",
+      "appId": "app_survey",
+      "dbId": "db_survey",
+      "nameCn": "地质钻孔表",
+      "nameEn": "geological_borehole",
+      "tableType": "业务表",
+      "bizDomainId": "bd_survey",
+      "subjectId": "bs_geo",
+      "masterDataId": null,
+      "desc": "海上风电场地地质钻孔与岩土地层信息",
+      "partitions": null,
+      "indexes": [
+        {
+          "name": "pk_geological_borehole",
+          "fields": [
+            "STRATUM"
+          ],
+          "type": "主键",
+          "unique": true
+        },
+        {
+          "name": "idx_geo_project",
+          "fields": [
+            "PROJECT_ID"
+          ],
+          "type": "普通",
+          "unique": false
+        },
+        {
+          "name": "idx_geo_depth",
+          "fields": [
+            "DEPTH"
+          ],
+          "type": "普通",
+          "unique": false
+        }
+      ],
+      "history": [
+        {
+          "version": "v1.0",
+          "time": "2024-02-10",
+          "operator": "数据治理组",
+          "action": "新建",
+          "desc": "建表并登记地质钻孔岩土分层元数据"
+        },
+        {
+          "version": "v1.1",
+          "time": "2024-11-05",
+          "operator": "工程组",
+          "action": "变更",
+          "desc": "补充桩基持力层字段"
+        }
+      ]
+    },
+    {
+      "id": "t_topo",
+      "appId": "app_survey",
+      "dbId": "db_survey",
+      "nameCn": "海底地形测绘表",
+      "nameEn": "seabed_topography",
+      "tableType": "业务表",
+      "bizDomainId": "bd_survey",
+      "subjectId": "bs_topo",
+      "masterDataId": null,
+      "desc": "海底地形测绘坐标、水深与海缆路由",
+      "partitions": null,
+      "indexes": [
+        {
+          "name": "pk_seabed_topography",
+          "fields": [
+            "COORD"
+          ],
+          "type": "主键",
+          "unique": true
+        },
+        {
+          "name": "idx_topo_route",
+          "fields": [
+            "CABLE_ROUTE"
+          ],
+          "type": "普通",
+          "unique": false
+        },
+        {
+          "name": "idx_topo_project",
+          "fields": [
+            "PROJECT_ID"
+          ],
+          "type": "普通",
+          "unique": false
+        }
+      ],
+      "history": [
+        {
+          "version": "v1.0",
+          "time": "2024-01-18",
+          "operator": "数据治理组",
+          "action": "新建",
+          "desc": "建表并登记海底地形测绘元数据（涉密 L4）"
+        },
+        {
+          "version": "v1.1",
+          "time": "2025-04-12",
+          "operator": "设计组",
+          "action": "变更",
+          "desc": "海缆路由字段关联海缆设计"
+        }
+      ]
+    },
+    {
+      "id": "t_turbine",
+      "appId": "app_design",
+      "dbId": "db_design",
+      "nameCn": "风机设备表",
+      "nameEn": "turbine_device",
+      "tableType": "业务表",
+      "bizDomainId": "bd_design",
+      "subjectId": "bs_device",
+      "masterDataId": "md_turbine",
+      "desc": "风机机型、额定功率与基础型式等设备参数",
+      "partitions": null,
+      "indexes": [
+        {
+          "name": "pk_turbine_device",
+          "fields": [
+            "MD_ID"
+          ],
+          "type": "主键",
+          "unique": true
+        },
+        {
+          "name": "idx_turbine_supplier",
+          "fields": [
+            "SUPPLIER_ID"
+          ],
+          "type": "普通",
+          "unique": false
+        },
+        {
+          "name": "idx_turbine_project",
+          "fields": [
+            "PROJECT_ID"
+          ],
+          "type": "普通",
+          "unique": false
+        }
+      ],
+      "history": [
+        {
+          "version": "v1.0",
+          "time": "2024-03-01",
+          "operator": "设计组",
+          "action": "新建",
+          "desc": "建表并登记风机设备档案元数据"
+        },
+        {
+          "version": "v1.1",
+          "time": "2025-01-20",
+          "operator": "数据治理组",
+          "action": "变更",
+          "desc": "主数据编码字段改为引用风机主数据"
+        }
+      ]
+    },
+    {
+      "id": "t_cable",
+      "appId": "app_design",
+      "dbId": "db_design",
+      "nameCn": "海缆参数表",
+      "nameEn": "submarine_cable",
+      "tableType": "业务表",
+      "bizDomainId": "bd_design",
+      "subjectId": "bs_device",
+      "masterDataId": "md_cable",
+      "desc": "海缆类型、电压等级与监测温度等参数",
+      "partitions": null,
+      "indexes": [
+        {
+          "name": "pk_submarine_cable",
+          "fields": [
+            "MD_ID"
+          ],
+          "type": "主键",
+          "unique": true
+        },
+        {
+          "name": "idx_cable_type",
+          "fields": [
+            "TYPE"
+          ],
+          "type": "普通",
+          "unique": false
+        },
+        {
+          "name": "idx_cable_route",
+          "fields": [
+            "ROUTE"
+          ],
+          "type": "普通",
+          "unique": false
+        }
+      ],
+      "history": [
+        {
+          "version": "v1.0",
+          "time": "2024-03-10",
+          "operator": "设计组",
+          "action": "新建",
+          "desc": "建表并登记海缆参数元数据"
+        },
+        {
+          "version": "v1.1",
+          "time": "2025-03-05",
+          "operator": "数据治理组",
+          "action": "变更",
+          "desc": "监测温度字段关联温度信息项标准"
+        }
+      ]
+    },
+    {
+      "id": "t_substation",
+      "appId": "app_design",
+      "dbId": "db_design",
+      "nameCn": "升压站主变表",
+      "nameEn": "substation_transformer",
+      "tableType": "业务表",
+      "bizDomainId": "bd_design",
+      "subjectId": "bs_device",
+      "masterDataId": "md_substation",
+      "desc": "海上升压站主变容量、电压与油温参数",
+      "partitions": null,
+      "indexes": [
+        {
+          "name": "pk_substation_transformer",
+          "fields": [
+            "MD_ID"
+          ],
+          "type": "主键",
+          "unique": true
+        },
+        {
+          "name": "idx_sub_project",
+          "fields": [
+            "PROJECT_ID"
+          ],
+          "type": "普通",
+          "unique": false
+        },
+        {
+          "name": "idx_sub_voltage",
+          "fields": [
+            "VOLTAGE"
+          ],
+          "type": "普通",
+          "unique": false
+        }
+      ],
+      "history": [
+        {
+          "version": "v1.0",
+          "time": "2024-04-02",
+          "operator": "设计组",
+          "action": "新建",
+          "desc": "建表并登记升压站主变元数据"
+        },
+        {
+          "version": "v1.1",
+          "time": "2025-05-10",
+          "operator": "数据治理组",
+          "action": "变更",
+          "desc": "主变容量字段补充主数据编码引用"
+        }
+      ]
+    },
+    {
+      "id": "t_progress",
+      "appId": "app_build",
+      "dbId": "db_build",
+      "nameCn": "作业进度表",
+      "nameEn": "construction_progress",
+      "tableType": "业务表",
+      "bizDomainId": "bd_build",
+      "subjectId": "bs_schedule",
+      "masterDataId": "md_project",
+      "desc": "船机调度与施工作业进度记录",
+      "partitions": [
+        {
+          "field": "TASK",
+          "type": "HASH",
+          "granularity": "日",
+          "count": 8,
+          "desc": "按作业任务哈希分片，支撑每日施工进度高频写入"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "pk_construction_progress",
+          "fields": [
+            "TASK"
+          ],
+          "type": "主键",
+          "unique": true
+        },
+        {
+          "name": "idx_progress_project",
+          "fields": [
+            "PROJECT_ID"
+          ],
+          "type": "普通",
+          "unique": false
+        },
+        {
+          "name": "idx_progress_vessel",
+          "fields": [
+            "VESSEL"
+          ],
+          "type": "普通",
+          "unique": false
+        }
+      ],
+      "history": [
+        {
+          "version": "v1.0",
+          "time": "2024-05-06",
+          "operator": "工程组",
+          "action": "新建",
+          "desc": "建表并登记施工进度元数据"
+        },
+        {
+          "version": "v1.1",
+          "time": "2025-02-14",
+          "operator": "数据治理组",
+          "action": "调整",
+          "desc": "进度百分比字段贯标 progress_percent 标准"
+        }
+      ]
+    },
+    {
+      "id": "t_scada",
+      "appId": "app_ops",
+      "dbId": "db_ops",
+      "nameCn": "SCADA 遥测表",
+      "nameEn": "scada_telemetry",
+      "tableType": "技术表",
+      "bizDomainId": "bd_ops",
+      "subjectId": "bs_scada",
+      "masterDataId": null,
+      "desc": "风机 SCADA 遥测数据（功率/温度/振动）",
+      "partitions": [
+        {
+          "field": "TS",
+          "type": "RANGE",
+          "granularity": "日",
+          "count": 365,
+          "desc": "按时间戳日分区，保留近一年 SCADA 遥测明细"
+        },
+        {
+          "field": "TS",
+          "type": "RANGE",
+          "granularity": "月",
+          "count": 12,
+          "desc": "按时间戳月分区，用于遥测历史归档"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "pk_scada_telemetry",
+          "fields": [
+            "TS"
+          ],
+          "type": "主键",
+          "unique": true
+        },
+        {
+          "name": "idx_scada_turbine",
+          "fields": [
+            "TURBINE_ID"
+          ],
+          "type": "普通",
+          "unique": false
+        },
+        {
+          "name": "idx_scada_power",
+          "fields": [
+            "active_power_value"
+          ],
+          "type": "普通",
+          "unique": false
+        }
+      ],
+      "history": [
+        {
+          "version": "v1.0",
+          "time": "2024-06-01",
+          "operator": "运维组",
+          "action": "新建",
+          "desc": "建表并登记 SCADA 遥测元数据"
+        },
+        {
+          "version": "v1.1",
+          "time": "2025-07-15",
+          "operator": "数据治理组",
+          "action": "变更",
+          "desc": "有功功率字段贯标 active_power_value 标准"
+        }
+      ]
+    },
+    {
+      "id": "t_forecast",
+      "appId": "app_ops",
+      "dbId": "db_ops",
+      "nameCn": "功率预测结果表",
+      "nameEn": "power_forecast",
+      "tableType": "业务表",
+      "bizDomainId": "bd_ops",
+      "subjectId": "bs_forecast",
+      "masterDataId": "md_project",
+      "desc": "功率预测结果与预测精度评估",
+      "partitions": [
+        {
+          "field": "FORECAST_TIME",
+          "type": "RANGE",
+          "granularity": "日",
+          "count": 365,
+          "desc": "按预测时间日分区，保留近一年预测结果"
+        },
+        {
+          "field": "FORECAST_TIME",
+          "type": "RANGE",
+          "granularity": "月",
+          "count": 12,
+          "desc": "按预测时间月分区，用于历史归档"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "pk_power_forecast",
+          "fields": [
+            "FORECAST_TIME"
+          ],
+          "type": "主键",
+          "unique": true
+        },
+        {
+          "name": "idx_forecast_project",
+          "fields": [
+            "PROJECT_ID"
+          ],
+          "type": "普通",
+          "unique": false
+        },
+        {
+          "name": "idx_forecast_model",
+          "fields": [
+            "MODEL"
+          ],
+          "type": "普通",
+          "unique": false
+        }
+      ],
+      "history": [
+        {
+          "version": "v1.0",
+          "time": "2024-06-15",
+          "operator": "运维组",
+          "action": "新建",
+          "desc": "建表并登记功率预测结果元数据"
+        },
+        {
+          "version": "v1.1",
+          "time": "2025-08-01",
+          "operator": "数据治理组",
+          "action": "变更",
+          "desc": "预测精度字段关联精度信息项标准"
+        }
+      ]
+    },
+    {
+      "id": "t_spare",
+      "appId": "app_ops",
+      "dbId": "db_ops",
+      "nameCn": "备品备件表",
+      "nameEn": "spare_parts",
+      "tableType": "业务表",
+      "bizDomainId": "bd_ops",
+      "subjectId": "bs_spare",
+      "masterDataId": null,
+      "desc": "备品备件名称、库存与适配机型",
+      "partitions": null,
+      "indexes": [
+        {
+          "name": "pk_spare_parts",
+          "fields": [
+            "NAME"
+          ],
+          "type": "主键",
+          "unique": true
+        },
+        {
+          "name": "idx_spare_turbine",
+          "fields": [
+            "TURBINE_ID"
+          ],
+          "type": "普通",
+          "unique": false
+        },
+        {
+          "name": "idx_spare_supplier",
+          "fields": [
+            "SUPPLIER_ID"
+          ],
+          "type": "普通",
+          "unique": false
+        }
+      ],
+      "history": [
+        {
+          "version": "v1.0",
+          "time": "2024-07-05",
+          "operator": "运维组",
+          "action": "新建",
+          "desc": "建表并登记备品备件元数据"
+        },
+        {
+          "version": "v1.1",
+          "time": "2025-04-28",
+          "operator": "数据治理组",
+          "action": "调整",
+          "desc": "库存数量字段关联质量规则 qr_008"
+        }
+      ]
+    }
   ],
-  services: [
-    { id: 'svc_001', name: '风资源评估 API', type: 'API', latency: '准实时', tableIds: ['t_wind'], desc: '对外提供测风数据查询与统计', securityLevel: 'L2', status: '已上架',
-      access: { endpoint: 'https://demo.intelab.cn/api/v1/wind/query', method: 'POST',
-        params: [
-          { name: 'turbineId', type: 'string', required: true, desc: '风机编号' },
-          { name: 'metric', type: 'string', required: true, desc: '指标：wind_speed / wind_dir / turbulence' },
-          { name: 'startTime', type: 'string', required: true, desc: '起始时间（ISO8601）' },
+  "fields": [
+    {
+      "id": "f_wind_speed",
+      "tableId": "t_wind",
+      "seq": 1,
+      "business": {
+        "code": "wind_speed_value",
+        "nameCn": "风速值",
+        "definition": "测风塔 100m 高度实测平均风速",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "decimal(5,2)",
+        "length": 7,
+        "isPK": false,
+        "isFK": false,
+        "qualityRuleIds": [
+          "qr_002",
+          "qr_003"
+        ]
+      },
+      "management": {
+        "standardId": "ii_wind_speed",
+        "securityLevel": "L2",
+        "owner": "资源评估组",
+        "updateFrequency": "10分钟",
+        "securityCatalogId": "sc_003"
+      }
+    },
+    {
+      "id": "f_wind_dir",
+      "tableId": "t_wind",
+      "seq": 2,
+      "business": {
+        "code": "WIND_DIR",
+        "nameCn": "风向",
+        "definition": "主导风向（0~360°）",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "smallint",
+        "length": 4,
+        "isPK": false,
+        "isFK": false,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L2",
+        "owner": "资源评估组",
+        "updateFrequency": "10分钟",
+        "securityCatalogId": "sc_003"
+      }
+    },
+    {
+      "id": "f_wind_turbulence",
+      "tableId": "t_wind",
+      "seq": 3,
+      "business": {
+        "code": "TURBULENCE",
+        "nameCn": "湍流强度",
+        "definition": "湍流强度等级",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "varchar(10)",
+        "length": 10,
+        "isPK": false,
+        "isFK": false,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L2",
+        "owner": "资源评估组",
+        "updateFrequency": "10分钟",
+        "securityCatalogId": "sc_003"
+      }
+    },
+    {
+      "id": "f_wind_time",
+      "tableId": "t_wind",
+      "seq": 4,
+      "business": {
+        "code": "MEASURE_TIME",
+        "nameCn": "测量时间",
+        "definition": "数据采集时间戳",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "datetime",
+        "length": 0,
+        "isPK": true,
+        "isFK": false,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L2",
+        "owner": "资源评估组",
+        "updateFrequency": "10分钟",
+        "securityCatalogId": "sc_003"
+      }
+    },
+    {
+      "id": "f_wind_project",
+      "tableId": "t_wind",
+      "seq": 5,
+      "business": {
+        "code": "PROJECT_ID",
+        "nameCn": "所属项目",
+        "definition": "测风塔所属海上风电项目",
+        "masterDataId": "md_project",
+        "masterDataType": "项目"
+      },
+      "technical": {
+        "type": "varchar(32)",
+        "length": 32,
+        "isPK": false,
+        "isFK": true,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L2",
+        "owner": "资源评估组",
+        "updateFrequency": "静态"
+      }
+    },
+    {
+      "id": "f_geo_stratum",
+      "tableId": "t_geo",
+      "seq": 1,
+      "business": {
+        "code": "STRATUM",
+        "nameCn": "地层编号",
+        "definition": "地层编号",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "varchar(20)",
+        "length": 20,
+        "isPK": true,
+        "isFK": false,
+        "qualityRuleIds": [
+          "qr_006"
+        ]
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L3",
+        "owner": "勘测组",
+        "updateFrequency": "静态",
+        "securityCatalogId": "sc_004"
+      }
+    },
+    {
+      "id": "f_geo_depth",
+      "tableId": "t_geo",
+      "seq": 2,
+      "business": {
+        "code": "DEPTH",
+        "nameCn": "钻孔深度",
+        "definition": "钻孔深度",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "decimal(6,1)",
+        "length": 7,
+        "isPK": false,
+        "isFK": false,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L3",
+        "owner": "勘测组",
+        "updateFrequency": "静态",
+        "securityCatalogId": "sc_004"
+      }
+    },
+    {
+      "id": "f_geo_soil",
+      "tableId": "t_geo",
+      "seq": 3,
+      "business": {
+        "code": "SOIL_TYPE",
+        "nameCn": "土质类型",
+        "definition": "土质类型",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "varchar(20)",
+        "length": 20,
+        "isPK": false,
+        "isFK": false,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L3",
+        "owner": "勘测组",
+        "updateFrequency": "静态",
+        "securityCatalogId": "sc_004"
+      }
+    },
+    {
+      "id": "f_geo_bearing",
+      "tableId": "t_geo",
+      "seq": 4,
+      "business": {
+        "code": "BEARING",
+        "nameCn": "桩基持力层",
+        "definition": "桩基持力层",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "varchar(20)",
+        "length": 20,
+        "isPK": false,
+        "isFK": false,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L3",
+        "owner": "勘测组",
+        "updateFrequency": "静态",
+        "securityCatalogId": "sc_004"
+      }
+    },
+    {
+      "id": "f_geo_project",
+      "tableId": "t_geo",
+      "seq": 5,
+      "business": {
+        "code": "PROJECT_ID",
+        "nameCn": "所属项目",
+        "definition": "所属项目",
+        "masterDataId": "md_project",
+        "masterDataType": "项目"
+      },
+      "technical": {
+        "type": "varchar(32)",
+        "length": 32,
+        "isPK": false,
+        "isFK": true,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L3",
+        "owner": "勘测组",
+        "updateFrequency": "静态"
+      }
+    },
+    {
+      "id": "f_topo_coord",
+      "tableId": "t_topo",
+      "seq": 1,
+      "business": {
+        "code": "COORD",
+        "nameCn": "坐标",
+        "definition": "坐标",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "varchar(40)",
+        "length": 40,
+        "isPK": true,
+        "isFK": false,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": "ii_sea_area",
+        "securityLevel": "L4",
+        "owner": "测绘组",
+        "updateFrequency": "静态",
+        "securityCatalogId": "sc_005"
+      }
+    },
+    {
+      "id": "f_topo_depth",
+      "tableId": "t_topo",
+      "seq": 2,
+      "business": {
+        "code": "WATER_DEPTH",
+        "nameCn": "水深",
+        "definition": "水深",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "decimal(6,1)",
+        "length": 7,
+        "isPK": false,
+        "isFK": false,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L4",
+        "owner": "测绘组",
+        "updateFrequency": "静态",
+        "securityCatalogId": "sc_005"
+      }
+    },
+    {
+      "id": "f_topo_survey",
+      "tableId": "t_topo",
+      "seq": 3,
+      "business": {
+        "code": "SURVEY_DATE",
+        "nameCn": "测绘日期",
+        "definition": "测绘日期",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "date",
+        "length": 0,
+        "isPK": false,
+        "isFK": false,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L4",
+        "owner": "测绘组",
+        "updateFrequency": "静态",
+        "securityCatalogId": "sc_005"
+      }
+    },
+    {
+      "id": "f_topo_route",
+      "tableId": "t_topo",
+      "seq": 4,
+      "business": {
+        "code": "CABLE_ROUTE",
+        "nameCn": "海缆路由",
+        "definition": "海缆路由",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "varchar(64)",
+        "length": 64,
+        "isPK": false,
+        "isFK": false,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L4",
+        "owner": "测绘组",
+        "updateFrequency": "静态",
+        "securityCatalogId": "sc_005"
+      }
+    },
+    {
+      "id": "f_topo_project",
+      "tableId": "t_topo",
+      "seq": 5,
+      "business": {
+        "code": "PROJECT_ID",
+        "nameCn": "所属项目",
+        "definition": "所属项目",
+        "masterDataId": "md_project",
+        "masterDataType": "项目"
+      },
+      "technical": {
+        "type": "varchar(32)",
+        "length": 32,
+        "isPK": false,
+        "isFK": true,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L3",
+        "owner": "测绘组",
+        "updateFrequency": "静态"
+      }
+    },
+    {
+      "id": "f_turbine_model",
+      "tableId": "t_turbine",
+      "seq": 1,
+      "business": {
+        "code": "turbine_model_name",
+        "nameCn": "风机机型名称",
+        "definition": "机型",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "varchar(20)",
+        "length": 20,
+        "isPK": false,
+        "isFK": false,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": "ii_turbine_model",
+        "securityLevel": "L2",
+        "owner": "设计组",
+        "updateFrequency": "静态",
+        "securityCatalogId": "sc_006"
+      }
+    },
+    {
+      "id": "f_turbine_md",
+      "tableId": "t_turbine",
+      "seq": 2,
+      "business": {
+        "code": "MD_ID",
+        "nameCn": "主数据编码",
+        "definition": "主数据编码",
+        "masterDataId": "md_turbine",
+        "masterDataType": "风机"
+      },
+      "technical": {
+        "type": "varchar(32)",
+        "length": 32,
+        "isPK": true,
+        "isFK": false,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L2",
+        "owner": "设计组",
+        "updateFrequency": "静态"
+      }
+    },
+    {
+      "id": "f_turbine_power",
+      "tableId": "t_turbine",
+      "seq": 3,
+      "business": {
+        "code": "RATED_POWER",
+        "nameCn": "额定功率",
+        "definition": "额定功率",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "decimal(5,2)",
+        "length": 7,
+        "isPK": false,
+        "isFK": false,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": "ii_active_power",
+        "securityLevel": "L2",
+        "owner": "设计组",
+        "updateFrequency": "静态",
+        "securityCatalogId": "sc_006"
+      }
+    },
+    {
+      "id": "f_turbine_foundation",
+      "tableId": "t_turbine",
+      "seq": 4,
+      "business": {
+        "code": "FOUNDATION",
+        "nameCn": "基础型式",
+        "definition": "基础型式",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "varchar(20)",
+        "length": 20,
+        "isPK": false,
+        "isFK": false,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": "ii_foundation",
+        "securityLevel": "L2",
+        "owner": "设计组",
+        "updateFrequency": "静态",
+        "securityCatalogId": "sc_006"
+      }
+    },
+    {
+      "id": "f_turbine_supplier",
+      "tableId": "t_turbine",
+      "seq": 5,
+      "business": {
+        "code": "SUPPLIER_ID",
+        "nameCn": "供应商",
+        "definition": "供应商",
+        "masterDataId": "md_supplier",
+        "masterDataType": "供应商"
+      },
+      "technical": {
+        "type": "varchar(32)",
+        "length": 32,
+        "isPK": false,
+        "isFK": true,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L2",
+        "owner": "设计组",
+        "updateFrequency": "静态"
+      }
+    },
+    {
+      "id": "f_turbine_project",
+      "tableId": "t_turbine",
+      "seq": 6,
+      "business": {
+        "code": "PROJECT_ID",
+        "nameCn": "所属项目",
+        "definition": "所属项目",
+        "masterDataId": "md_project",
+        "masterDataType": "项目"
+      },
+      "technical": {
+        "type": "varchar(32)",
+        "length": 32,
+        "isPK": false,
+        "isFK": true,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L2",
+        "owner": "设计组",
+        "updateFrequency": "静态"
+      }
+    },
+    {
+      "id": "f_cable_type",
+      "tableId": "t_cable",
+      "seq": 1,
+      "business": {
+        "code": "TYPE",
+        "nameCn": "海缆类型",
+        "definition": "海缆类型",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "varchar(20)",
+        "length": 20,
+        "isPK": false,
+        "isFK": false,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": "ii_cable_type",
+        "securityLevel": "L3",
+        "owner": "设计组",
+        "updateFrequency": "静态",
+        "securityCatalogId": "sc_007"
+      }
+    },
+    {
+      "id": "f_cable_md",
+      "tableId": "t_cable",
+      "seq": 2,
+      "business": {
+        "code": "MD_ID",
+        "nameCn": "主数据编码",
+        "definition": "主数据编码",
+        "masterDataId": "md_cable",
+        "masterDataType": "海缆"
+      },
+      "technical": {
+        "type": "varchar(32)",
+        "length": 32,
+        "isPK": true,
+        "isFK": false,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L3",
+        "owner": "设计组",
+        "updateFrequency": "静态"
+      }
+    },
+    {
+      "id": "f_cable_voltage",
+      "tableId": "t_cable",
+      "seq": 3,
+      "business": {
+        "code": "voltage_level_code",
+        "nameCn": "电压等级编码",
+        "definition": "电压等级",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "varchar(10)",
+        "length": 10,
+        "isPK": false,
+        "isFK": false,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": "ii_voltage",
+        "securityLevel": "L3",
+        "owner": "设计组",
+        "updateFrequency": "静态",
+        "securityCatalogId": "sc_007"
+      }
+    },
+    {
+      "id": "f_cable_temp",
+      "tableId": "t_cable",
+      "seq": 4,
+      "business": {
+        "code": "MONITOR_TEMP",
+        "nameCn": "监测温度",
+        "definition": "监测温度",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "decimal(5,1)",
+        "length": 6,
+        "isPK": false,
+        "isFK": false,
+        "qualityRuleIds": [
+          "qr_004"
+        ]
+      },
+      "management": {
+        "standardId": "ii_temperature",
+        "securityLevel": "L3",
+        "owner": "设计组",
+        "updateFrequency": "静态",
+        "securityCatalogId": "sc_007"
+      }
+    },
+    {
+      "id": "f_cable_route",
+      "tableId": "t_cable",
+      "seq": 5,
+      "business": {
+        "code": "ROUTE",
+        "nameCn": "路由坐标",
+        "definition": "路由坐标",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "varchar(64)",
+        "length": 64,
+        "isPK": false,
+        "isFK": false,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L4",
+        "owner": "设计组",
+        "updateFrequency": "静态",
+        "securityCatalogId": "sc_005"
+      }
+    },
+    {
+      "id": "f_sub_md",
+      "tableId": "t_substation",
+      "seq": 1,
+      "business": {
+        "code": "MD_ID",
+        "nameCn": "主数据编码",
+        "definition": "主数据编码",
+        "masterDataId": "md_substation",
+        "masterDataType": "升压站"
+      },
+      "technical": {
+        "type": "varchar(32)",
+        "length": 32,
+        "isPK": true,
+        "isFK": false,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L2",
+        "owner": "设计组",
+        "updateFrequency": "静态"
+      }
+    },
+    {
+      "id": "f_sub_capacity",
+      "tableId": "t_substation",
+      "seq": 2,
+      "business": {
+        "code": "CAPACITY",
+        "nameCn": "主变容量",
+        "definition": "主变容量",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "varchar(20)",
+        "length": 20,
+        "isPK": false,
+        "isFK": false,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L2",
+        "owner": "设计组",
+        "updateFrequency": "静态",
+        "securityCatalogId": "sc_008"
+      }
+    },
+    {
+      "id": "f_sub_voltage",
+      "tableId": "t_substation",
+      "seq": 3,
+      "business": {
+        "code": "VOLTAGE",
+        "nameCn": "电压等级",
+        "definition": "电压等级",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "varchar(10)",
+        "length": 10,
+        "isPK": false,
+        "isFK": false,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": "ii_voltage",
+        "securityLevel": "L2",
+        "owner": "设计组",
+        "updateFrequency": "静态",
+        "securityCatalogId": "sc_008"
+      }
+    },
+    {
+      "id": "f_sub_oil_temp",
+      "tableId": "t_substation",
+      "seq": 4,
+      "business": {
+        "code": "OIL_TEMP",
+        "nameCn": "油温",
+        "definition": "油温",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "decimal(5,1)",
+        "length": 6,
+        "isPK": false,
+        "isFK": false,
+        "qualityRuleIds": [
+          "qr_007"
+        ]
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L2",
+        "owner": "设计组",
+        "updateFrequency": "静态",
+        "securityCatalogId": "sc_008"
+      }
+    },
+    {
+      "id": "f_sub_project",
+      "tableId": "t_substation",
+      "seq": 5,
+      "business": {
+        "code": "PROJECT_ID",
+        "nameCn": "所属项目",
+        "definition": "所属项目",
+        "masterDataId": "md_project",
+        "masterDataType": "项目"
+      },
+      "technical": {
+        "type": "varchar(32)",
+        "length": 32,
+        "isPK": false,
+        "isFK": true,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L2",
+        "owner": "设计组",
+        "updateFrequency": "静态"
+      }
+    },
+    {
+      "id": "f_prog_task",
+      "tableId": "t_progress",
+      "seq": 1,
+      "business": {
+        "code": "TASK",
+        "nameCn": "作业任务",
+        "definition": "作业任务",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "varchar(64)",
+        "length": 64,
+        "isPK": true,
+        "isFK": false,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L2",
+        "owner": "施工管理组",
+        "updateFrequency": "每日",
+        "securityCatalogId": "sc_009"
+      }
+    },
+    {
+      "id": "f_prog_progress",
+      "tableId": "t_progress",
+      "seq": 2,
+      "business": {
+        "code": "progress_percent",
+        "nameCn": "进度百分比",
+        "definition": "进度百分比",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "tinyint",
+        "length": 1,
+        "isPK": false,
+        "isFK": false,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": "ii_progress",
+        "securityLevel": "L2",
+        "owner": "施工管理组",
+        "updateFrequency": "每日",
+        "securityCatalogId": "sc_009"
+      }
+    },
+    {
+      "id": "f_prog_vessel",
+      "tableId": "t_progress",
+      "seq": 3,
+      "business": {
+        "code": "VESSEL",
+        "nameCn": "船机",
+        "definition": "船机",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "varchar(32)",
+        "length": 32,
+        "isPK": false,
+        "isFK": false,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L2",
+        "owner": "施工管理组",
+        "updateFrequency": "每日",
+        "securityCatalogId": "sc_009"
+      }
+    },
+    {
+      "id": "f_prog_seastate",
+      "tableId": "t_progress",
+      "seq": 4,
+      "business": {
+        "code": "SEA_STATE",
+        "nameCn": "海况",
+        "definition": "海况",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "varchar(20)",
+        "length": 20,
+        "isPK": false,
+        "isFK": false,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L2",
+        "owner": "施工管理组",
+        "updateFrequency": "每日",
+        "securityCatalogId": "sc_009"
+      }
+    },
+    {
+      "id": "f_prog_project",
+      "tableId": "t_progress",
+      "seq": 5,
+      "business": {
+        "code": "PROJECT_ID",
+        "nameCn": "所属项目",
+        "definition": "所属项目",
+        "masterDataId": "md_project",
+        "masterDataType": "项目"
+      },
+      "technical": {
+        "type": "varchar(32)",
+        "length": 32,
+        "isPK": false,
+        "isFK": true,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L2",
+        "owner": "施工管理组",
+        "updateFrequency": "每日"
+      }
+    },
+    {
+      "id": "f_scada_power",
+      "tableId": "t_scada",
+      "seq": 1,
+      "business": {
+        "code": "active_power_value",
+        "nameCn": "有功功率值",
+        "definition": "有功功率",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "decimal(5,2)",
+        "length": 7,
+        "isPK": false,
+        "isFK": false,
+        "qualityRuleIds": [
+          "qr_001"
+        ]
+      },
+      "management": {
+        "standardId": "ii_active_power",
+        "securityLevel": "L2",
+        "owner": "运维组",
+        "updateFrequency": "1分钟",
+        "securityCatalogId": "sc_010"
+      }
+    },
+    {
+      "id": "f_scada_turbine",
+      "tableId": "t_scada",
+      "seq": 2,
+      "business": {
+        "code": "TURBINE_ID",
+        "nameCn": "机组",
+        "definition": "机组",
+        "masterDataId": "md_turbine",
+        "masterDataType": "风机"
+      },
+      "technical": {
+        "type": "varchar(32)",
+        "length": 32,
+        "isPK": false,
+        "isFK": true,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L2",
+        "owner": "运维组",
+        "updateFrequency": "1分钟"
+      }
+    },
+    {
+      "id": "f_scada_temp",
+      "tableId": "t_scada",
+      "seq": 3,
+      "business": {
+        "code": "temperature_value",
+        "nameCn": "温度值",
+        "definition": "温度",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "decimal(5,1)",
+        "length": 6,
+        "isPK": false,
+        "isFK": false,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": "ii_temperature",
+        "securityLevel": "L2",
+        "owner": "运维组",
+        "updateFrequency": "1分钟",
+        "securityCatalogId": "sc_010"
+      }
+    },
+    {
+      "id": "f_scada_vibration",
+      "tableId": "t_scada",
+      "seq": 4,
+      "business": {
+        "code": "VIBRATION",
+        "nameCn": "振动",
+        "definition": "振动",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "decimal(6,2)",
+        "length": 8,
+        "isPK": false,
+        "isFK": false,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L2",
+        "owner": "运维组",
+        "updateFrequency": "1分钟",
+        "securityCatalogId": "sc_010"
+      }
+    },
+    {
+      "id": "f_scada_time",
+      "tableId": "t_scada",
+      "seq": 5,
+      "business": {
+        "code": "TS",
+        "nameCn": "时间戳",
+        "definition": "时间戳",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "datetime",
+        "length": 0,
+        "isPK": true,
+        "isFK": false,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L2",
+        "owner": "运维组",
+        "updateFrequency": "1分钟",
+        "securityCatalogId": "sc_010"
+      }
+    },
+    {
+      "id": "f_forecast_time",
+      "tableId": "t_forecast",
+      "seq": 1,
+      "business": {
+        "code": "FORECAST_TIME",
+        "nameCn": "预测时间",
+        "definition": "预测时间",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "datetime",
+        "length": 0,
+        "isPK": true,
+        "isFK": false,
+        "qualityRuleIds": [
+          "qr_005"
+        ]
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L2",
+        "owner": "运维组",
+        "updateFrequency": "15分钟",
+        "securityCatalogId": "sc_011"
+      }
+    },
+    {
+      "id": "f_forecast_power",
+      "tableId": "t_forecast",
+      "seq": 2,
+      "business": {
+        "code": "PREDICT_POWER",
+        "nameCn": "预测功率",
+        "definition": "预测功率",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "decimal(5,2)",
+        "length": 7,
+        "isPK": false,
+        "isFK": false,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": "ii_active_power",
+        "securityLevel": "L2",
+        "owner": "运维组",
+        "updateFrequency": "15分钟",
+        "securityCatalogId": "sc_011"
+      }
+    },
+    {
+      "id": "f_forecast_project",
+      "tableId": "t_forecast",
+      "seq": 3,
+      "business": {
+        "code": "PROJECT_ID",
+        "nameCn": "所属项目",
+        "definition": "所属项目",
+        "masterDataId": "md_project",
+        "masterDataType": "项目"
+      },
+      "technical": {
+        "type": "varchar(32)",
+        "length": 32,
+        "isPK": false,
+        "isFK": true,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L2",
+        "owner": "运维组",
+        "updateFrequency": "15分钟"
+      }
+    },
+    {
+      "id": "f_forecast_accuracy",
+      "tableId": "t_forecast",
+      "seq": 4,
+      "business": {
+        "code": "ACCURACY",
+        "nameCn": "预测精度",
+        "definition": "预测精度",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "decimal(4,2)",
+        "length": 6,
+        "isPK": false,
+        "isFK": false,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": "ii_accuracy",
+        "securityLevel": "L2",
+        "owner": "运维组",
+        "updateFrequency": "15分钟",
+        "securityCatalogId": "sc_011"
+      }
+    },
+    {
+      "id": "f_forecast_model",
+      "tableId": "t_forecast",
+      "seq": 5,
+      "business": {
+        "code": "MODEL",
+        "nameCn": "算法模型",
+        "definition": "算法模型",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "varchar(32)",
+        "length": 32,
+        "isPK": false,
+        "isFK": false,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L2",
+        "owner": "运维组",
+        "updateFrequency": "15分钟",
+        "securityCatalogId": "sc_011"
+      }
+    },
+    {
+      "id": "f_spare_name",
+      "tableId": "t_spare",
+      "seq": 1,
+      "business": {
+        "code": "NAME",
+        "nameCn": "备件名称",
+        "definition": "备件名称",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "varchar(64)",
+        "length": 64,
+        "isPK": true,
+        "isFK": false,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L2",
+        "owner": "备件组",
+        "updateFrequency": "每日",
+        "securityCatalogId": "sc_013"
+      }
+    },
+    {
+      "id": "f_spare_qty",
+      "tableId": "t_spare",
+      "seq": 2,
+      "business": {
+        "code": "QTY",
+        "nameCn": "库存数量",
+        "definition": "库存数量",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "int",
+        "length": 4,
+        "isPK": false,
+        "isFK": false,
+        "qualityRuleIds": [
+          "qr_008"
+        ]
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L2",
+        "owner": "备件组",
+        "updateFrequency": "每日",
+        "securityCatalogId": "sc_013"
+      }
+    },
+    {
+      "id": "f_spare_turbine",
+      "tableId": "t_spare",
+      "seq": 3,
+      "business": {
+        "code": "TURBINE_ID",
+        "nameCn": "适配机型",
+        "definition": "适配机型",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "varchar(32)",
+        "length": 32,
+        "isPK": false,
+        "isFK": false,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": "ii_turbine_model",
+        "securityLevel": "L2",
+        "owner": "备件组",
+        "updateFrequency": "每日",
+        "securityCatalogId": "sc_013"
+      }
+    },
+    {
+      "id": "f_spare_supplier",
+      "tableId": "t_spare",
+      "seq": 4,
+      "business": {
+        "code": "SUPPLIER_ID",
+        "nameCn": "供应商",
+        "definition": "供应商",
+        "masterDataId": "md_supplier",
+        "masterDataType": "供应商"
+      },
+      "technical": {
+        "type": "varchar(32)",
+        "length": 32,
+        "isPK": false,
+        "isFK": true,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L2",
+        "owner": "备件组",
+        "updateFrequency": "每日"
+      }
+    },
+    {
+      "id": "f_spare_project",
+      "tableId": "t_spare",
+      "seq": 5,
+      "business": {
+        "code": "PROJECT_ID",
+        "nameCn": "所属项目",
+        "definition": "所属项目",
+        "masterDataId": "md_project",
+        "masterDataType": "项目"
+      },
+      "technical": {
+        "type": "varchar(32)",
+        "length": 32,
+        "isPK": false,
+        "isFK": true,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L2",
+        "owner": "备件组",
+        "updateFrequency": "每日"
+      }
+    }
+  ],
+  "qualityResults": [
+    {
+      "id": "qres_app_res",
+      "appId": "app_res",
+      "score": 92,
+      "dimension": "完整性",
+      "issues": [
+        {
+          "id": "issue_001",
+          "fieldId": "f_wind_speed",
+          "ruleId": "qr_003",
+          "desc": "2026-07 有 3 个 10 分钟区间风速缺失",
+          "severity": "警告"
+        }
+      ]
+    },
+    {
+      "id": "qres_app_ops",
+      "appId": "app_ops",
+      "score": 78,
+      "dimension": "准确性",
+      "issues": [
+        {
+          "id": "issue_002",
+          "fieldId": "f_scada_power",
+          "ruleId": "qr_001",
+          "desc": "6 台机组有功功率越界（>16MW）",
+          "severity": "严重"
+        }
+      ]
+    }
+  ],
+  "lineage": [
+    {
+      "id": "lg_001",
+      "up": "t_wind",
+      "down": "t_forecast",
+      "relation": "功率预测输入",
+      "mode": "离线批次",
+      "desc": "测风数据离线批次同步至功率预测模型",
+      "fieldMapping": [
+        {
+          "up": "f_wind_speed",
+          "down": "f_forecast_power"
+        },
+        {
+          "up": "f_wind_time",
+          "down": "f_forecast_time"
+        },
+        {
+          "up": "f_wind_dir",
+          "down": "f_forecast_power"
+        }
+      ]
+    },
+    {
+      "id": "lg_002",
+      "up": "t_scada",
+      "down": "t_forecast",
+      "relation": "模型训练数据",
+      "mode": "应用内",
+      "desc": "运维应用内定时脚本加工训练预测模型",
+      "fieldMapping": [
+        {
+          "up": "f_scada_power",
+          "down": "f_forecast_power"
+        },
+        {
+          "up": "f_scada_time",
+          "down": "f_forecast_time"
+        }
+      ]
+    },
+    {
+      "id": "lg_003",
+      "up": "t_scada",
+      "down": "t_spare",
+      "relation": "备件需求驱动",
+      "mode": "应用内",
+      "desc": "运维应用内定时脚本加工驱动备件需求",
+      "fieldMapping": [
+        {
+          "up": "f_scada_turbine",
+          "down": "f_spare_turbine"
+        },
+        {
+          "up": "f_scada_vibration",
+          "down": "f_spare_qty"
+        }
+      ]
+    },
+    {
+      "id": "lg_004",
+      "up": "t_geo",
+      "down": "t_turbine",
+      "relation": "机型选址依据",
+      "mode": "离线批次",
+      "desc": "地质钻孔数据离线批次支撑机型/基础选型",
+      "fieldMapping": [
+        {
+          "up": "f_geo_bearing",
+          "down": "f_turbine_foundation"
+        },
+        {
+          "up": "f_geo_stratum",
+          "down": "f_turbine_model"
+        },
+        {
+          "up": "f_geo_project",
+          "down": "f_turbine_project"
+        }
+      ]
+    },
+    {
+      "id": "lg_005",
+      "up": "t_topo",
+      "down": "t_cable",
+      "relation": "海缆路由依据",
+      "mode": "离线批次",
+      "desc": "海底地形测绘离线批次支撑海缆路由设计",
+      "fieldMapping": [
+        {
+          "up": "f_topo_route",
+          "down": "f_cable_route"
+        },
+        {
+          "up": "f_topo_depth",
+          "down": "f_cable_type"
+        }
+      ]
+    },
+    {
+      "id": "lg_006",
+      "up": "t_topo",
+      "down": "t_substation",
+      "relation": "站址选址依据",
+      "mode": "离线批次",
+      "desc": "海底地形测绘离线批次支撑升压站选址",
+      "fieldMapping": [
+        {
+          "up": "f_topo_coord",
+          "down": "f_sub_md"
+        },
+        {
+          "up": "f_topo_depth",
+          "down": "f_sub_capacity"
+        },
+        {
+          "up": "f_topo_project",
+          "down": "f_sub_project"
+        }
+      ]
+    },
+    {
+      "id": "lg_007",
+      "up": "t_turbine",
+      "down": "t_scada",
+      "relation": "采集配置",
+      "mode": "数据服务",
+      "desc": "风机设备参数经实时数据服务同步为 SCADA 采集配置",
+      "fieldMapping": [
+        {
+          "up": "f_turbine_md",
+          "down": "f_scada_turbine"
+        },
+        {
+          "up": "f_turbine_power",
+          "down": "f_scada_power"
+        }
+      ]
+    },
+    {
+      "id": "lg_008",
+      "up": "t_cable",
+      "down": "t_substation",
+      "relation": "海缆监测汇聚",
+      "mode": "应用内",
+      "desc": "设计应用内定时脚本汇聚海缆监测至升压站主变表",
+      "fieldMapping": [
+        {
+          "up": "f_cable_temp",
+          "down": "f_sub_oil_temp"
+        },
+        {
+          "up": "f_cable_md",
+          "down": "f_sub_md"
+        }
+      ]
+    },
+    {
+      "id": "lg_009",
+      "up": "t_forecast",
+      "down": "t_progress",
+      "relation": "作业窗口调度",
+      "mode": "数据服务",
+      "desc": "功率预测经准实时数据服务支撑施工/运维作业窗口调度",
+      "fieldMapping": [
+        {
+          "up": "f_forecast_power",
+          "down": "f_prog_seastate"
+        },
+        {
+          "up": "f_forecast_time",
+          "down": "f_prog_task"
+        },
+        {
+          "up": "f_forecast_project",
+          "down": "f_prog_project"
+        }
+      ]
+    }
+  ],
+  "batchFiles": [
+    {
+      "id": "bf_001",
+      "name": "测风数据批次交换",
+      "direction": "outbound",
+      "sourceSystem": "风资源评估系统",
+      "sourceTableId": "t_wind",
+      "sourceTableName": "测风数据表",
+      "targetSystem": "大数据开发平台·功率预测",
+      "targetTableId": null,
+      "targetTableName": "功率预测输入表",
+      "fileFormat": "CSV",
+      "schedule": "每日 02:00",
+      "securityLevel": "L2",
+      "status": "运行中",
+      "applyFlow": [
+        {
+          "step": "申请",
+          "actor": "资源评估组",
+          "time": "2026-05-12",
+          "result": "通过"
+        },
+        {
+          "step": "安全合规审批",
+          "actor": "数据安全组",
+          "time": "2026-05-14",
+          "result": "通过"
+        },
+        {
+          "step": "授权",
+          "actor": "平台管理员",
+          "time": "2026-05-16",
+          "result": "已授权"
+        }
+      ]
+    },
+    {
+      "id": "bf_002",
+      "name": "地质勘测数据批次交换",
+      "direction": "outbound",
+      "sourceSystem": "海洋勘测系统",
+      "sourceTableId": "t_geo",
+      "sourceTableName": "地质钻孔表",
+      "targetSystem": "工程设计系统·机型选型",
+      "targetTableId": null,
+      "targetTableName": "基础选型参数表",
+      "fileFormat": "CSV",
+      "schedule": "每日 02:00",
+      "securityLevel": "L3",
+      "status": "运行中",
+      "applyFlow": [
+        {
+          "step": "申请",
+          "actor": "勘测组",
+          "time": "2026-05-11",
+          "result": "通过"
+        },
+        {
+          "step": "安全合规审批",
+          "actor": "数据安全组",
+          "time": "2026-05-13",
+          "result": "通过"
+        },
+        {
+          "step": "授权",
+          "actor": "平台管理员",
+          "time": "2026-05-15",
+          "result": "已授权"
+        }
+      ]
+    },
+    {
+      "id": "bf_003",
+      "name": "海底地形批次交换",
+      "direction": "outbound",
+      "sourceSystem": "海洋勘测系统",
+      "sourceTableId": "t_topo",
+      "sourceTableName": "海底地形测绘表",
+      "targetSystem": "工程设计系统·路由/站址",
+      "targetTableId": null,
+      "targetTableName": "路由比选表",
+      "fileFormat": "SHP",
+      "schedule": "每周一 03:00",
+      "securityLevel": "L3",
+      "status": "运行中",
+      "applyFlow": [
+        {
+          "step": "申请",
+          "actor": "测绘组",
+          "time": "2026-05-10",
+          "result": "通过"
+        },
+        {
+          "step": "安全合规审批",
+          "actor": "数据安全组",
+          "time": "2026-05-12",
+          "result": "通过"
+        },
+        {
+          "step": "授权",
+          "actor": "平台管理员",
+          "time": "2026-05-14",
+          "result": "已授权"
+        }
+      ]
+    },
+    {
+      "id": "bf_004",
+      "name": "备件库存月度对账批次",
+      "direction": "outbound",
+      "sourceSystem": "智慧运维系统",
+      "sourceTableId": "t_spare",
+      "sourceTableName": "备品备件表",
+      "targetSystem": "供应商协同平台",
+      "targetTableId": null,
+      "targetTableName": "备件对账表",
+      "fileFormat": "CSV",
+      "schedule": "每月 1 日 02:00",
+      "securityLevel": "L2",
+      "status": "审批中",
+      "applyFlow": [
+        {
+          "step": "申请",
+          "actor": "备件组",
+          "time": "2026-08-01",
+          "result": "通过"
+        },
+        {
+          "step": "安全合规审批",
+          "actor": "数据安全组",
+          "time": "2026-08-03",
+          "result": "通过"
+        }
+      ]
+    },
+    {
+      "id": "bf_005",
+      "name": "施工进度批次交换",
+      "direction": "outbound",
+      "sourceSystem": "施工管理系统",
+      "sourceTableId": "t_progress",
+      "sourceTableName": "作业进度表",
+      "targetSystem": "项目管理系统",
+      "targetTableId": null,
+      "targetTableName": "进度汇总表",
+      "fileFormat": "JSON",
+      "schedule": "每日 06:00",
+      "securityLevel": "L2",
+      "status": "运行中",
+      "applyFlow": [
+        {
+          "step": "申请",
+          "actor": "施工管理组",
+          "time": "2026-05-09",
+          "result": "通过"
+        },
+        {
+          "step": "安全合规审批",
+          "actor": "数据安全组",
+          "time": "2026-05-11",
+          "result": "通过"
+        },
+        {
+          "step": "授权",
+          "actor": "平台管理员",
+          "time": "2026-05-13",
+          "result": "已授权"
+        }
+      ]
+    },
+    {
+      "id": "bf_006",
+      "name": "SCADA遥测数据接入",
+      "direction": "inbound",
+      "sourceSystem": "SCADA采集系统",
+      "sourceDatabaseName": "scada_telemetry_db",
+      "sourceDatabaseType": "MySQL",
+      "targetSystem": "数据资产平台",
+      "targetDatabaseId": "db_ops",
+      "targetDatabaseName": "运维库",
+      "fileFormat": "JSON",
+      "schedule": "每 5 分钟",
+      "securityLevel": "L2",
+      "status": "运行中",
+      "applyFlow": [
+        {
+          "step": "申请",
+          "actor": "运维组",
+          "time": "2026-05-20",
+          "result": "通过"
+        },
+        {
+          "step": "安全合规审批",
+          "actor": "数据安全组",
+          "time": "2026-05-22",
+          "result": "通过"
+        },
+        {
+          "step": "授权",
+          "actor": "平台管理员",
+          "time": "2026-05-24",
+          "result": "已授权"
+        }
+      ]
+    },
+    {
+      "id": "bf_007",
+      "name": "气象站观测数据接入",
+      "direction": "inbound",
+      "sourceSystem": "气象站",
+      "sourceDatabaseName": "met_station_db",
+      "sourceDatabaseType": "MySQL",
+      "targetSystem": "数据资产平台",
+      "targetDatabaseId": "db_res",
+      "targetDatabaseName": "资源评估库",
+      "fileFormat": "CSV",
+      "schedule": "每日 01:00",
+      "securityLevel": "L2",
+      "status": "运行中",
+      "applyFlow": [
+        {
+          "step": "申请",
+          "actor": "资源评估组",
+          "time": "2026-05-19",
+          "result": "通过"
+        },
+        {
+          "step": "安全合规审批",
+          "actor": "数据安全组",
+          "time": "2026-05-21",
+          "result": "通过"
+        },
+        {
+          "step": "授权",
+          "actor": "平台管理员",
+          "time": "2026-05-23",
+          "result": "已授权"
+        }
+      ]
+    },
+    {
+      "id": "bf_008",
+      "name": "BIM模型属性接入",
+      "direction": "inbound",
+      "sourceSystem": "BIM系统",
+      "sourceDatabaseName": "bim_model_db",
+      "sourceDatabaseType": "Oracle",
+      "targetSystem": "数据资产平台",
+      "targetDatabaseId": "db_design",
+      "targetDatabaseName": "设计库",
+      "fileFormat": "JSON",
+      "schedule": "每日 02:00",
+      "securityLevel": "L3",
+      "status": "审批中",
+      "applyFlow": [
+        {
+          "step": "申请",
+          "actor": "设计组",
+          "time": "2026-08-01",
+          "result": "通过"
+        },
+        {
+          "step": "安全合规审批",
+          "actor": "数据安全组",
+          "time": "2026-08-03",
+          "result": "通过"
+        },
+        {
+          "step": "授权",
+          "actor": "平台管理员",
+          "time": "—",
+          "result": "待审批"
+        }
+      ]
+    }
+  ],
+  "prodMetadatas": [
+    {
+      "id": "pm_scada",
+      "batchFileId": "bf_006",
+      "sourceSystem": "SCADA采集系统",
+      "databaseName": "scada_telemetry_db",
+      "databaseType": "MySQL",
+      "targetDatabaseId": "db_ops",
+      "collectedAt": "2026-08-15 02:00",
+      "tables": [
+        {
+          "nameEn": "scada_telemetry",
+          "nameCn": "SCADA遥测表",
+          "fields": [
+            {
+              "code": "TS",
+              "nameCn": "时间戳",
+              "type": "datetime"
+            },
+            {
+              "code": "TURBINE_ID",
+              "nameCn": "机组",
+              "type": "varchar(32)"
+            },
+            {
+              "code": "temperature_value",
+              "nameCn": "温度值",
+              "type": "decimal(5,1)"
+            },
+            {
+              "code": "active_power_value",
+              "nameCn": "有功功率",
+              "type": "decimal(8,2)"
+            },
+            {
+              "code": "gearbox_temp",
+              "nameCn": "齿轮箱温度",
+              "type": "decimal(5,1)"
+            },
+            {
+              "code": "nacelle_yaw",
+              "nameCn": "机舱偏航角",
+              "type": "decimal(6,2)"
+            }
+          ]
+        },
+        {
+          "nameEn": "scada_alarm_raw",
+          "nameCn": "SCADA告警原始表",
+          "fields": [
+            {
+              "code": "ALARM_ID",
+              "nameCn": "告警编号",
+              "type": "varchar(32)"
+            },
+            {
+              "code": "ALARM_TIME",
+              "nameCn": "告警时间",
+              "type": "datetime"
+            },
+            {
+              "code": "ALARM_LEVEL",
+              "nameCn": "告警等级",
+              "type": "varchar(10)"
+            }
+          ]
+        },
+        {
+          "nameEn": "scada_event_log",
+          "nameCn": "SCADA事件日志表",
+          "fields": [
+            {
+              "code": "EVENT_ID",
+              "nameCn": "事件编号",
+              "type": "varchar(32)"
+            },
+            {
+              "code": "EVENT_TIME",
+              "nameCn": "事件时间",
+              "type": "datetime"
+            },
+            {
+              "code": "EVENT_TYPE",
+              "nameCn": "事件类型",
+              "type": "varchar(20)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pm_met",
+      "batchFileId": "bf_007",
+      "sourceSystem": "气象站",
+      "databaseName": "met_station_db",
+      "databaseType": "MySQL",
+      "targetDatabaseId": "db_res",
+      "collectedAt": "2026-08-15 01:00",
+      "tables": [
+        {
+          "nameEn": "wind_measurement",
+          "nameCn": "测风数据表",
+          "fields": [
+            {
+              "code": "MEASURE_TIME",
+              "nameCn": "测量时间",
+              "type": "datetime"
+            },
+            {
+              "code": "PROJECT_ID",
+              "nameCn": "所属项目",
+              "type": "varchar(32)"
+            },
+            {
+              "code": "wind_speed_value",
+              "nameCn": "风速值",
+              "type": "decimal(5,2)"
+            },
+            {
+              "code": "TURBULENCE",
+              "nameCn": "湍流强度",
+              "type": "varchar(10)"
+            },
+            {
+              "code": "WIND_DIR",
+              "nameCn": "风向",
+              "type": "int"
+            },
+            {
+              "code": "wind_gust",
+              "nameCn": "阵风风速",
+              "type": "decimal(5,2)"
+            }
+          ]
+        },
+        {
+          "nameEn": "met_forecast_raw",
+          "nameCn": "气象预报原始表",
+          "fields": [
+            {
+              "code": "FORECAST_ID",
+              "nameCn": "预报编号",
+              "type": "varchar(32)"
+            },
+            {
+              "code": "FORECAST_TIME",
+              "nameCn": "预报时间",
+              "type": "datetime"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pm_bim",
+      "batchFileId": "bf_008",
+      "sourceSystem": "BIM系统",
+      "databaseName": "bim_model_db",
+      "databaseType": "Oracle",
+      "targetDatabaseId": "db_design",
+      "collectedAt": "2026-08-15 02:00",
+      "tables": [
+        {
+          "nameEn": "turbine_device",
+          "nameCn": "风机设备表",
+          "fields": [
+            {
+              "code": "MD_ID",
+              "nameCn": "主数据编码",
+              "type": "varchar(32)"
+            },
+            {
+              "code": "turbine_model_name",
+              "nameCn": "风机机型名称",
+              "type": "varchar(20)"
+            },
+            {
+              "code": "RATED_POWER",
+              "nameCn": "额定功率",
+              "type": "decimal(5,2)"
+            },
+            {
+              "code": "SUPPLIER_ID",
+              "nameCn": "供应商",
+              "type": "varchar(32)"
+            },
+            {
+              "code": "PROJECT_ID",
+              "nameCn": "所属项目",
+              "type": "varchar(32)"
+            },
+            {
+              "code": "FOUNDATION",
+              "nameCn": "基础形式",
+              "type": "varchar(20)"
+            },
+            {
+              "code": "blade_length",
+              "nameCn": "叶片长度",
+              "type": "decimal(5,1)"
+            }
+          ]
+        },
+        {
+          "nameEn": "bim_element_attr",
+          "nameCn": "BIM构件属性表",
+          "fields": [
+            {
+              "code": "ELEMENT_ID",
+              "nameCn": "构件编号",
+              "type": "varchar(32)"
+            },
+            {
+              "code": "ATTR_NAME",
+              "nameCn": "属性名称",
+              "type": "varchar(64)"
+            },
+            {
+              "code": "ATTR_VALUE",
+              "nameCn": "属性值",
+              "type": "varchar(128)"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "services": [
+    {
+      "id": "svc_001",
+      "name": "风资源评估 API",
+      "type": "API",
+      "latency": "准实时",
+      "tableIds": [
+        "t_wind"
+      ],
+      "desc": "对外提供测风数据查询与统计",
+      "securityLevel": "L2",
+      "status": "已上架",
+      "access": {
+        "endpoint": "https://demo.intelab.cn/api/v1/wind/query",
+        "method": "POST",
+        "params": [
+          {
+            "name": "turbineId",
+            "type": "string",
+            "required": true,
+            "desc": "风机编号"
+          },
+          {
+            "name": "metric",
+            "type": "string",
+            "required": true,
+            "desc": "指标：wind_speed / wind_dir / turbulence"
+          },
+          {
+            "name": "startTime",
+            "type": "string",
+            "required": true,
+            "desc": "起始时间（ISO8601）"
+          }
         ],
-        requestExample: 'curl -X POST "https://demo.intelab.cn/api/v1/wind/query" -H "Content-Type: application/json" -d \'{"turbineId":"W-001","metric":"wind_speed","startTime":"2026-08-01T00:00:00Z"}\'',
-        responseExample: '{ "code": 0, "data": [ { "ts": "2026-08-01T10:00:00Z", "turbineId": "W-001", "wind_speed": 8.4 } ] }',
-        rateLimit: '1000 次/分钟', version: 'v1.2' },
-      metrics: { calls: 12340, consumers: 3, last24h: 1280 },
-      applyFlow: [ { step: '申请', actor: '资源评估组', time: '2026-05-12', result: '通过' }, { step: '安全合规审批', actor: '数据安全组', time: '2026-05-14', result: '通过' }, { step: '授权', actor: '平台管理员', time: '2026-05-16', result: '已授权' } ] },
-    { id: 'svc_002', name: 'SCADA 实时数据订阅', type: '订阅', latency: '实时', tableIds: ['t_scada'], desc: '风机 SCADA 遥测实时订阅推送', securityLevel: 'L2', status: '已上架',
-      access: { protocol: 'MQTT', endpoint: 'mqtt://demo.intelab.cn:1883', topic: 'wind/scada/{turbineId}/telemetry', qos: 1, messageFormat: 'JSON',
-        messageFields: [
-          { name: 'turbineId', type: 'string', desc: '风机编号' },
-          { name: 'activePower', type: 'float', desc: '有功功率（kW）' },
-          { name: 'windSpeed', type: 'float', desc: '风速（m/s）' },
-          { name: 'temperature', type: 'float', desc: '机舱温度（℃）' },
-          { name: 'ts', type: 'string', desc: '采集时间戳' },
-        ] },
-      metrics: { calls: 456210, consumers: 2, last24h: 30240 },
-      applyFlow: [ { step: '申请', actor: '运维组', time: '2026-04-20', result: '通过' }, { step: '安全合规审批', actor: '数据安全组', time: '2026-04-22', result: '通过' }, { step: '授权', actor: '平台管理员', time: '2026-04-24', result: '已授权' } ] },
-    { id: 'svc_003', name: '功率预测服务', type: 'API', latency: '准实时', tableIds: ['t_forecast'], desc: '功率预测结果对外 API 服务', securityLevel: 'L2', status: '已上架',
-      access: { endpoint: 'https://demo.intelab.cn/api/v1/forecast/power', method: 'GET',
-        params: [
-          { name: 'forecastDate', type: 'string', required: true, desc: '预测日期（YYYY-MM-DD）' },
-          { name: 'horizon', type: 'string', required: false, desc: '预测时长：24h / 72h' },
+        "requestExample": "curl -X POST \"https://demo.intelab.cn/api/v1/wind/query\" -H \"Content-Type: application/json\" -d '{\"turbineId\":\"W-001\",\"metric\":\"wind_speed\",\"startTime\":\"2026-08-01T00:00:00Z\"}'",
+        "responseExample": "{ \"code\": 0, \"data\": [ { \"ts\": \"2026-08-01T10:00:00Z\", \"turbineId\": \"W-001\", \"wind_speed\": 8.4 } ] }",
+        "rateLimit": "1000 次/分钟",
+        "version": "v1.2"
+      },
+      "metrics": {
+        "calls": 12340,
+        "consumers": 3,
+        "last24h": 1280
+      },
+      "applyFlow": [
+        {
+          "step": "申请",
+          "actor": "资源评估组",
+          "time": "2026-05-12",
+          "result": "通过"
+        },
+        {
+          "step": "安全合规审批",
+          "actor": "数据安全组",
+          "time": "2026-05-14",
+          "result": "通过"
+        },
+        {
+          "step": "授权",
+          "actor": "平台管理员",
+          "time": "2026-05-16",
+          "result": "已授权"
+        }
+      ]
+    },
+    {
+      "id": "svc_002",
+      "name": "SCADA 实时数据订阅",
+      "type": "订阅",
+      "latency": "实时",
+      "tableIds": [
+        "t_scada"
+      ],
+      "desc": "风机 SCADA 遥测实时订阅推送",
+      "securityLevel": "L2",
+      "status": "已上架",
+      "access": {
+        "protocol": "MQTT",
+        "endpoint": "mqtt://demo.intelab.cn:1883",
+        "topic": "wind/scada/{turbineId}/telemetry",
+        "qos": 1,
+        "messageFormat": "JSON",
+        "messageFields": [
+          {
+            "name": "turbineId",
+            "type": "string",
+            "desc": "风机编号"
+          },
+          {
+            "name": "activePower",
+            "type": "float",
+            "desc": "有功功率（kW）"
+          },
+          {
+            "name": "windSpeed",
+            "type": "float",
+            "desc": "风速（m/s）"
+          },
+          {
+            "name": "temperature",
+            "type": "float",
+            "desc": "机舱温度（℃）"
+          },
+          {
+            "name": "ts",
+            "type": "string",
+            "desc": "采集时间戳"
+          }
+        ]
+      },
+      "metrics": {
+        "calls": 456210,
+        "consumers": 2,
+        "last24h": 30240
+      },
+      "applyFlow": [
+        {
+          "step": "申请",
+          "actor": "运维组",
+          "time": "2026-04-20",
+          "result": "通过"
+        },
+        {
+          "step": "安全合规审批",
+          "actor": "数据安全组",
+          "time": "2026-04-22",
+          "result": "通过"
+        },
+        {
+          "step": "授权",
+          "actor": "平台管理员",
+          "time": "2026-04-24",
+          "result": "已授权"
+        }
+      ]
+    },
+    {
+      "id": "svc_003",
+      "name": "功率预测服务",
+      "type": "API",
+      "latency": "准实时",
+      "tableIds": [
+        "t_forecast"
+      ],
+      "desc": "功率预测结果对外 API 服务",
+      "securityLevel": "L2",
+      "status": "已上架",
+      "access": {
+        "endpoint": "https://demo.intelab.cn/api/v1/forecast/power",
+        "method": "GET",
+        "params": [
+          {
+            "name": "forecastDate",
+            "type": "string",
+            "required": true,
+            "desc": "预测日期（YYYY-MM-DD）"
+          },
+          {
+            "name": "horizon",
+            "type": "string",
+            "required": false,
+            "desc": "预测时长：24h / 72h"
+          }
         ],
-        requestExample: 'curl "https://demo.intelab.cn/api/v1/forecast/power?forecastDate=2026-08-16&horizon=24h"',
-        responseExample: '{ "code": 0, "data": [ { "ts": "2026-08-16T00:00:00Z", "predicted_power": 4200.5 } ] }',
-        rateLimit: '500 次/分钟', version: 'v1.0' },
-      metrics: { calls: 8970, consumers: 3, last24h: 640 },
-      applyFlow: [ { step: '申请', actor: '运维组', time: '2026-04-18', result: '通过' }, { step: '安全合规审批', actor: '数据安全组', time: '2026-04-20', result: '通过' }, { step: '授权', actor: '平台管理员', time: '2026-04-22', result: '已授权' } ] },
-    { id: 'svc_004', name: '海域限制因素共享', type: '数据包', latency: '准实时', tableIds: ['t_topo'], desc: '海域限制因素（政府监管）数据共享', securityLevel: 'L4', status: '已上架',
-      access: { format: 'CSV / Parquet', downloadUrl: 'https://demo.intelab.cn/api/v1/packages/sea-restrict/download', updateFreq: '按季度更新', size: '1.8 GB', partition: '按海域分区' },
-      metrics: { calls: 126, consumers: 1, last24h: 0 },
-      applyFlow: [ { step: '申请', actor: '测绘组', time: '2026-03-05', result: '通过' }, { step: '安全合规审批', actor: '数据安全组', time: '2026-03-07', result: '通过' }, { step: '二次审批', actor: '合规委员会', time: '2026-03-10', result: '通过' }, { step: '授权', actor: '平台管理员', time: '2026-03-12', result: '已授权' } ] },
-    { id: 'svc_005', name: '设备档案数据产品', type: '数据包', latency: '准实时', tableIds: ['t_turbine'], desc: '风机设备档案数据产品', securityLevel: 'L2', status: '已上架',
-      access: { format: 'CSV', downloadUrl: 'https://demo.intelab.cn/api/v1/packages/turbine-archive/download', updateFreq: '按月更新', size: '420 MB', partition: '按机型分区' },
-      metrics: { calls: 2340, consumers: 2, last24h: 96 },
-      applyFlow: [ { step: '申请', actor: '设计组', time: '2026-04-10', result: '通过' }, { step: '安全合规审批', actor: '数据安全组', time: '2026-04-12', result: '通过' }, { step: '授权', actor: '平台管理员', time: '2026-04-14', result: '已授权' } ] },
+        "requestExample": "curl \"https://demo.intelab.cn/api/v1/forecast/power?forecastDate=2026-08-16&horizon=24h\"",
+        "responseExample": "{ \"code\": 0, \"data\": [ { \"ts\": \"2026-08-16T00:00:00Z\", \"predicted_power\": 4200.5 } ] }",
+        "rateLimit": "500 次/分钟",
+        "version": "v1.0"
+      },
+      "metrics": {
+        "calls": 8970,
+        "consumers": 3,
+        "last24h": 640
+      },
+      "applyFlow": [
+        {
+          "step": "申请",
+          "actor": "运维组",
+          "time": "2026-04-18",
+          "result": "通过"
+        },
+        {
+          "step": "安全合规审批",
+          "actor": "数据安全组",
+          "time": "2026-04-20",
+          "result": "通过"
+        },
+        {
+          "step": "授权",
+          "actor": "平台管理员",
+          "time": "2026-04-22",
+          "result": "已授权"
+        }
+      ]
+    },
+    {
+      "id": "svc_004",
+      "name": "海域限制因素共享",
+      "type": "数据包",
+      "latency": "准实时",
+      "tableIds": [
+        "t_topo"
+      ],
+      "desc": "海域限制因素（政府监管）数据共享",
+      "securityLevel": "L4",
+      "status": "已上架",
+      "access": {
+        "format": "CSV / Parquet",
+        "downloadUrl": "https://demo.intelab.cn/api/v1/packages/sea-restrict/download",
+        "updateFreq": "按季度更新",
+        "size": "1.8 GB",
+        "partition": "按海域分区"
+      },
+      "metrics": {
+        "calls": 126,
+        "consumers": 1,
+        "last24h": 0
+      },
+      "applyFlow": [
+        {
+          "step": "申请",
+          "actor": "测绘组",
+          "time": "2026-03-05",
+          "result": "通过"
+        },
+        {
+          "step": "安全合规审批",
+          "actor": "数据安全组",
+          "time": "2026-03-07",
+          "result": "通过"
+        },
+        {
+          "step": "二次审批",
+          "actor": "合规委员会",
+          "time": "2026-03-10",
+          "result": "通过"
+        },
+        {
+          "step": "授权",
+          "actor": "平台管理员",
+          "time": "2026-03-12",
+          "result": "已授权"
+        }
+      ]
+    },
+    {
+      "id": "svc_005",
+      "name": "设备档案数据产品",
+      "type": "数据包",
+      "latency": "准实时",
+      "tableIds": [
+        "t_turbine"
+      ],
+      "desc": "风机设备档案数据产品",
+      "securityLevel": "L2",
+      "status": "已上架",
+      "access": {
+        "format": "CSV",
+        "downloadUrl": "https://demo.intelab.cn/api/v1/packages/turbine-archive/download",
+        "updateFreq": "按月更新",
+        "size": "420 MB",
+        "partition": "按机型分区"
+      },
+      "metrics": {
+        "calls": 2340,
+        "consumers": 2,
+        "last24h": 96
+      },
+      "applyFlow": [
+        {
+          "step": "申请",
+          "actor": "设计组",
+          "time": "2026-04-10",
+          "result": "通过"
+        },
+        {
+          "step": "安全合规审批",
+          "actor": "数据安全组",
+          "time": "2026-04-12",
+          "result": "通过"
+        },
+        {
+          "step": "授权",
+          "actor": "平台管理员",
+          "time": "2026-04-14",
+          "result": "已授权"
+        }
+      ]
+    }
   ],
-  portalAssets: [
-    { id: 'pa_001', name: '海上风电场测风数据集', category: '风资源', desc: '测风塔实测风速/风向/湍流，用于风资源评估与发电量测算。', dataOwner: '风资源室', govSpecialist: '业务数据治理专员', manager: '数据管理人员', usageType: '下载', securityLevel: 'L2', tableIds: ['t_wind'], serviceIds: [], status: '已上架', featured: true, listedAt: '2026-07-01', approval: [
-      { step: '发起上架', actor: '数据管理人员', action: '提交', time: '2026-06-28', comment: '业务方已同意共享' },
-      { step: '业务方审批', actor: '业务数据治理专员', action: '通过', time: '2026-06-30', comment: '同意共享' },
-      { step: '上架', actor: '数据管理人员', action: '上架', time: '2026-07-01', comment: '' },
-    ]},
-    { id: 'pa_002', name: '风资源评估 API', category: '风资源', desc: '对外提供测风数据查询与统计的标准 API。', dataOwner: '风资源室', govSpecialist: '业务数据治理专员', manager: '数据管理人员', usageType: '申请', securityLevel: 'L2', tableIds: [], serviceIds: ['svc_001'], status: '已上架', featured: false, listedAt: '2026-07-02', approval: [
-      { step: '发起上架', actor: '数据管理人员', action: '提交', time: '2026-06-29', comment: '业务方已同意共享' },
-      { step: '业务方审批', actor: '业务数据治理专员', action: '通过', time: '2026-07-01', comment: '同意共享' },
-      { step: '上架', actor: '数据管理人员', action: '上架', time: '2026-07-02', comment: '' },
-    ]},
-    { id: 'pa_003', name: '海底地形测绘数据包', category: '海洋勘测', desc: '海底地形测绘坐标、水深与海缆路由数据包（涉密，已获授权共享）。', dataOwner: '海洋勘测室', govSpecialist: '业务数据治理专员', manager: '数据管理人员', usageType: '下载', securityLevel: 'L4', tableIds: ['t_topo', 't_cable'], serviceIds: [], status: '已上架', featured: true, listedAt: '2026-07-05', approval: [
-      { step: '发起上架', actor: '数据管理人员', action: '提交', time: '2026-07-02', comment: '业务方已同意共享' },
-      { step: '业务方审批', actor: '业务数据治理专员', action: '通过', time: '2026-07-04', comment: '涉密数据，确认授权范围' },
-      { step: '上架', actor: '数据管理人员', action: '上架', time: '2026-07-05', comment: '' },
-    ]},
-    { id: 'pa_004', name: '地质钻孔数据集', category: '海洋勘测', desc: '海上风电场地地质钻孔与岩土地层信息。', dataOwner: '海洋勘测室', govSpecialist: '业务数据治理专员', manager: '数据管理人员', usageType: '下载', securityLevel: 'L3', tableIds: ['t_geo'], serviceIds: [], status: '已上架', featured: false, listedAt: '2026-07-06', approval: [
-      { step: '发起上架', actor: '数据管理人员', action: '提交', time: '2026-07-03', comment: '业务方已同意共享' },
-      { step: '业务方审批', actor: '业务数据治理专员', action: '通过', time: '2026-07-05', comment: '同意共享' },
-      { step: '上架', actor: '数据管理人员', action: '上架', time: '2026-07-06', comment: '' },
-    ]},
-    { id: 'pa_005', name: 'SCADA 实时运行监测', category: '运营监测', desc: '风机 SCADA 遥测实时订阅（功率/温度/振动）与运行监测。', dataOwner: '运营监控室', govSpecialist: '业务数据治理专员', manager: '数据管理人员', usageType: '申请', securityLevel: 'L2', tableIds: ['t_scada'], serviceIds: ['svc_002'], status: '已上架', featured: true, listedAt: '2026-07-08', approval: [
-      { step: '发起上架', actor: '数据管理人员', action: '提交', time: '2026-07-06', comment: '业务方已同意共享' },
-      { step: '业务方审批', actor: '业务数据治理专员', action: '通过', time: '2026-07-07', comment: '同意共享' },
-      { step: '上架', actor: '数据管理人员', action: '上架', time: '2026-07-08', comment: '' },
-    ]},
-    { id: 'pa_006', name: '风机设备档案数据产品', category: '风机设备', desc: '风机机型、额定功率与基础型式等设备档案数据产品。', dataOwner: '设备设计室', govSpecialist: '业务数据治理专员', manager: '数据管理人员', usageType: '下载', securityLevel: 'L2', tableIds: ['t_turbine'], serviceIds: ['svc_005'], status: '已上架', featured: false, listedAt: '2026-07-10', approval: [
-      { step: '发起上架', actor: '数据管理人员', action: '提交', time: '2026-07-08', comment: '业务方已同意共享' },
-      { step: '业务方审批', actor: '业务数据治理专员', action: '通过', time: '2026-07-09', comment: '同意共享' },
-      { step: '上架', actor: '数据管理人员', action: '上架', time: '2026-07-10', comment: '' },
-    ]},
-    { id: 'pa_007', name: '功率预测服务', category: '运营监测', desc: '功率预测结果对外 API 服务与预测精度评估。', dataOwner: '运营监控室', govSpecialist: '业务数据治理专员', manager: '数据管理人员', usageType: '申请', securityLevel: 'L2', tableIds: [], serviceIds: ['svc_003'], status: '已上架', featured: false, listedAt: '2026-07-12', approval: [
-      { step: '发起上架', actor: '数据管理人员', action: '提交', time: '2026-07-10', comment: '业务方已同意共享' },
-      { step: '业务方审批', actor: '业务数据治理专员', action: '通过', time: '2026-07-11', comment: '同意共享' },
-      { step: '上架', actor: '数据管理人员', action: '上架', time: '2026-07-12', comment: '' },
-    ]},
-    { id: 'pa_008', name: '海域限制因素共享', category: '海域环境', desc: '海域限制因素（政府监管）数据共享。', dataOwner: '海域规划室', govSpecialist: '业务数据治理专员', manager: '数据管理人员', usageType: '下载', securityLevel: 'L4', tableIds: ['t_topo'], serviceIds: ['svc_004'], status: '已上架', featured: false, listedAt: '2026-07-15', approval: [
-      { step: '发起上架', actor: '数据管理人员', action: '提交', time: '2026-07-13', comment: '业务方已同意共享' },
-      { step: '业务方审批', actor: '业务数据治理专员', action: '通过', time: '2026-07-14', comment: '涉密数据，确认授权范围' },
-      { step: '上架', actor: '数据管理人员', action: '上架', time: '2026-07-15', comment: '' },
-    ]},
+  "portalAssets": [
+    {
+      "id": "pa_001",
+      "name": "海上风电场测风数据集",
+      "category": "风资源",
+      "desc": "测风塔实测风速/风向/湍流，用于风资源评估与发电量测算。",
+      "dataOwner": "风资源室",
+      "govSpecialist": "业务数据治理专员",
+      "manager": "数据管理人员",
+      "usageType": "下载",
+      "securityLevel": "L2",
+      "tableIds": [
+        "t_wind"
+      ],
+      "serviceIds": [],
+      "status": "已上架",
+      "featured": true,
+      "listedAt": "2026-07-01",
+      "approval": [
+        {
+          "step": "发起上架",
+          "actor": "数据管理人员",
+          "action": "提交",
+          "time": "2026-06-28",
+          "comment": "业务方已同意共享"
+        },
+        {
+          "step": "业务方审批",
+          "actor": "业务数据治理专员",
+          "action": "通过",
+          "time": "2026-06-30",
+          "comment": "同意共享"
+        },
+        {
+          "step": "上架",
+          "actor": "数据管理人员",
+          "action": "上架",
+          "time": "2026-07-01",
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "id": "pa_002",
+      "name": "风资源评估 API",
+      "category": "风资源",
+      "desc": "对外提供测风数据查询与统计的标准 API。",
+      "dataOwner": "风资源室",
+      "govSpecialist": "业务数据治理专员",
+      "manager": "数据管理人员",
+      "usageType": "申请",
+      "securityLevel": "L2",
+      "tableIds": [],
+      "serviceIds": [
+        "svc_001"
+      ],
+      "status": "已上架",
+      "featured": false,
+      "listedAt": "2026-07-02",
+      "approval": [
+        {
+          "step": "发起上架",
+          "actor": "数据管理人员",
+          "action": "提交",
+          "time": "2026-06-29",
+          "comment": "业务方已同意共享"
+        },
+        {
+          "step": "业务方审批",
+          "actor": "业务数据治理专员",
+          "action": "通过",
+          "time": "2026-07-01",
+          "comment": "同意共享"
+        },
+        {
+          "step": "上架",
+          "actor": "数据管理人员",
+          "action": "上架",
+          "time": "2026-07-02",
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "id": "pa_003",
+      "name": "海底地形测绘数据包",
+      "category": "海洋勘测",
+      "desc": "海底地形测绘坐标、水深与海缆路由数据包（涉密，已获授权共享）。",
+      "dataOwner": "海洋勘测室",
+      "govSpecialist": "业务数据治理专员",
+      "manager": "数据管理人员",
+      "usageType": "下载",
+      "securityLevel": "L4",
+      "tableIds": [
+        "t_topo",
+        "t_cable"
+      ],
+      "serviceIds": [],
+      "status": "已上架",
+      "featured": true,
+      "listedAt": "2026-07-05",
+      "approval": [
+        {
+          "step": "发起上架",
+          "actor": "数据管理人员",
+          "action": "提交",
+          "time": "2026-07-02",
+          "comment": "业务方已同意共享"
+        },
+        {
+          "step": "业务方审批",
+          "actor": "业务数据治理专员",
+          "action": "通过",
+          "time": "2026-07-04",
+          "comment": "涉密数据，确认授权范围"
+        },
+        {
+          "step": "上架",
+          "actor": "数据管理人员",
+          "action": "上架",
+          "time": "2026-07-05",
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "id": "pa_004",
+      "name": "地质钻孔数据集",
+      "category": "海洋勘测",
+      "desc": "海上风电场地地质钻孔与岩土地层信息。",
+      "dataOwner": "海洋勘测室",
+      "govSpecialist": "业务数据治理专员",
+      "manager": "数据管理人员",
+      "usageType": "下载",
+      "securityLevel": "L3",
+      "tableIds": [
+        "t_geo"
+      ],
+      "serviceIds": [],
+      "status": "已上架",
+      "featured": false,
+      "listedAt": "2026-07-06",
+      "approval": [
+        {
+          "step": "发起上架",
+          "actor": "数据管理人员",
+          "action": "提交",
+          "time": "2026-07-03",
+          "comment": "业务方已同意共享"
+        },
+        {
+          "step": "业务方审批",
+          "actor": "业务数据治理专员",
+          "action": "通过",
+          "time": "2026-07-05",
+          "comment": "同意共享"
+        },
+        {
+          "step": "上架",
+          "actor": "数据管理人员",
+          "action": "上架",
+          "time": "2026-07-06",
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "id": "pa_005",
+      "name": "SCADA 实时运行监测",
+      "category": "运营监测",
+      "desc": "风机 SCADA 遥测实时订阅（功率/温度/振动）与运行监测。",
+      "dataOwner": "运营监控室",
+      "govSpecialist": "业务数据治理专员",
+      "manager": "数据管理人员",
+      "usageType": "申请",
+      "securityLevel": "L2",
+      "tableIds": [
+        "t_scada"
+      ],
+      "serviceIds": [
+        "svc_002"
+      ],
+      "status": "已上架",
+      "featured": true,
+      "listedAt": "2026-07-08",
+      "approval": [
+        {
+          "step": "发起上架",
+          "actor": "数据管理人员",
+          "action": "提交",
+          "time": "2026-07-06",
+          "comment": "业务方已同意共享"
+        },
+        {
+          "step": "业务方审批",
+          "actor": "业务数据治理专员",
+          "action": "通过",
+          "time": "2026-07-07",
+          "comment": "同意共享"
+        },
+        {
+          "step": "上架",
+          "actor": "数据管理人员",
+          "action": "上架",
+          "time": "2026-07-08",
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "id": "pa_006",
+      "name": "风机设备档案数据产品",
+      "category": "风机设备",
+      "desc": "风机机型、额定功率与基础型式等设备档案数据产品。",
+      "dataOwner": "设备设计室",
+      "govSpecialist": "业务数据治理专员",
+      "manager": "数据管理人员",
+      "usageType": "下载",
+      "securityLevel": "L2",
+      "tableIds": [
+        "t_turbine"
+      ],
+      "serviceIds": [
+        "svc_005"
+      ],
+      "status": "已上架",
+      "featured": false,
+      "listedAt": "2026-07-10",
+      "approval": [
+        {
+          "step": "发起上架",
+          "actor": "数据管理人员",
+          "action": "提交",
+          "time": "2026-07-08",
+          "comment": "业务方已同意共享"
+        },
+        {
+          "step": "业务方审批",
+          "actor": "业务数据治理专员",
+          "action": "通过",
+          "time": "2026-07-09",
+          "comment": "同意共享"
+        },
+        {
+          "step": "上架",
+          "actor": "数据管理人员",
+          "action": "上架",
+          "time": "2026-07-10",
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "id": "pa_007",
+      "name": "功率预测服务",
+      "category": "运营监测",
+      "desc": "功率预测结果对外 API 服务与预测精度评估。",
+      "dataOwner": "运营监控室",
+      "govSpecialist": "业务数据治理专员",
+      "manager": "数据管理人员",
+      "usageType": "申请",
+      "securityLevel": "L2",
+      "tableIds": [],
+      "serviceIds": [
+        "svc_003"
+      ],
+      "status": "已上架",
+      "featured": false,
+      "listedAt": "2026-07-12",
+      "approval": [
+        {
+          "step": "发起上架",
+          "actor": "数据管理人员",
+          "action": "提交",
+          "time": "2026-07-10",
+          "comment": "业务方已同意共享"
+        },
+        {
+          "step": "业务方审批",
+          "actor": "业务数据治理专员",
+          "action": "通过",
+          "time": "2026-07-11",
+          "comment": "同意共享"
+        },
+        {
+          "step": "上架",
+          "actor": "数据管理人员",
+          "action": "上架",
+          "time": "2026-07-12",
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "id": "pa_008",
+      "name": "海域限制因素共享",
+      "category": "海域环境",
+      "desc": "海域限制因素（政府监管）数据共享。",
+      "dataOwner": "海域规划室",
+      "govSpecialist": "业务数据治理专员",
+      "manager": "数据管理人员",
+      "usageType": "下载",
+      "securityLevel": "L4",
+      "tableIds": [
+        "t_topo"
+      ],
+      "serviceIds": [
+        "svc_004"
+      ],
+      "status": "已上架",
+      "featured": false,
+      "listedAt": "2026-07-15",
+      "approval": [
+        {
+          "step": "发起上架",
+          "actor": "数据管理人员",
+          "action": "提交",
+          "time": "2026-07-13",
+          "comment": "业务方已同意共享"
+        },
+        {
+          "step": "业务方审批",
+          "actor": "业务数据治理专员",
+          "action": "通过",
+          "time": "2026-07-14",
+          "comment": "涉密数据，确认授权范围"
+        },
+        {
+          "step": "上架",
+          "actor": "数据管理人员",
+          "action": "上架",
+          "time": "2026-07-15",
+          "comment": ""
+        }
+      ]
+    }
   ],
-  portalRequests: [
-    { id: 'pr_001', portalAssetId: 'pa_002', applicant: '业务用户', type: '开通', status: '已开通', requestAt: '2026-07-05' },
-    { id: 'pr_002', portalAssetId: 'pa_001', applicant: '业务用户', type: '下载', status: '已下载', requestAt: '2026-07-06' },
-    { id: 'pr_003', portalAssetId: 'pa_005', applicant: '业务用户', type: '开通', status: '审批中', requestAt: '2026-07-16' },
-    { id: 'pr_004', portalAssetId: 'pa_007', applicant: '业务用户', type: '开通', status: '已开通', requestAt: '2026-07-14' },
+  "portalRequests": [
+    {
+      "id": "pr_001",
+      "portalAssetId": "pa_002",
+      "applicant": "业务用户",
+      "type": "开通",
+      "status": "已开通",
+      "requestAt": "2026-07-05"
+    },
+    {
+      "id": "pr_002",
+      "portalAssetId": "pa_001",
+      "applicant": "业务用户",
+      "type": "下载",
+      "status": "已下载",
+      "requestAt": "2026-07-06"
+    },
+    {
+      "id": "pr_003",
+      "portalAssetId": "pa_005",
+      "applicant": "业务用户",
+      "type": "开通",
+      "status": "审批中",
+      "requestAt": "2026-07-16"
+    },
+    {
+      "id": "pr_004",
+      "portalAssetId": "pa_007",
+      "applicant": "业务用户",
+      "type": "开通",
+      "status": "已开通",
+      "requestAt": "2026-07-14"
+    }
   ],
+  "capabilityMap": [
+    {
+      "id": "项目经营域",
+      "name": "项目经营域",
+      "items": [
+        {
+          "id": "商机管理",
+          "name": "商机管理"
+        },
+        {
+          "id": "投标管理",
+          "name": "投标管理"
+        },
+        {
+          "id": "合同管理",
+          "name": "合同管理"
+        },
+        {
+          "id": "成本管控",
+          "name": "成本管控"
+        },
+        {
+          "id": "投资测算与评价",
+          "name": "投资测算与评价"
+        }
+      ]
+    },
+    {
+      "id": "设计研发域",
+      "name": "设计研发域",
+      "items": [
+        {
+          "id": "勘测",
+          "name": "勘测"
+        },
+        {
+          "id": "方案设计",
+          "name": "方案设计"
+        },
+        {
+          "id": "专业设计",
+          "name": "专业设计"
+        },
+        {
+          "id": "设计评审",
+          "name": "设计评审"
+        },
+        {
+          "id": "成果管理",
+          "name": "成果管理"
+        },
+        {
+          "id": "资源评估",
+          "name": "资源评估"
+        },
+        {
+          "id": "现场设计服务",
+          "name": "现场设计服务"
+        }
+      ]
+    },
+    {
+      "id": "工程交付域",
+      "name": "工程交付域",
+      "items": [
+        {
+          "id": "采购",
+          "name": "采购"
+        },
+        {
+          "id": "施工管理",
+          "name": "施工管理"
+        },
+        {
+          "id": "进度·质量·安全",
+          "name": "进度·质量·安全"
+        },
+        {
+          "id": "变更管理",
+          "name": "变更管理"
+        },
+        {
+          "id": "调试移交",
+          "name": "调试移交"
+        },
+        {
+          "id": "运营管理",
+          "name": "运营管理"
+        }
+      ]
+    },
+    {
+      "id": "专业技术域",
+      "name": "专业技术域",
+      "items": [
+        {
+          "id": "电网规划与输变电设计",
+          "name": "电网规划与输变电设计"
+        },
+        {
+          "id": "新能源发电设计",
+          "name": "新能源发电设计"
+        },
+        {
+          "id": "发电工程设计",
+          "name": "发电工程设计"
+        },
+        {
+          "id": "咨询与数字化服务",
+          "name": "咨询与数字化服务"
+        }
+      ]
+    },
+    {
+      "id": "支撑服务域",
+      "name": "支撑服务域",
+      "items": [
+        {
+          "id": "供应链",
+          "name": "供应链"
+        },
+        {
+          "id": "人力",
+          "name": "人力"
+        },
+        {
+          "id": "财务",
+          "name": "财务"
+        },
+        {
+          "id": "知识管理",
+          "name": "知识管理"
+        },
+        {
+          "id": "数字化支撑",
+          "name": "数字化支撑"
+        }
+      ]
+    }
+  ]
 };
+
 export default D;

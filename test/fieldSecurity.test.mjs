@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import data from '../src/data.js';
-import { fieldSecuritySource, fieldSecurityCatalog } from '../src/fieldSecurity.js';
+import { fieldSecuritySource, fieldSecurityCatalog, fieldSecurityCatalogSource } from '../src/fieldSecurity.js';
 
 test('custom：字段未关联信息项 → 自定义', () => {
   const f = data.fields.find((x) => x.management.standardId == null);
@@ -42,10 +42,24 @@ test('信息项无 securityLevel → custom（可空信息项兜底）', () => {
   assert.equal(r.source, 'custom');
 });
 
-test('fieldSecurityCatalog：字段 → 分类目录条目（反向查找）', () => {
-  assert.equal(fieldSecurityCatalog('f_topo_depth', data.securityCatalog)?.id, 'sc_005');
-  assert.equal(fieldSecurityCatalog('f_cable_route', data.securityCatalog)?.id, 'sc_005'); // 跨表字段仍归属海底地形测绘
-  assert.equal(fieldSecurityCatalog('f_cable_type', data.securityCatalog)?.id, 'sc_007');
-  assert.equal(fieldSecurityCatalog('f_scada_turbine', data.securityCatalog), null); // 主数据引用字段不在任何分类
-  assert.equal(fieldSecurityCatalog('f_wind_project', data.securityCatalog), null);
+test('fieldSecurityCatalog：字段 → 分类目录条目（securityCatalogId 正向引用）', () => {
+  const byId = (id) => data.fields.find((f) => f.id === id);
+  assert.equal(fieldSecurityCatalog(byId('f_topo_depth'), data.securityCatalog)?.id, 'sc_005');
+  assert.equal(fieldSecurityCatalog(byId('f_cable_route'), data.securityCatalog)?.id, 'sc_005'); // 跨表字段仍归属海底地形测绘
+  assert.equal(fieldSecurityCatalog(byId('f_cable_type'), data.securityCatalog)?.id, 'sc_007');
+  assert.equal(fieldSecurityCatalog(byId('f_scada_turbine'), data.securityCatalog), null); // 主数据引用字段不在任何分类
+  assert.equal(fieldSecurityCatalog(byId('f_wind_project'), data.securityCatalog), null);
+});
+
+test('fieldSecurityCatalogSource：继承自分类目录 / 自定义升级 / 冲突 / 未关联', () => {
+  const byId = (id) => data.fields.find((f) => f.id === id);
+  // f_topo_depth / f_cable_route 关联 sc_005（L4）且自身 L4 → 继承自分类目录
+  assert.equal(fieldSecurityCatalogSource(byId('f_topo_depth'), data.securityCatalog).source, 'inherit-catalog');
+  assert.equal(fieldSecurityCatalogSource(byId('f_cable_route'), data.securityCatalog).source, 'inherit-catalog');
+  // 未关联分类的字段 → null
+  assert.equal(fieldSecurityCatalogSource(byId('f_wind_project'), data.securityCatalog), null);
+  // 构造：字段分级高于分类等级（sc_003 L2，字段 L4）→ 自定义升级
+  assert.equal(fieldSecurityCatalogSource({ management: { securityCatalogId: 'sc_003', securityLevel: 'L4' } }, data.securityCatalog).source, 'custom-upgrade');
+  // 构造：字段分级低于分类等级（sc_005 L4，字段 L2）→ 冲突
+  assert.equal(fieldSecurityCatalogSource({ management: { securityCatalogId: 'sc_005', securityLevel: 'L2' } }, data.securityCatalog).source, 'conflict');
 });

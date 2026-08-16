@@ -1,19 +1,18 @@
 import { useData } from '../DataContext.jsx';
 import Tag from '../components/Tag.jsx';
-import { fieldSecuritySource } from '../fieldSecurity.js';
+import { fieldSecurityCatalogSource } from '../fieldSecurity.js';
 
 const LEVEL_TONE = { L1: 'ok', L2: 'default', L3: 'warn', L4: 'danger' };
-const SOURCE_LABEL = { inherit: '继承', 'custom-upgrade': '自定义升级', custom: '自定义', conflict: '冲突' };
-const SOURCE_TONE = { inherit: 'default', 'custom-upgrade': 'warn', custom: 'default', conflict: 'danger' };
+const SOURCE_LABEL = { 'inherit-catalog': '继承自分类目录', 'custom-upgrade': '自定义升级', custom: '自定义', conflict: '冲突' };
+const SOURCE_TONE = { 'inherit-catalog': 'default', 'custom-upgrade': 'warn', custom: 'default', conflict: 'danger' };
 
 export default function SecurityCatalogDetailModule({ onNavigate, assetId }) {
   const { data } = useData();
   const cat = data.securityCatalog.find((c) => c.id === assetId?.catalogId);
   if (!cat) return <div className="empty-hint">未找到该安全分类（catalogId: {assetId?.catalogId ?? '—'}）</div>;
 
-  const fields = (cat.fieldIds || [])
-    .map((fid) => data.fields.find((f) => f.id === fid))
-    .filter(Boolean);
+  // 字段级定位：从字段侧 securityCatalogId 反查（分类不再持有 fieldIds）
+  const fields = data.fields.filter((f) => f.management.securityCatalogId === cat.id);
 
   return (
     <div className="detail-panel">
@@ -32,7 +31,7 @@ export default function SecurityCatalogDetailModule({ onNavigate, assetId }) {
           <tbody>
             {fields.map((f) => {
               const table = data.tables.find((t) => t.id === f.tableId);
-              const { source } = fieldSecuritySource(f, data.infoItems);
+              const { source } = fieldSecurityCatalogSource(f, data.securityCatalog);
               return (
                 <tr key={f.id}>
                   <td>{table?.nameCn ?? '—'}</td>
