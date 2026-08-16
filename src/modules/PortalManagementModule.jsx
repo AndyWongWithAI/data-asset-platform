@@ -11,7 +11,7 @@ export default function PortalManagementModule({ onNavigate }) {
   return (
     <div>
       <div className="module-actions">
-        <ComingSoonAction label="发起上架" />
+        <ComingSoonAction label="发起上架" /> <ComingSoonAction label="批量导入" />
       </div>
       <table className="table">
         <thead><tr><th>资产名</th><th>分类</th><th>责任业务方</th><th>安全分级</th><th>状态</th><th>推荐位</th><th>上架时间</th><th>操作</th></tr></thead>
@@ -25,7 +25,7 @@ export default function PortalManagementModule({ onNavigate }) {
               <td><Tag tone={STATUS_TONE[a.status] || 'default'}>{a.status}</Tag></td>
               <td>{a.featured ? '★' : '—'}</td>
               <td>{a.listedAt}</td>
-              <td><ComingSoonAction label="下架" /></td>
+              <td><ComingSoonAction label="编辑" variant="link" /> <ComingSoonAction label="下架" variant="link" /></td>
             </tr>
           ))}
         </tbody>

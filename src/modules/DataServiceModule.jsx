@@ -36,6 +36,7 @@ export default function DataServiceModule({ onNavigate }) {
           <option value="实时">实时</option>
           <option value="准实时">准实时</option>
         </select>
+        <ComingSoonAction label="上架服务" />
       </div>
       <table className="table">
         <thead><tr><th>服务名</th><th>类型</th><th>时延</th><th>封装资产</th><th>安全分级</th><th>状态</th><th>操作</th></tr></thead>
@@ -61,7 +62,7 @@ export default function DataServiceModule({ onNavigate }) {
                 </td>
                 <td><Tag tone={LEVEL_TONE[s.securityLevel]}>{s.securityLevel}</Tag></td>
                 <td><Tag tone={STATUS_TONE[s.status] || 'default'}>{s.status}</Tag></td>
-                <td><ComingSoonAction label="申请/订阅" /></td>
+                <td><ComingSoonAction label="申请/订阅" variant="link" /> <ComingSoonAction label="编辑" variant="link" /> <ComingSoonAction label="下架" variant="link" /></td>
               </tr>
             );
           })}

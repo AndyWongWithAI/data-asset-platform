@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useData } from '../DataContext.jsx';
 import Tag from '../components/Tag.jsx';
+import ComingSoonAction from '../components/ComingSoonAction.jsx';
 import { fieldSecuritySource, fieldSecurityCatalog } from '../fieldSecurity.js';
 
 const LEVEL_TONE = { L1: 'ok', L2: 'default', L3: 'warn', L4: 'danger' };
@@ -52,7 +53,12 @@ export default function TableDetailModule({ assetId, onNavigate }) {
       )}
 
       {tab === '字段元数据' && (
-        <table className="table field-table">
+        <>
+          <div className="module-actions">
+            <ComingSoonAction label="新增字段" />
+            <ComingSoonAction label="批量导入" />
+          </div>
+          <table className="table field-table">
           <thead>
             <tr>
               <th>#</th><th>字段名</th><th>编码</th><th>业务定义</th><th>技术类型</th><th>键</th>
@@ -102,6 +108,7 @@ export default function TableDetailModule({ assetId, onNavigate }) {
             })}
           </tbody>
         </table>
+        </>
       )}
 
       {tab === '分区' && (

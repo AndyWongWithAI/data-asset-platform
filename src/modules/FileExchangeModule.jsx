@@ -20,7 +20,7 @@ export default function FileExchangeModule({ onNavigate }) {
         <ComingSoonAction label="发起交换申请" />
       </div>
       <table className="table">
-        <thead><tr><th>任务名</th><th>方向</th><th>源系统 · 源对象</th><th>目标系统 · 目标对象</th><th>文件格式</th><th>调度周期</th><th>状态</th></tr></thead>
+        <thead><tr><th>任务名</th><th>方向</th><th>源系统 · 源对象</th><th>目标系统 · 目标对象</th><th>文件格式</th><th>调度周期</th><th>状态</th><th>操作</th></tr></thead>
         <tbody>
           {filtered.map((b) => {
             const inbound = b.direction === 'inbound';
@@ -36,6 +36,7 @@ export default function FileExchangeModule({ onNavigate }) {
                 <td>{b.fileFormat}</td>
                 <td>{b.schedule}</td>
                 <td><Tag tone={STATUS_TONE[b.status] || 'default'}>{b.status}</Tag></td>
+                <td><ComingSoonAction label="编辑" variant="link" /> <ComingSoonAction label="删除" variant="link" /></td>
               </tr>
             );
           })}
