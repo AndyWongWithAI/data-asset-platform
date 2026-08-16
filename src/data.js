@@ -2,7 +2,7 @@ const D = {
   meta: {
     title: '数据资产管理平台',
     disclaimer: '⚠ 参考模型声明：基于广东院公开业务信息构建的演示模型，非广东院实际部署、仅供演示。不虚构内部运营数据。',
-    stats: { applications: 5, databases: 5, tables: 10, fields: 51, rules: 8, baseTerms: 28, valueDomains: 6, refDatas: 5, infoItems: 10, masterData: 5, lineage: 9, batchFiles: 8, prodMetadatas: 3, services: 5, securityCatalog: 13 },
+    stats: { applications: 5, databases: 5, tables: 10, fields: 51, rules: 8, baseTerms: 28, valueDomains: 6, refDatas: 5, infoItems: 10, masterData: 5, lineage: 9, batchFiles: 8, prodMetadatas: 3, services: 5, securityCatalog: 13, portalAssets: 8, portalRequests: 4 },
   },
   applications: [
     { id: 'app_res', name: '风资源评估系统', desc: '测风/气象数据采集与分析' },
@@ -685,6 +685,54 @@ const D = {
     { id: 'svc_005', name: '设备档案数据产品', type: '数据包', latency: '准实时', tableIds: ['t_turbine'], desc: '风机设备档案数据产品', securityLevel: 'L2', status: '已上架',
       metrics: { calls: 2340, consumers: 2, last24h: 96 },
       applyFlow: [ { step: '申请', actor: '设计组', time: '2026-04-10', result: '通过' }, { step: '安全合规审批', actor: '数据安全组', time: '2026-04-12', result: '通过' }, { step: '授权', actor: '平台管理员', time: '2026-04-14', result: '已授权' } ] },
+  ],
+  portalAssets: [
+    { id: 'pa_001', name: '海上风电场测风数据集', category: '风资源', desc: '测风塔实测风速/风向/湍流，用于风资源评估与发电量测算。', dataOwner: '风资源室', govSpecialist: '业务数据治理专员', manager: '数据管理人员', usageType: '下载', securityLevel: 'L2', tableIds: ['t_wind'], serviceIds: [], status: '已上架', featured: true, listedAt: '2026-07-01', approval: [
+      { step: '发起上架', actor: '数据管理人员', action: '提交', time: '2026-06-28', comment: '业务方已同意共享' },
+      { step: '业务方审批', actor: '业务数据治理专员', action: '通过', time: '2026-06-30', comment: '同意共享' },
+      { step: '上架', actor: '数据管理人员', action: '上架', time: '2026-07-01', comment: '' },
+    ]},
+    { id: 'pa_002', name: '风资源评估 API', category: '风资源', desc: '对外提供测风数据查询与统计的标准 API。', dataOwner: '风资源室', govSpecialist: '业务数据治理专员', manager: '数据管理人员', usageType: '申请', securityLevel: 'L2', tableIds: [], serviceIds: ['svc_001'], status: '已上架', featured: false, listedAt: '2026-07-02', approval: [
+      { step: '发起上架', actor: '数据管理人员', action: '提交', time: '2026-06-29', comment: '业务方已同意共享' },
+      { step: '业务方审批', actor: '业务数据治理专员', action: '通过', time: '2026-07-01', comment: '同意共享' },
+      { step: '上架', actor: '数据管理人员', action: '上架', time: '2026-07-02', comment: '' },
+    ]},
+    { id: 'pa_003', name: '海底地形测绘数据包', category: '海洋勘测', desc: '海底地形测绘坐标、水深与海缆路由数据包（涉密，已获授权共享）。', dataOwner: '海洋勘测室', govSpecialist: '业务数据治理专员', manager: '数据管理人员', usageType: '下载', securityLevel: 'L4', tableIds: ['t_topo', 't_cable'], serviceIds: [], status: '已上架', featured: true, listedAt: '2026-07-05', approval: [
+      { step: '发起上架', actor: '数据管理人员', action: '提交', time: '2026-07-02', comment: '业务方已同意共享' },
+      { step: '业务方审批', actor: '业务数据治理专员', action: '通过', time: '2026-07-04', comment: '涉密数据，确认授权范围' },
+      { step: '上架', actor: '数据管理人员', action: '上架', time: '2026-07-05', comment: '' },
+    ]},
+    { id: 'pa_004', name: '地质钻孔数据集', category: '海洋勘测', desc: '海上风电场地地质钻孔与岩土地层信息。', dataOwner: '海洋勘测室', govSpecialist: '业务数据治理专员', manager: '数据管理人员', usageType: '下载', securityLevel: 'L3', tableIds: ['t_geo'], serviceIds: [], status: '已上架', featured: false, listedAt: '2026-07-06', approval: [
+      { step: '发起上架', actor: '数据管理人员', action: '提交', time: '2026-07-03', comment: '业务方已同意共享' },
+      { step: '业务方审批', actor: '业务数据治理专员', action: '通过', time: '2026-07-05', comment: '同意共享' },
+      { step: '上架', actor: '数据管理人员', action: '上架', time: '2026-07-06', comment: '' },
+    ]},
+    { id: 'pa_005', name: 'SCADA 实时运行监测', category: '运营监测', desc: '风机 SCADA 遥测实时订阅（功率/温度/振动）与运行监测。', dataOwner: '运营监控室', govSpecialist: '业务数据治理专员', manager: '数据管理人员', usageType: '申请', securityLevel: 'L2', tableIds: ['t_scada'], serviceIds: ['svc_002'], status: '已上架', featured: true, listedAt: '2026-07-08', approval: [
+      { step: '发起上架', actor: '数据管理人员', action: '提交', time: '2026-07-06', comment: '业务方已同意共享' },
+      { step: '业务方审批', actor: '业务数据治理专员', action: '通过', time: '2026-07-07', comment: '同意共享' },
+      { step: '上架', actor: '数据管理人员', action: '上架', time: '2026-07-08', comment: '' },
+    ]},
+    { id: 'pa_006', name: '风机设备档案数据产品', category: '风机设备', desc: '风机机型、额定功率与基础型式等设备档案数据产品。', dataOwner: '设备设计室', govSpecialist: '业务数据治理专员', manager: '数据管理人员', usageType: '下载', securityLevel: 'L2', tableIds: ['t_turbine'], serviceIds: ['svc_005'], status: '已上架', featured: false, listedAt: '2026-07-10', approval: [
+      { step: '发起上架', actor: '数据管理人员', action: '提交', time: '2026-07-08', comment: '业务方已同意共享' },
+      { step: '业务方审批', actor: '业务数据治理专员', action: '通过', time: '2026-07-09', comment: '同意共享' },
+      { step: '上架', actor: '数据管理人员', action: '上架', time: '2026-07-10', comment: '' },
+    ]},
+    { id: 'pa_007', name: '功率预测服务', category: '运营监测', desc: '功率预测结果对外 API 服务与预测精度评估。', dataOwner: '运营监控室', govSpecialist: '业务数据治理专员', manager: '数据管理人员', usageType: '申请', securityLevel: 'L2', tableIds: [], serviceIds: ['svc_003'], status: '已上架', featured: false, listedAt: '2026-07-12', approval: [
+      { step: '发起上架', actor: '数据管理人员', action: '提交', time: '2026-07-10', comment: '业务方已同意共享' },
+      { step: '业务方审批', actor: '业务数据治理专员', action: '通过', time: '2026-07-11', comment: '同意共享' },
+      { step: '上架', actor: '数据管理人员', action: '上架', time: '2026-07-12', comment: '' },
+    ]},
+    { id: 'pa_008', name: '海域限制因素共享', category: '海域环境', desc: '海域限制因素（政府监管）数据共享。', dataOwner: '海域规划室', govSpecialist: '业务数据治理专员', manager: '数据管理人员', usageType: '下载', securityLevel: 'L4', tableIds: ['t_topo'], serviceIds: ['svc_004'], status: '已上架', featured: false, listedAt: '2026-07-15', approval: [
+      { step: '发起上架', actor: '数据管理人员', action: '提交', time: '2026-07-13', comment: '业务方已同意共享' },
+      { step: '业务方审批', actor: '业务数据治理专员', action: '通过', time: '2026-07-14', comment: '涉密数据，确认授权范围' },
+      { step: '上架', actor: '数据管理人员', action: '上架', time: '2026-07-15', comment: '' },
+    ]},
+  ],
+  portalRequests: [
+    { id: 'pr_001', portalAssetId: 'pa_002', applicant: '业务用户', type: '开通', status: '已开通', requestAt: '2026-07-05' },
+    { id: 'pr_002', portalAssetId: 'pa_001', applicant: '业务用户', type: '下载', status: '已下载', requestAt: '2026-07-06' },
+    { id: 'pr_003', portalAssetId: 'pa_005', applicant: '业务用户', type: '开通', status: '审批中', requestAt: '2026-07-16' },
+    { id: 'pr_004', portalAssetId: 'pa_007', applicant: '业务用户', type: '开通', status: '已开通', requestAt: '2026-07-14' },
   ],
 };
 export default D;

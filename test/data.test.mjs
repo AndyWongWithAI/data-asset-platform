@@ -386,3 +386,41 @@ test('securityCatalog 分级一致性：定位字段分级不低于分类等级�
     }
   }
 });
+
+test('portalAssets 引用完整 + 治理一致（securityLevel >= 打包对象有效分级）', () => {
+  assert.equal(data.portalAssets.length, 8);
+  const ids = new Set(data.portalAssets.map((a) => a.id));
+  assert.equal(ids.size, 8, 'portalAssets id 应唯一');
+  const CATS = ['风资源', '海洋勘测', '风机设备', '运营监测', '海域环境'];
+  const USAGE = ['下载', '申请'];
+  const STATUS = ['已上架', '已下架', '审批中'];
+  for (const a of data.portalAssets) {
+    assert.ok(CATS.includes(a.category), `${a.id} category 非法`);
+    assert.ok(USAGE.includes(a.usageType), `${a.id} usageType 非法`);
+    assert.ok(STATUS.includes(a.status), `${a.id} status 非法`);
+    assert.ok(a.tableIds.length + a.serviceIds.length > 0, `${a.id} 表与服务至少其一非空`);
+    for (const tid of a.tableIds) assert.ok(data.tables.some((t) => t.id === tid), `${a.id} 引用不存在的表 ${tid}`);
+    for (const sid of a.serviceIds) assert.ok(data.services.some((s) => s.id === sid), `${a.id} 引用不存在的服务 ${sid}`);
+    assert.ok(Array.isArray(a.approval) && a.approval.length >= 1, `${a.id} 应有审批链`);
+    // 治理一致：securityLevel >= max(表字段最高级, 服务分级)
+    let maxRank = 0;
+    for (const tid of a.tableIds) {
+      const fs = data.fields.filter((f) => f.tableId === tid);
+      maxRank = Math.max(maxRank, ...fs.map((f) => LEVEL_RANK[f.management.securityLevel]));
+    }
+    for (const sid of a.serviceIds) {
+      const s = data.services.find((x) => x.id === sid);
+      maxRank = Math.max(maxRank, LEVEL_RANK[s.securityLevel]);
+    }
+    assert.ok(LEVEL_RANK[a.securityLevel] >= maxRank, `${a.id} securityLevel 应 >= 打包对象有效分级 ${maxRank}`);
+  }
+});
+
+test('portalRequests 引用 portalAssets + stats 计数', () => {
+  assert.equal(data.portalRequests.length, 4);
+  for (const r of data.portalRequests) {
+    assert.ok(data.portalAssets.some((a) => a.id === r.portalAssetId), `${r.id} 引用不存在的资产 ${r.portalAssetId}`);
+  }
+  assert.equal(data.meta.stats.portalAssets, 8);
+  assert.equal(data.meta.stats.portalRequests, 4);
+});
