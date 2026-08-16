@@ -235,11 +235,13 @@ def main():
         assert page.locator('.table thead th', has_text='定位').count() == 0   # 定位列已删
         assert page.locator('.table tbody tr').count() == 13
         assert page.locator('.search-bar select').count() == 1
-        # 分类目录「海底地形测绘数据」查看明细 → 数据安全分类详情（跨 3 表定位：测绘/海缆/升压站；f_topo_coord 关联 ii_sea_area L4=继承）
+        # 分类目录「海底地形测绘数据」查看明细 → 数据安全分类详情（字段粒度跨 2 表：测绘 4 字段 + 海缆路由 1 字段；f_topo_coord 关联 ii_sea_area L4=继承）
         page.locator('.table tbody tr', has_text='海底地形测绘数据').locator('.link', has_text='查看明细').click()
         assert page.locator('.tab.active', has_text='数据安全分类详情').count() == 1
         assert page.locator('.detail-panel').count() == 1
-        assert page.locator('.detail-panel h4', has_text='定位表').count() == 3   # 跨 3 张表定位
+        assert page.locator('.detail-panel h4', has_text='定位表').count() == 2   # 字段跨 2 张表定位
+        assert page.locator('.detail-panel table tbody tr').count() == 5   # 5 个定位字段（非整表字段）
+        assert page.locator('.detail-panel', has_text='所属项目').count() == 0   # 不含主数据引用字段
         assert page.locator('.detail-panel .tag', has_text='继承').count() >= 1
         # 分类详情「定位」→ 字段级高亮转跳 M1
         page.locator('.detail-panel table tbody tr .link', has_text='定位').first.click()
