@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildColumns, serializeCell, buildTemplateCsv, parseCsv, rowToPayload } from '../src/bulkImport.js';
+import { buildColumns, serializeCell, buildTemplateCsv, parseCsv, rowToPayload, rowToPayloadMapped, mapHeaders, importRows } from '../src/bulkImport.js';
 
 test('buildColumns 排除 derived/readonly', () => {
   const cols = buildColumns('refDatas');
@@ -34,4 +34,60 @@ test('rowToPayload 解析 multi/subtable/bool/number', () => {
   assert.equal(bt.nameCn, '名称X');
   assert.deepEqual(bt.synonyms, ['别名1', '别名2']);
   assert.equal(bt.isClassWord, true);
+});
+
+test('mapHeaders 按 label 匹配 + 去 BOM + 缺列/未知列', () => {
+  const ok = mapHeaders(['中文名', '类型', '业务域', '定义', '值域', '参考数据', '安全分级'], 'infoItems');
+  assert.equal(ok.missing.length, 0);
+  assert.equal(ok.extra.length, 0);
+  assert.equal(ok.mapping.length, 7);
+
+  // 去 BOM
+  const bom = mapHeaders(['\ufeff中文名', '类型', '业务域', '定义', '值域', '参考数据', '安全分级'], 'infoItems');
+  assert.equal(bom.missing.length, 0, 'BOM 不应导致缺列');
+  assert.equal(bom.extra.length, 0, 'BOM 不应导致未知列');
+
+  // 缺列
+  const miss = mapHeaders(['中文名', '类型'], 'infoItems');
+  assert.ok(miss.missing.includes('业务域'));
+
+  // 未知列（多余列）
+  const ext = mapHeaders(['中文名', '类型', '业务域', '定义', '值域', '参考数据', '安全分级', '备注'], 'infoItems');
+  assert.equal(ext.extra.length, 1);
+  assert.equal(ext.extra[0].label, '备注');
+});
+
+test('rowToPayloadMapped 按映射取值（列重排后仍正确对齐，不依赖固定列序）', () => {
+  // 列顺序打乱：安全分级提前、值域提前
+  const headers = ['安全分级', '中文名', '值域', '类型', '业务域', '定义', '参考数据'];
+  const { mapping, missing } = mapHeaders(headers, 'infoItems');
+  assert.equal(missing.length, 0);
+  const p = rowToPayloadMapped('infoItems', mapping, ['L2', '风机标识', 'vd_varchar10', '技术', '', '', '']);
+  assert.equal(p.nameCn, '风机标识');
+  assert.equal(p.securityLevel, 'L2');
+  assert.equal(p.valueDomainId, 'vd_varchar10');
+  assert.equal(p.type, '技术');
+  assert.equal(p.bizDomainId, undefined, '空值应跳过');
+});
+
+test('importRows 缺列/未知列 → headerError 中止，不调用 create', async () => {
+  let calls = 0;
+  const createFn = async () => { calls++; return {}; };
+  const res = await importRows('infoItems', ['中文名', '类型'], [['风机标识', '技术']], createFn);
+  assert.ok(res.headerError, '应返回 headerError');
+  assert.ok(res.headerError.includes('缺少必需列'));
+  assert.equal(calls, 0, '缺列时不应调用 create');
+});
+
+test('importRows 表头正确 → 按表头对齐导入', async () => {
+  const created = [];
+  const createFn = async (entity, payload) => { created.push(payload); return payload; };
+  const headers = ['中文名', '类型', '业务域', '定义', '值域', '参考数据', '安全分级'];
+  const res = await importRows('infoItems', headers, [['风机标识', '技术', '', '', 'vd_varchar10', '', 'L2']], createFn);
+  assert.equal(res.headerError, undefined);
+  assert.equal(res.errors.length, 0);
+  assert.equal(created.length, 1);
+  assert.equal(created[0].nameCn, '风机标识');
+  assert.equal(created[0].valueDomainId, 'vd_varchar10');
+  assert.equal(created[0].securityLevel, 'L2');
 });

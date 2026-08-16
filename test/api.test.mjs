@@ -1,8 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync } from 'node:fs';
+import { mkdtempSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
+import data from '../src/data.js';
 import { init, getState, list, getOne, create, update, validate, ENTITIES, CREATABLE, UPDATABLE } from '../server/store.js';
 import { createApp } from '../server/app.js';
 
@@ -421,4 +422,53 @@ test('update 主键不可篡改', () => {
   const r = update('baseTerms', 'term_name', { id: 'term_hacked', nameCn: '篡改' });
   assert.equal(r.ok, true);
   assert.equal(r.record.id, 'term_name'); // id 仍为原值
+});
+
+test('update infoItems：派生字段（code/nameEn/termIds/nameCn）不可篡改', () => {
+  freshStore();
+  const before = getState().infoItems.find((i) => i.id === 'ii_voltage');
+  const r = update('infoItems', 'ii_voltage', {
+    code: 'II9999', nameEn: 'hacked_en', termIds: ['term_hack'], nameCn: '被篡改的名字', definition: '新定义',
+  });
+  assert.equal(r.ok, true);
+  const after = getState().infoItems.find((i) => i.id === 'ii_voltage');
+  assert.equal(after.code, before.code, 'code 不应被篡改');
+  assert.equal(after.nameEn, before.nameEn, 'nameEn 不应被篡改');
+  assert.deepEqual(after.termIds, before.termIds, 'termIds 不应被篡改');
+  assert.equal(after.nameCn, before.nameCn, 'nameCn 不应被篡改');
+  assert.equal(after.definition, '新定义', '非派生字段应正常更新');
+});
+
+test('update refDatas：code（CK 自增编号）不可篡改', () => {
+  freshStore();
+  const before = getState().refDatas.find((r) => r.id === 'rd_voltage');
+  const r = update('refDatas', 'rd_voltage', { code: 'CK9999', name: '改名的电压等级' });
+  assert.equal(r.ok, true);
+  const after = getState().refDatas.find((r) => r.id === 'rd_voltage');
+  assert.equal(after.code, before.code, 'code 不应被篡改');
+  assert.equal(after.name, '改名的电压等级', 'name 应正常更新');
+});
+
+// ===== schemaVersion 版本迁移测试 =====
+test('schemaVersion：持久化版本落后/缺失 → 自动重种（防 stale 掩盖新字段）', () => {
+  const dir = mkdtempSync(path.join(tmpdir(), 'drp-ver-'));
+  const dataFile = path.join(dir, 'data.json');
+  // 造旧版 data.json：meta 无 schemaVersion，且塞一条假数据模拟历史写入
+  const stale = structuredClone(data);
+  delete stale.meta.schemaVersion;
+  stale.infoItems.push({ id: 'ii_stale', code: 'II9999', nameCn: '陈旧', nameEn: 'stale', type: '技术', termIds: [], valueDomainId: 'vd_varchar10', status: '启用' });
+  writeFileSync(dataFile, JSON.stringify(stale));
+  init({ dataFile });
+  const s = getState();
+  assert.equal(s.meta.schemaVersion, data.meta.schemaVersion, '重种后应带最新 schemaVersion');
+  assert.ok(!s.infoItems.some((i) => i.id === 'ii_stale'), '旧版脏数据应被重种清除');
+});
+
+test('schemaVersion：版本一致 → 保留持久化写入（不误重种）', () => {
+  const dir = mkdtempSync(path.join(tmpdir(), 'drp-ver2-'));
+  const dataFile = path.join(dir, 'data.json');
+  init({ dataFile }); // 首次落盘 seed（含 schemaVersion）
+  create('baseTerms', { nameCn: '保留', nameEn: 'keep_word', synonyms: [], isClassWord: false });
+  init({ dataFile }); // 重新加载，版本一致，不重种
+  assert.ok(getState().baseTerms.some((t) => t.nameEn === 'keep_word'), '版本一致时写入应保留');
 });
