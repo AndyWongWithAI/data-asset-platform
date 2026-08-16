@@ -5,9 +5,10 @@ import EntityForm from '../components/EntityForm.jsx';
 import ComingSoonAction from '../components/ComingSoonAction.jsx';
 
 export default function BaseTermModule() {
-  const { data } = useData();
+  const { data, updateRecord } = useData();
   const [kind, setKind] = useState('all');
   const [showForm, setShowForm] = useState(false);
+  const [editItem, setEditItem] = useState(null);
 
   const filtered = data.baseTerms.filter((t) =>
     kind === 'all' || (kind === 'classWord' ? t.isClassWord : !t.isClassWord)
@@ -16,6 +17,7 @@ export default function BaseTermModule() {
     t.synonyms.length
       ? t.synonyms.slice(0, 3).join('，') + (t.synonyms.length > 3 ? '…' : '')
       : '—';
+  const toggleStatus = (t) => updateRecord('baseTerms', t.id, { status: t.status === '停用' ? '启用' : '停用' });
   return (
     <div>
       <div className="search-bar">
@@ -28,7 +30,7 @@ export default function BaseTermModule() {
         <ComingSoonAction label="批量导入" />
       </div>
       <table className="table">
-        <thead><tr><th>中文名</th><th>英文名</th><th>同义词</th><th>是否类词</th><th>操作</th></tr></thead>
+        <thead><tr><th>中文名</th><th>英文名</th><th>同义词</th><th>是否类词</th><th>状态</th><th>操作</th></tr></thead>
         <tbody>
           {filtered.map((t) => (
             <tr key={t.id}>
@@ -36,12 +38,14 @@ export default function BaseTermModule() {
               <td><code>{t.nameEn}</code></td>
               <td>{preview(t)}</td>
               <td>{t.isClassWord ? <Tag tone="ok">类词</Tag> : '—'}</td>
-              <td><ComingSoonAction label="编辑" variant="link" /> <ComingSoonAction label="停用" variant="link" /></td>
+              <td>{t.status === '停用' ? <Tag tone="warn">停用</Tag> : <Tag tone="ok">启用</Tag>}</td>
+              <td><button className="link" onClick={() => setEditItem(t)}>编辑</button> <button className="link" onClick={() => toggleStatus(t)}>{t.status === '停用' ? '启用' : '停用'}</button></td>
             </tr>
           ))}
         </tbody>
       </table>
       {showForm && <EntityForm entity="baseTerms" onClose={() => setShowForm(false)} onSaved={() => setShowForm(false)} />}
+      {editItem && <EntityForm entity="baseTerms" mode="update" record={editItem} onClose={() => setEditItem(null)} onSaved={() => setEditItem(null)} />}
     </div>
   );
 }
