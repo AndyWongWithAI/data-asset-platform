@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { MODULE_GROUPS, MODULES, createInitialState, openTab, closeTab, navigate } from '../src/state.js';
+import { MODULE_GROUPS, MODULES, createInitialState, openTab, closeTab, navigate, filterModuleGroups } from '../src/state.js';
 
 test('MODULE_GROUPS 2 组 + standard/数据交换 父级目录 + MODULES 14 叶子 + tableDetail + 9 详情共 24', () => {
   assert.deepEqual(MODULE_GROUPS.map((g) => g.name), ['生产态·治理看板', '设计态·定义']);
@@ -68,6 +68,31 @@ test('MODULES 含非侧边栏 tableDetail（多实例），且不进侧边栏', 
   assert.ok(td && td.multi === true);
   const sidebarKeys = MODULE_GROUPS.flatMap((g) => g.items.map((i) => i.key));
   assert.ok(!sidebarKeys.includes('tableDetail'));
+});
+
+test('filterModuleGroups 空查询原样返回；命中叶子/父级目录名/分组名分别过滤', () => {
+  assert.deepEqual(filterModuleGroups(MODULE_GROUPS, ''), MODULE_GROUPS);
+  assert.deepEqual(filterModuleGroups(MODULE_GROUPS, '   '), MODULE_GROUPS);
+
+  // 命中叶子：'文件' → 仅设计态组，数据交换目录下只剩 文件交换
+  const leaf = filterModuleGroups(MODULE_GROUPS, '文件');
+  assert.deepEqual(leaf.map((g) => g.name), ['设计态·定义']);
+  const dxLeaf = leaf[0].items.find((i) => i.key === 'dataExchange');
+  assert.deepEqual(dxLeaf.children.map((c) => c.key), ['fileExchange']);
+
+  // 命中父级目录名：'数据交换' → 该目录整组保留（文件交换 + 数据服务）
+  const parent = filterModuleGroups(MODULE_GROUPS, '数据交换');
+  assert.deepEqual(parent.map((g) => g.name), ['设计态·定义']);
+  const dxParent = parent[0].items.find((i) => i.key === 'dataExchange');
+  assert.deepEqual(dxParent.children.map((c) => c.key), ['fileExchange', 'dataService']);
+
+  // 命中分组名：'生产态' → 整组保留 4 项
+  const grp = filterModuleGroups(MODULE_GROUPS, '生产态');
+  assert.deepEqual(grp.map((g) => g.name), ['生产态·治理看板']);
+  assert.equal(grp[0].items.length, 4);
+
+  // 无命中 → 空数组
+  assert.deepEqual(filterModuleGroups(MODULE_GROUPS, '不存在的目录'), []);
 });
 
 test('navigate tableDetail 多实例：每表一个 tab，同表复用，标题取表名', () => {

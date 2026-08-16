@@ -105,3 +105,29 @@ export function navigate(state, moduleKey, assetId = null) {
     activeTabId: tabId,
   };
 }
+
+// 侧边栏搜索：按分组名 / 目录名 / 叶子模块名过滤（纯函数，可 node --test）。
+// 命中分组名 → 整组保留；命中父级目录名 → 该目录及其全部子项保留；否则只保留命中的子项。
+export function filterModuleGroups(groups, query) {
+  const q = (query || '').trim().toLowerCase();
+  if (!q) return groups;
+  return groups
+    .map((group) => {
+      const groupMatch = group.name.toLowerCase().includes(q);
+      const items = group.items
+        .map((item) => {
+          if (!item.children) {
+            return item.title.toLowerCase().includes(q) ? item : null;
+          }
+          const itemMatch = item.title.toLowerCase().includes(q);
+          const children = itemMatch
+            ? item.children
+            : item.children.filter((c) => c.title.toLowerCase().includes(q));
+          return itemMatch || children.length ? { ...item, children } : null;
+        })
+        .filter(Boolean);
+      if (groupMatch) return group;
+      return items.length ? { ...group, items } : null;
+    })
+    .filter(Boolean);
+}
