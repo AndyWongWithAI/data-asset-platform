@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { MODULE_GROUPS, MODULES, createInitialState, openTab, closeTab, navigate, filterModuleGroups } from '../src/state.js';
 
-test('MODULE_GROUPS 3 组 + standard/数据交换 父级目录 + MODULES 15 叶子 + tableDetail + 10 详情共 26', () => {
+test('MODULE_GROUPS 3 组 + standard/数据交换 父级目录 + MODULES 14 叶子 + tableDetail + 10 详情共 25', () => {
   assert.deepEqual(MODULE_GROUPS.map((g) => g.name), ['生产态·治理看板', '设计态·定义', '系统管理']);
   const design = MODULE_GROUPS.find((g) => g.name === '设计态·定义');
   const standard = design.items.find((i) => i.key === 'standard');
@@ -16,7 +16,7 @@ test('MODULE_GROUPS 3 组 + standard/数据交换 父级目录 + MODULES 15 叶�
   assert.deepEqual(sysAdmin.items.map((i) => i.key), ['portalManagement'], '门户管理 应在 系统管理 下');
   assert.ok(!design.items.some((i) => i.key === 'portalManagement'), '门户管理 不应再在 设计态·定义 下');
   const leafKeys = MODULES.map((m) => m.key);
-  assert.equal(leafKeys.length, 26); // 15 叶子模块 + tableDetail + 10 详情模块
+  assert.equal(leafKeys.length, 25); // 14 叶子模块 + tableDetail + 10 详情模块
   assert.ok(!leafKeys.includes('standard'), 'standard 父级不应是模块');
   assert.ok(!leafKeys.includes('dataExchange'), '数据交换 父级不应是模块');
   assert.ok(leafKeys.includes('tableDetail'));
@@ -92,10 +92,10 @@ test('filterModuleGroups 空查询原样返回；命中叶子/父级目录名/�
   const dxParent = parent[0].items.find((i) => i.key === 'dataExchange');
   assert.deepEqual(dxParent.children.map((c) => c.key), ['fileExchange', 'dataService']);
 
-  // 命中分组名：'生产态' → 整组保留 4 项
+  // 命中分组名：'生产态' → 整组保留 3 项
   const grp = filterModuleGroups(MODULE_GROUPS, '生产态');
   assert.deepEqual(grp.map((g) => g.name), ['生产态·治理看板']);
-  assert.equal(grp[0].items.length, 4);
+  assert.equal(grp[0].items.length, 3);
 
   // 无命中 → 空数组
   assert.deepEqual(filterModuleGroups(MODULE_GROUPS, '不存在的目录'), []);
