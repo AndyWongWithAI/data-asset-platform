@@ -82,6 +82,14 @@ const SCHEMAS = {
     types: {},
     refs: {},
   },
+  tables: {
+    idKey: 'id', idPrefix: 't', creatable: true, updatable: false,
+    required: ['nameCn', 'nameEn', 'tableType', 'appId', 'dbId', 'bizDomainId', 'subjectId'],
+    unique: ['nameEn'],
+    enum: { tableType: ['业务表', '技术表'] },
+    types: {},
+    refs: { appId: 'applications', dbId: 'databases', bizDomainId: 'bizDomains', masterDataId: 'masterData' },
+  },
   portalAssets: {
     idKey: 'id', idPrefix: 'pa', creatable: true, updatable: false,
     required: ['name', 'category', 'dataOwner', 'usageType', 'securityLevel'],
@@ -281,6 +289,13 @@ function domainErrors(entity, payload) {
     if (typeof payload.length === 'number' && payload.length <= 0) errors.push('字段 length 必须大于 0');
     if (typeof payload.precision === 'number' && payload.precision < 0) errors.push('字段 precision 必须大于等于 0');
   }
+  if (entity === 'tables') {
+    // 主题域是业务域的内嵌子集（非顶层实体），refs 校验无法覆盖，故在此单独校验引用存在性
+    const subjectIds = new Set(state.bizDomains.flatMap((d) => (d.subjects || []).map((s) => s.id)));
+    if (payload.subjectId && !subjectIds.has(payload.subjectId)) {
+      errors.push(`字段 subjectId 引用「${payload.subjectId}」不存在于任何业务域主题域`);
+    }
+  }
   if (entity === 'portalAssets') {
     // 打包对象：表与服务至少其一非空
     const tableIds = Array.isArray(payload.tableIds) ? payload.tableIds : [];
@@ -332,6 +347,16 @@ export function create(entity, payload = {}) {
     finalPayload = {
       ...payload,
       approval: [{ step: '发起上架', actor: payload.manager || '数据管理人员', action: '提交', time: new Date().toISOString().slice(0, 10), comment: '' }],
+    };
+  }
+  if (entity === 'tables') {
+    // 新建表只登记表级元数据（字段/分区/索引由表详情与后续功能维护），服务端兜底：
+    // 分区/索引空数组起步，版本历史服务端生成首条「新建」记录，客户端不可注入
+    finalPayload = {
+      ...payload,
+      partitions: Array.isArray(payload.partitions) ? payload.partitions : [],
+      indexes: Array.isArray(payload.indexes) ? payload.indexes : [],
+      history: [{ version: 'v1.0', time: new Date().toISOString().slice(0, 10), operator: '数据治理组', action: '新建', desc: '登记新表元数据' }],
     };
   }
   const domain = domainErrors(entity, finalPayload);

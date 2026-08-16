@@ -67,6 +67,20 @@ export const FORM_SCHEMAS = {
     { key: 'tableIds', label: '打包数据表', type: 'multiref', ref: 'tables', help: '数据表与数据服务至少选择一项' },
     { key: 'serviceIds', label: '打包数据服务', type: 'multiref', ref: 'services' },
   ],
+
+  // 表结构（M1）：只登记表级元数据；字段/分区/索引由表详情与后续功能维护。
+  // subjectId（主题域）是 bizDomains 的内嵌子集，用 cascadeRef 随业务域联动。
+  tables: [
+    { key: 'nameCn', label: '表中文名', type: 'text', required: true, placeholder: '如：测风数据表' },
+    { key: 'nameEn', label: '表英文名', type: 'text', required: true, placeholder: '如：wind_measurement' },
+    { key: 'tableType', label: '表类型', type: 'enum', required: true, enum: ['业务表', '技术表'] },
+    { key: 'appId', label: '所属应用', type: 'ref', ref: 'applications', required: true },
+    { key: 'dbId', label: '所属库', type: 'ref', ref: 'databases', required: true },
+    { key: 'bizDomainId', label: '业务域', type: 'ref', ref: 'bizDomains', required: true },
+    { key: 'subjectId', label: '主题域', type: 'cascadeRef', required: true, source: 'bizDomains', sourceKey: 'subjects', filterBy: 'bizDomainId', help: '随业务域联动' },
+    { key: 'masterDataId', label: '关联主数据', type: 'ref', ref: 'masterData', help: '可选' },
+    { key: 'desc', label: '表描述', type: 'text', placeholder: '如：测风塔实测风速/风向/湍流' },
+  ],
 };
 
 // 实体名 → 中文标题（供表单标题与主控复用）
@@ -78,4 +92,5 @@ export const ENTITY_TITLES = {
   qualityRules: '质量规则',
   security: '安全分级',
   portalAssets: '门户资产',
+  tables: '表',
 };

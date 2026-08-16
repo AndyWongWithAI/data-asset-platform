@@ -90,9 +90,10 @@ export default function EntityForm({ entity, mode = 'create', record = null, tit
   const setValue = (key, val) => {
     setValues((v) => {
       const next = { ...v, [key]: val };
-      // dynamic 字段：驱动字段变化时重置其值
+      // dynamic 字段：驱动字段变化时重置其值；cascadeRef：过滤字段变化时清空联动下拉
       for (const f of schema) {
         if (f.dynamicBy === key) next[f.key] = {};
+        if (f.filterBy === key) next[f.key] = '';
       }
       return next;
     });
@@ -218,6 +219,18 @@ export default function EntityForm({ entity, mode = 'create', record = null, tit
             </select>
           );
           break;
+        case 'cascadeRef': {
+          // 内嵌子集引用：选项取自 source 实体中 filterBy 命中的那条记录的 sourceKey 数组（如业务域→主题域）
+          const parent = (data[f.source] || []).find((x) => x.id === values[f.filterBy]);
+          const opts = parent?.[f.sourceKey] || [];
+          control = (
+            <select className="form-input" value={val ?? ''} onChange={(e) => setValue(f.key, e.target.value)}>
+              <option value="">请选择</option>
+              {opts.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}
+            </select>
+          );
+          break;
+        }
         case 'multiref':
           control = (
             <div className="form-check-list">

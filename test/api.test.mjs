@@ -15,11 +15,11 @@ function freshStore() {
   return dataFile;
 }
 
-test('init 加载种子：8 实体 + 数量正确', () => {
+test('init 加载种子：9 实体 + 数量正确', () => {
   freshStore();
   const s = getState();
-  assert.equal(ENTITIES.length, 8);
-  assert.deepEqual(ENTITIES.sort(), ['baseTerms', 'infoItems', 'masterData', 'portalAssets', 'qualityRules', 'refDatas', 'security', 'valueDomains'].sort());
+  assert.equal(ENTITIES.length, 9);
+  assert.deepEqual(ENTITIES.sort(), ['baseTerms', 'infoItems', 'masterData', 'portalAssets', 'qualityRules', 'refDatas', 'security', 'tables', 'valueDomains'].sort());
   assert.equal(s.applications.length, 5);
   assert.equal(s.tables.length, 10);
   assert.equal(s.fields.length, 51);
@@ -33,9 +33,47 @@ test('init 加载种子：8 实体 + 数量正确', () => {
   assert.equal(s.portalAssets.length, 8);
 });
 
-test('CREATABLE 6 实体 / UPDATABLE 6 实体', () => {
-  assert.deepEqual(CREATABLE.sort(), ['baseTerms', 'infoItems', 'portalAssets', 'qualityRules', 'refDatas', 'valueDomains'].sort());
+test('CREATABLE 7 实体 / UPDATABLE 6 实体', () => {
+  assert.deepEqual(CREATABLE.sort(), ['baseTerms', 'infoItems', 'portalAssets', 'qualityRules', 'refDatas', 'tables', 'valueDomains'].sort());
   assert.deepEqual(UPDATABLE.sort(), ['baseTerms', 'infoItems', 'qualityRules', 'refDatas', 'security', 'valueDomains'].sort());
+});
+
+test('create tables：成功 + id 生成 + 服务端派生 history/partitions/indexes', () => {
+  freshStore();
+  const before = getState().tables.length;
+  const r = create('tables', {
+    nameCn: '测试新表', nameEn: 'test_new_table', tableType: '业务表',
+    appId: 'app_res', dbId: 'db_res', bizDomainId: 'bd_resource', subjectId: 'bs_wind', desc: '测试描述',
+  });
+  assert.equal(r.ok, true);
+  assert.equal(r.record.id, 't_1');
+  assert.equal(r.record.nameCn, '测试新表');
+  assert.equal(r.record.tableType, '业务表');
+  // 服务端派生：分区/索引空数组起步，版本历史首条「新建」，客户端不可注入
+  assert.deepEqual(r.record.partitions, []);
+  assert.deepEqual(r.record.indexes, []);
+  assert.equal(r.record.history.length, 1);
+  assert.equal(r.record.history[0].action, '新建');
+  assert.equal(getState().tables.length, before + 1);
+});
+
+test('create tables：subjectId 不存在于业务域主题域 → 报错', () => {
+  freshStore();
+  const r = create('tables', {
+    nameCn: '测试新表2', nameEn: 'test_new_table2', tableType: '业务表',
+    appId: 'app_res', dbId: 'db_res', bizDomainId: 'bd_resource', subjectId: 'bs_nonexistent',
+  });
+  assert.equal(r.ok, false);
+  assert.ok(r.errors.some((e) => e.includes('subjectId')));
+});
+
+test('create tables：缺必填 → 报错', () => {
+  freshStore();
+  const r = create('tables', { nameCn: '测试新表3' });
+  assert.equal(r.ok, false);
+  assert.ok(r.errors.some((e) => e.includes('nameEn')));
+  assert.ok(r.errors.some((e) => e.includes('tableType')));
+  assert.ok(r.errors.some((e) => e.includes('subjectId')));
 });
 
 test('create baseTerms：成功 + id 生成 + 落盘持久化', () => {

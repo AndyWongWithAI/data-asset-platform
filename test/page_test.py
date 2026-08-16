@@ -88,6 +88,18 @@ def main():
         # 表粒度清单自适应：撑满 + 无横向溢出
         assert_table_fills(page)
         assert_no_hscroll(page)
+        # 表结构 新建 + 批量导入（真写入口，非「开发中」占位）
+        page.locator('button', has_text='新增表').click()
+        assert page.locator('.modal-lg').count() == 1
+        assert page.locator('.modal h3', has_text='新增表').count() == 1
+        assert page.locator('.modal label', has_text='主题域').count() == 1  # cascadeRef 主题域随业务域联动
+        page.locator('.modal button', has_text='取消').click()
+        assert page.locator('.modal').count() == 0
+        page.locator('button', has_text='批量导入').click()
+        assert page.locator('.modal-lg').count() == 1
+        assert page.locator('.modal button', has_text='下载模板').count() == 1
+        page.locator('.modal button', has_text='关闭').click()
+        assert page.locator('.modal').count() == 0
         # 查看按钮 → 打开表详情（默认表级元数据 tab，五子 tab）
         page.locator('.table tbody tr .link').first.click()
         assert page.locator('.tab', has_text='测风数据表').count() == 1
@@ -393,6 +405,7 @@ def main():
         # ③ 元数据比对（生产态差异清单，只读）
         click_menu(page, '元数据比对')
         assert page.locator('.tab', has_text='元数据比对').count() == 1
+        assert page.locator('h3', has_text='企业整体生产元数据情况').count() == 1
         # 5 个计数卡片
         for label in ['未登记表', '疑似下线表', '未登记字段', '疑似下线字段', '漂移字段']:
             assert page.locator('.stat-card', has_text=label).count() == 1, f'缺计数卡片 {label}'
