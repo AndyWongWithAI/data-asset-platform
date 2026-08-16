@@ -452,3 +452,11 @@ test('portalRequests 引用 portalAssets + stats 计数', () => {
   assert.equal(data.meta.stats.portalAssets, 8);
   assert.equal(data.meta.stats.portalRequests, 4);
 });
+
+test('4 实体每条含 status ∈ {启用,停用}（qualityRules 除外）', () => {
+  for (const key of ['baseTerms', 'valueDomains', 'refDatas', 'infoItems']) {
+    for (const it of D[key]) {
+      assert.ok(it.status === '启用' || it.status === '停用', `${key} ${it.id} status 缺失/非法`);
+    }
+  }
+});

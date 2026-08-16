@@ -31,9 +31,9 @@ test('init 加载种子：7 实体 + 数量正确', () => {
   assert.equal(s.security.length, 4);
 });
 
-test('CREATABLE 5 实体 / UPDATABLE 仅 security', () => {
+test('CREATABLE 5 实体 / UPDATABLE 6 实体', () => {
   assert.deepEqual(CREATABLE.sort(), ['baseTerms', 'infoItems', 'qualityRules', 'refDatas', 'valueDomains'].sort());
-  assert.deepEqual(UPDATABLE, ['security']);
+  assert.deepEqual(UPDATABLE.sort(), ['baseTerms', 'infoItems', 'qualityRules', 'refDatas', 'security', 'valueDomains'].sort());
 });
 
 test('create baseTerms：成功 + id 生成 + 落盘持久化', () => {
@@ -136,9 +136,9 @@ test('update security：不存在 level → 报错', () => {
   assert.ok(r.errors.some((e) => e.includes('未找到')));
 });
 
-test('update baseTerms → 不支持修改', () => {
+test('update masterData → 不支持修改', () => {
   freshStore();
-  const r = update('baseTerms', 'term_name', { nameCn: 'x' });
+  const r = update('masterData', 'md_turbine', { name: 'x' });
   assert.equal(r.ok, false);
   assert.ok(r.errors.some((e) => e.includes('不支持修改')));
 });
@@ -275,7 +275,7 @@ test('HTTP 集成：GET /_entities 返回 entities/idKeys/creatable/updatable', 
     assert.equal(meta.idKeys.security, 'level');
     assert.ok(meta.creatable.includes('baseTerms'));
     assert.ok(!meta.creatable.includes('security'));
-    assert.deepEqual(meta.updatable, ['security']);
+    assert.deepEqual(meta.updatable.sort(), ['baseTerms', 'infoItems', 'qualityRules', 'refDatas', 'security', 'valueDomains'].sort());
   } finally {
     server.close();
   }
@@ -381,4 +381,44 @@ test('P2：infoItems 客户端注入 nameEn/termIds 被服务端覆盖', () => {
   assert.equal(r.ok, true);
   assert.equal(r.record.nameEn, 'turbine_identifier');
   assert.deepEqual(r.record.termIds, ['term_turbine', 'term_identifier']);
+});
+
+test('create 未传 status → 默认启用（4 实体）', () => {
+  freshStore();
+  const r = create('valueDomains', { code: 'VD-TEST', dataType: 'varchar', length: 20, precision: 0 });
+  assert.equal(r.ok, true);
+  assert.equal(r.record.status, '启用');
+});
+
+test('update baseTerms：改名成功 + 落盘', () => {
+  const dataFile = freshStore();
+  const r = update('baseTerms', 'term_name', { nameCn: '名称（改）' });
+  assert.equal(r.ok, true);
+  assert.equal(r.record.nameCn, '名称（改）');
+  init({ dataFile });
+  assert.equal(getState().baseTerms.find((t) => t.id === 'term_name').nameCn, '名称（改）');
+});
+
+test('update 停用/启用：status 枚举 + 可逆', () => {
+  freshStore();
+  const off = update('valueDomains', 'vd_varchar10', { status: '停用' });
+  assert.equal(off.ok, true);
+  assert.equal(off.record.status, '停用');
+  const on = update('valueDomains', 'vd_varchar10', { status: '启用' });
+  assert.equal(on.ok, true);
+  assert.equal(on.record.status, '启用');
+});
+
+test('update status 非法值 → 报错', () => {
+  freshStore();
+  const r = update('baseTerms', 'term_name', { status: '废弃' });
+  assert.equal(r.ok, false);
+  assert.ok(r.errors.some((e) => e.includes('status')));
+});
+
+test('update 主键不可篡改', () => {
+  freshStore();
+  const r = update('baseTerms', 'term_name', { id: 'term_hacked', nameCn: '篡改' });
+  assert.equal(r.ok, true);
+  assert.equal(r.record.id, 'term_name'); // id 仍为原值
 });
