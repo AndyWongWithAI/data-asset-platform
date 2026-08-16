@@ -1,6 +1,7 @@
 import { useData } from '../DataContext.jsx';
 import { compareMetadata } from '../metadataCompare.js';
 import Tag from '../components/Tag.jsx';
+import ComingSoonAction from '../components/ComingSoonAction.jsx';
 
 const TYPE_META = {
   unregistered: { label: '未登记', tone: 'warn' },
@@ -36,6 +37,10 @@ export default function MetadataCompareModule({ onNavigate }) {
 
   return (
     <div>
+      <div className="search-bar" style={{ justifyContent: 'flex-end' }}>
+        <ComingSoonAction label="导出生产表结构" />
+      </div>
+
       <div className="stat-row">
         {cards.map((c) => (
           <div key={c.label} className="stat-card">
