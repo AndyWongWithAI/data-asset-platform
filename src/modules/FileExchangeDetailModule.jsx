@@ -13,7 +13,6 @@ export default function FileExchangeDetailModule({ onNavigate, assetId }) {
     <div className="detail-panel">
       <h3>{b.name}</h3>
       <div className="kv-list">
-        <div><span>方向</span><Tag tone={inbound ? 'ok' : 'default'}>{inbound ? '入站' : '出站'}</Tag></div>
         <div><span>源系统</span><b>{b.sourceSystem}</b></div>
         {inbound ? (
           <>

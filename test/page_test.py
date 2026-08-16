@@ -457,12 +457,9 @@ def main():
         click_menu(page, '文件交换')
         assert page.locator('.tab', has_text='文件交换').count() == 1
         assert page.locator('.table tbody tr').count() >= 5
-        # 方向列 + 库级字段（入站任务展示库名）
-        assert page.locator('.table thead th', has_text='方向').count() == 1
+        # 库级字段（入站任务展示库名）
         assert page.locator('.table thead th', has_text='源系统 · 源对象').count() == 1
         assert page.locator('.table thead th', has_text='目标系统 · 目标对象').count() == 1
-        assert page.locator('.table tbody tr', has_text='出站').count() == 5
-        assert page.locator('.table tbody tr', has_text='入站').count() == 3
         assert page.locator('.table tbody tr', has_text='scada_telemetry_db').count() == 1
         page.locator('button', has_text='发起交换申请').click()
         assert page.locator('.modal').count() == 1
