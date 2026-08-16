@@ -55,11 +55,27 @@ def main():
         # 壳
         assert page.locator('.sidebar').count() == 1
         assert page.locator('.header').count() == 1
+        # 顶部标题只保留「数据资产管理平台」
+        assert page.locator('.header-title h1').inner_text() == '数据资产管理平台'
+        assert page.locator('.header-subtitle').count() == 0
         # 两个大分组可折叠/展开
         assert page.locator('.sidebar-group-dir').count() == 2
         page.locator('.sidebar-group-dir', has_text='设计态·定义').click()
         assert page.locator('.sidebar-item', has_text='结构化元数据').count() == 0
         page.locator('.sidebar-group-dir', has_text='设计态·定义').click()
+        assert page.locator('.sidebar-item', has_text='结构化元数据').count() == 1
+        # 侧边栏搜索框：按目录名过滤
+        search = page.locator('.sidebar-search input')
+        search.fill('文件')
+        assert page.locator('.sidebar-sub', has_text='文件交换').count() == 1
+        assert page.locator('.sidebar-sub', has_text='数据服务').count() == 0
+        assert page.locator('.sidebar-item', has_text='结构化元数据').count() == 0
+        search.fill('数据交换')
+        assert page.locator('.sidebar-sub', has_text='文件交换').count() == 1
+        assert page.locator('.sidebar-sub', has_text='数据服务').count() == 1
+        search.fill('不存在的目录')
+        assert page.locator('.sidebar-empty').count() == 1
+        search.fill('')
         assert page.locator('.sidebar-item', has_text='结构化元数据').count() == 1
         # 打开资产目录
         click_menu(page, '结构化元数据')
