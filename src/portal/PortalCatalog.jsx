@@ -18,7 +18,7 @@ export default function PortalCatalog({ onOpenAsset }) {
   const [kw, setKw] = useState('');
 
   const listedCount = (data.portalAssets || []).filter((a) => a.status === '已上架').length;
-  const serviceCount = (data.services || []).length;
+  const tableCount = new Set((data.portalAssets || []).flatMap((a) => a.tableIds || [])).size;
 
   const assets = (data.portalAssets || []).filter((a) => {
     if (a.status !== '已上架') return false;
@@ -47,7 +47,7 @@ export default function PortalCatalog({ onOpenAsset }) {
       <div className="portal-stats">
         <div className="portal-stat"><div className="portal-stat-num">{listedCount}</div><div className="portal-stat-label">已上架资产</div></div>
         <div className="portal-stat"><div className="portal-stat-num">{CATEGORIES.length}</div><div className="portal-stat-label">业务分类</div></div>
-        <div className="portal-stat"><div className="portal-stat-num">{serviceCount}</div><div className="portal-stat-label">关联服务</div></div>
+        <div className="portal-stat"><div className="portal-stat-num">{tableCount}</div><div className="portal-stat-label">覆盖数据表</div></div>
       </div>
       <div className="portal-toolbar">
         <div className="portal-cats">

@@ -29,8 +29,8 @@ def main():
         assert page.locator('.header-title h1').inner_text() == '数据资产门户'
         assert page.locator('.header button', has_text='资产管理').count() == 1
         assert page.locator('.asset-card').count() == 8
-        # 统计条：已上架 8 · 业务分类 5 · 关联服务 5
-        assert page.locator('.portal-stat-num').all_inner_texts() == ['8', '5', '5']
+        # 统计条：已上架 8 · 业务分类 5 · 覆盖数据表 6
+        assert page.locator('.portal-stat-num').all_inner_texts() == ['8', '5', '6']
         # 精选资产：单一列表 + 精选角标置顶（精选不拆区，仍在全部资产中）
         assert page.locator('.asset-grid').count() == 1
         assert page.locator('.asset-featured').count() == 3
