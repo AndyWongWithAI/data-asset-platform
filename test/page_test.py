@@ -288,8 +288,9 @@ def main():
         assert page.locator('.table thead th', has_text='业务定义').count() == 1
         assert page.locator('.table thead th', has_text='业务规则').count() == 1
         assert page.locator('.table thead th', has_text='数据Owner').count() == 1
-        page.on('dialog', lambda d: d.accept())
         page.locator('button', has_text='同步').click()
+        assert page.locator('.modal').count() == 1
+        page.locator('.modal button', has_text='知道了').click()
         # 点资产编码进详情 → 默认「首页」tab（资产级元数据）
         page.locator('.table tbody tr .link').first.click()
         assert page.locator('.tab.active', has_text='主数据详情').count() == 1
@@ -384,7 +385,7 @@ def main():
         assert page.locator('.row-active').count() == 0   # 表详情非字段定位，无高亮
         # 入站详情：库级字段 + 生产元数据快照 + 转跳结构化元数据目录
         click_menu(page, '文件交换')
-        page.locator('.table tbody tr', has_text='SCADA遥测数据接入').locator('.link').click()
+        page.locator('.table tbody tr', has_text='SCADA遥测数据接入').locator('.link').first.click()
         assert page.locator('.tab.active', has_text='文件交换详情').count() == 1
         assert page.locator('.detail-panel', has_text='源库').count() == 1
         assert page.locator('.detail-panel', has_text='scada_telemetry_db').count() == 1
