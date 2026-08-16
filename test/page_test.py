@@ -118,6 +118,18 @@ def main():
         assert page.locator('.modal-lg').count() == 1
         page.locator('.modal button', has_text='取消').click()
         assert page.locator('.modal').count() == 0
+        # 十七期：质量规则 编辑 + 批量导入
+        # 编辑 → 表单弹窗（.modal-lg）→ 取消
+        page.locator('.table tbody tr', has_text='有功功率取值范围').locator('button', has_text='编辑').first.click()
+        assert page.locator('.modal-lg').count() == 1
+        page.locator('.modal button', has_text='取消').click()
+        assert page.locator('.modal').count() == 0
+        # 批量导入 → 弹窗（含「下载模板」）→ 关闭
+        page.locator('button', has_text='批量导入').click()
+        assert page.locator('.modal').count() == 1
+        assert page.locator('.modal button', has_text='下载模板').count() == 1
+        page.locator('.modal button', has_text='关闭').click()
+        assert page.locator('.modal').count() == 0
         # 点规则进详情 → 定位字段转跳 M1
         page.locator('.table tbody tr .link').first.click()
         assert page.locator('.tab.active', has_text='规则详情').count() == 1
@@ -147,6 +159,18 @@ def main():
         assert page.locator('.modal-lg').count() == 1
         page.locator('.modal button', has_text='取消').click()
         assert page.locator('.modal').count() == 0
+        # 十七期：基础术语 编辑 + 批量导入
+        # 编辑 → 表单弹窗（.modal-lg）→ 取消
+        page.locator('.table tbody tr', has_text='名称').locator('button', has_text='编辑').first.click()
+        assert page.locator('.modal-lg').count() == 1
+        page.locator('.modal button', has_text='取消').click()
+        assert page.locator('.modal').count() == 0
+        # 批量导入 → 弹窗（含「下载模板」）→ 关闭
+        page.locator('button', has_text='批量导入').click()
+        assert page.locator('.modal').count() == 1
+        assert page.locator('.modal button', has_text='下载模板').count() == 1
+        page.locator('.modal button', has_text='关闭').click()
+        assert page.locator('.modal').count() == 0
         # 去下钻：点中文名第一列后仍无 .detail-panel
         page.locator('.table tbody tr').first.locator('td').first.click()
         assert page.locator('.detail-panel').count() == 0
@@ -157,6 +181,18 @@ def main():
         page.locator('button', has_text='新增值域').click()
         assert page.locator('.modal-lg').count() == 1
         page.locator('.modal button', has_text='取消').click()
+        assert page.locator('.modal').count() == 0
+        # 十七期：值域 编辑 + 批量导入
+        # 编辑 → 表单弹窗（.modal-lg）→ 取消
+        page.locator('.table tbody tr', has_text='VD-VARCHAR10').locator('button', has_text='编辑').first.click()
+        assert page.locator('.modal-lg').count() == 1
+        page.locator('.modal button', has_text='取消').click()
+        assert page.locator('.modal').count() == 0
+        # 批量导入 → 弹窗（含「下载模板」）→ 关闭
+        page.locator('button', has_text='批量导入').click()
+        assert page.locator('.modal').count() == 1
+        assert page.locator('.modal button', has_text='下载模板').count() == 1
+        page.locator('.modal button', has_text='关闭').click()
         assert page.locator('.modal').count() == 0
         page.locator('.table tbody tr .link').first.click()
         assert page.locator('.tab.active', has_text='值域详情').count() == 1
@@ -172,6 +208,18 @@ def main():
         page.locator('button', has_text='新增参考数据').click()
         assert page.locator('.modal-lg').count() == 1
         page.locator('.modal button', has_text='取消').click()
+        assert page.locator('.modal').count() == 0
+        # 十七期：参考数据 编辑 + 批量导入
+        # 编辑 → 表单弹窗（.modal-lg）→ 取消
+        page.locator('.table tbody tr', has_text='电压等级').locator('button', has_text='编辑').first.click()
+        assert page.locator('.modal-lg').count() == 1
+        page.locator('.modal button', has_text='取消').click()
+        assert page.locator('.modal').count() == 0
+        # 批量导入 → 弹窗（含「下载模板」）→ 关闭
+        page.locator('button', has_text='批量导入').click()
+        assert page.locator('.modal').count() == 1
+        assert page.locator('.modal button', has_text='下载模板').count() == 1
+        page.locator('.modal button', has_text='关闭').click()
         assert page.locator('.modal').count() == 0
         page.locator('.table tbody tr .link').first.click()
         assert page.locator('.tab.active', has_text='参考数据详情').count() == 1
@@ -189,6 +237,23 @@ def main():
         assert page.locator('.modal-lg').count() == 1
         page.locator('.modal button', has_text='取消').click()
         assert page.locator('.modal').count() == 0
+        # 十七期：信息项 编辑 + 批量导入
+        # 编辑 → 表单弹窗（.modal-lg）→ 取消
+        page.locator('.table tbody tr', has_text='II0001').locator('button', has_text='编辑').first.click()
+        assert page.locator('.modal-lg').count() == 1
+        page.locator('.modal button', has_text='取消').click()
+        assert page.locator('.modal').count() == 0
+        # 批量导入 → 弹窗（含「下载模板」）→ 关闭
+        page.locator('button', has_text='批量导入').click()
+        assert page.locator('.modal').count() == 1
+        assert page.locator('.modal button', has_text='下载模板').count() == 1
+        page.locator('.modal button', has_text='关闭').click()
+        assert page.locator('.modal').count() == 0
+        # 信息项编辑：中文名只读（derived-value 而非 input）
+        page.locator('.table tbody tr', has_text='II0001').locator('button', has_text='编辑').first.click()
+        assert page.locator('.modal-lg').count() == 1
+        assert page.locator('.modal .derived-value', has_text='电压等级编码').count() == 1
+        page.locator('.modal button', has_text='取消').click()
         # 点信息项进详情（第一条 ii_voltage 电压等级编码）→ 无词根链 + 类型/业务域/定义 + 被引用字段转跳 M1
         page.locator('.table tbody tr .link').first.click()
         assert page.locator('.tab.active', has_text='信息项详情').count() == 1
