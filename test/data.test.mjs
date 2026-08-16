@@ -205,6 +205,34 @@ test('L4 数据服务含二次审批（≥4 步）', () => {
   }
 });
 
+test('services access 接入契约结构完整 + 无鉴权/密钥字段', () => {
+  const forbidden = ['auth', 'key', 'secret', 'token', 'password', 'credential', 'apiKey', 'accessKey'];
+  for (const s of D.services) {
+    assert.ok(s.access && typeof s.access === 'object', `service ${s.id} 缺 access 接入契约`);
+    for (const k of forbidden) {
+      assert.equal(s.access[k], undefined, `service ${s.id} access 不应含鉴权/密钥字段 ${k}`);
+    }
+    if (s.type === 'API') {
+      assert.ok(typeof s.access.endpoint === 'string' && s.access.endpoint.trim().length > 0, `service ${s.id} API 缺 endpoint`);
+      assert.ok(s.access.method === 'GET' || s.access.method === 'POST', `service ${s.id} API method ${s.access.method} 非法`);
+      assert.ok(Array.isArray(s.access.params) && s.access.params.length >= 1, `service ${s.id} API 缺 params 数组`);
+      for (const p of s.access.params) {
+        assert.ok(p.name && p.type && typeof p.required === 'boolean' && p.desc, `service ${s.id} API 参数缺字段`);
+      }
+      assert.ok(typeof s.access.requestExample === 'string' && s.access.requestExample.trim().length > 0, `service ${s.id} API 缺 requestExample`);
+      assert.ok(typeof s.access.responseExample === 'string' && s.access.responseExample.trim().length > 0, `service ${s.id} API 缺 responseExample`);
+    } else if (s.type === '订阅') {
+      assert.ok(typeof s.access.protocol === 'string' && s.access.protocol.trim().length > 0, `service ${s.id} 订阅缺 protocol`);
+      assert.ok(typeof s.access.topic === 'string' && s.access.topic.trim().length > 0, `service ${s.id} 订阅缺 topic`);
+      assert.ok(Number.isInteger(s.access.qos), `service ${s.id} 订阅缺 qos`);
+    } else if (s.type === '数据包') {
+      assert.ok(typeof s.access.format === 'string' && s.access.format.trim().length > 0, `service ${s.id} 数据包缺 format`);
+      assert.ok(typeof s.access.downloadUrl === 'string' && s.access.downloadUrl.trim().length > 0, `service ${s.id} 数据包缺 downloadUrl`);
+      assert.ok(typeof s.access.updateFreq === 'string' && s.access.updateFreq.trim().length > 0, `service ${s.id} 数据包缺 updateFreq`);
+    }
+  }
+});
+
 test('baseTerms：id 唯一 + 类词白名单精确等于 10 个', () => {
   const termIds = D.baseTerms.map((t) => t.id);
   assert.equal(new Set(termIds).size, termIds.length, 'baseTerms id 重复');
