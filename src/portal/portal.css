@@ -10,9 +10,16 @@
 .portal-cats button.active { background: #165dff; color: #fff; border-color: #165dff; }
 .portal-toolbar input { padding: 6px 10px; border: 1px solid #d0d3d9; border-radius: 4px; font-size: 13px; min-width: 200px; }
 .asset-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
-.asset-card { border: 1px solid #e5e6eb; border-radius: 8px; padding: 16px; cursor: pointer; background: #fff; }
-.asset-card:hover { border-color: #165dff; box-shadow: 0 2px 8px rgba(22, 93, 255, 0.08); }
+.asset-card { border: 1px solid #e5e6eb; border-left: 3px solid var(--cat, #e5e6eb); border-radius: 8px; padding: 16px; cursor: pointer; background: #fff; transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease; }
+.asset-card:hover { border-color: #165dff; box-shadow: 0 6px 16px rgba(0, 0, 0, 0.10); transform: translateY(-2px); }
 .asset-card h3 { font-size: 15px; margin: 0 0 10px; }
 .asset-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
-.asset-cat { font-size: 12px; color: #86909c; }
+.asset-cat { font-size: 12px; color: var(--cat, #4e5969); background: color-mix(in srgb, var(--cat, #4e5969) 12%, white); padding: 1px 8px; border-radius: 3px; font-weight: 600; }
 .asset-card p { font-size: 13px; color: #4e5969; margin: 0; line-height: 1.6; }
+
+.portal-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px; }
+.portal-stat { background: #fff; border: 1px solid #e5e6eb; border-radius: 8px; padding: 14px 16px; }
+.portal-stat-num { font-size: 24px; font-weight: 700; line-height: 1.2; color: #1f2329; }
+.portal-stat-label { font-size: 12px; color: #86909c; margin-top: 4px; }
+.portal-section-title { display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 700; color: #1f2329; margin: 20px 0 12px; }
+.portal-section-title .star { color: #ff7d00; font-size: 16px; }
