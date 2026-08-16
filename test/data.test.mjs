@@ -367,21 +367,21 @@ test('securityCatalog 13 条 + id 唯一 + 分级/分类合法 + fieldIds 引用
   assert.equal(D.meta.stats.securityCatalog, 13, 'meta.stats.securityCatalog 应为 13');
 });
 
-test('securityCatalog 分级一致性：level === 定位字段最高分级，且不含主数据引用字段', () => {
+test('securityCatalog 分级一致性：定位字段分级不低于分类等级（LN 管控下沿），且不含主数据引用字段', () => {
   const fieldMap = new Map(D.fields.map((f) => [f.id, f]));
   for (const sc of D.securityCatalog) {
     if (!sc.fieldIds || sc.fieldIds.length === 0) continue;
     const fields = sc.fieldIds.map((fid) => fieldMap.get(fid));
     assert.ok(fields.every(Boolean), `securityCatalog ${sc.id} 存在无效 fieldId`);
-    const maxRank = Math.max(...fields.map((f) => LEVEL_RANK[f.management.securityLevel] ?? 0));
-    assert.ok(Number.isFinite(maxRank) && maxRank > 0, `securityCatalog ${sc.id} 定位字段分级非法`);
-    assert.equal(
-      LEVEL_RANK[sc.level],
-      maxRank,
-      `securityCatalog ${sc.id} level ${sc.level} 应等于定位字段最高分级（LEVEL_RANK ${maxRank}）`
-    );
-    // 分级针对数据类型自身内容字段，排除主数据引用字段（所属项目/供应商/主数据编码/机组等 masterDataId 非空）
+    const levelRank = LEVEL_RANK[sc.level];
+    assert.ok(Number.isFinite(levelRank), `securityCatalog ${sc.id} level ${sc.level} 非法（应 ∈ L1-L4）`);
     for (const f of fields) {
+      // 治理方向自上而下：分类等级是判定结果，引用该分类的字段分级不得低于它，否则分类失去管控价值
+      assert.ok(
+        LEVEL_RANK[f.management.securityLevel] >= levelRank,
+        `securityCatalog ${sc.id}（${sc.level}）定位字段 ${f.id} 分级 ${f.management.securityLevel} 低于分类等级`
+      );
+      // 分级针对数据类型自身内容字段，排除主数据引用字段（所属项目/供应商/主数据编码/机组等 masterDataId 非空）
       assert.equal(f.business.masterDataId, null, `securityCatalog ${sc.id} 定位字段 ${f.id} 不应是主数据引用字段`);
     }
   }
