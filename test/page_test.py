@@ -55,8 +55,8 @@ def main():
         # 壳
         assert page.locator('.sidebar').count() == 1
         assert page.locator('.header').count() == 1
-        # 三个大分组可折叠/展开
-        assert page.locator('.sidebar-group-dir').count() == 3
+        # 两个大分组可折叠/展开
+        assert page.locator('.sidebar-group-dir').count() == 2
         page.locator('.sidebar-group-dir', has_text='设计态·定义').click()
         assert page.locator('.sidebar-item', has_text='结构化元数据').count() == 0
         page.locator('.sidebar-group-dir', has_text='设计态·定义').click()
@@ -116,6 +116,12 @@ def main():
         assert page.locator('.sidebar-sub', has_text='基础术语').count() == 0   # 折叠后不可见
         page.locator('.sidebar-dir', has_text='数据标准').click()
         assert page.locator('.sidebar-sub', has_text='基础术语').count() == 1   # 再点展开
+        # 数据交换（设计态下二级目录：父级「数据交换」含 文件交换/数据服务 2 子项）
+        assert page.locator('.sidebar-sub', has_text='文件交换').count() == 1   # 默认展开
+        page.locator('.sidebar-dir', has_text='数据交换').click()
+        assert page.locator('.sidebar-sub', has_text='文件交换').count() == 0   # 折叠后不可见
+        page.locator('.sidebar-dir', has_text='数据交换').click()
+        assert page.locator('.sidebar-sub', has_text='文件交换').count() == 1   # 再点展开
         # 基础术语（无下钻）
         click_menu(page, '基础术语')
         assert page.locator('.tab.active', has_text='基础术语').count() == 1
