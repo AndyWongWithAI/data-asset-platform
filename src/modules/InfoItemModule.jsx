@@ -2,11 +2,12 @@ import { useState } from 'react';
 import { useData } from '../DataContext.jsx';
 import Tag from '../components/Tag.jsx';
 import EntityForm from '../components/EntityForm.jsx';
-import ComingSoonAction from '../components/ComingSoonAction.jsx';
+import BulkImport from '../components/BulkImport.jsx';
 
 export default function InfoItemModule({ onNavigate }) {
   const { data, updateRecord } = useData();
   const [showForm, setShowForm] = useState(false);
+  const [showImport, setShowImport] = useState(false);
   const [editItem, setEditItem] = useState(null);
   const vdCode = (id) => data.valueDomains.find((v) => v.id === id)?.code ?? '—';
   const rdName = (id) => (id ? data.refDatas.find((r) => r.id === id)?.name ?? '—' : '—');
@@ -15,7 +16,7 @@ export default function InfoItemModule({ onNavigate }) {
     <div>
       <div className="search-bar">
         <button className="btn-primary" onClick={() => setShowForm(true)}>新增信息项</button>
-        <ComingSoonAction label="批量导入" />
+        <button className="btn-secondary" onClick={() => setShowImport(true)}>批量导入</button>
       </div>
       <table className="table">
         <thead><tr><th>信息项编号</th><th>中文名</th><th>英文名</th><th>类型</th><th>值域</th><th>参考数据</th><th>状态</th><th>操作</th></tr></thead>
@@ -36,6 +37,7 @@ export default function InfoItemModule({ onNavigate }) {
       </table>
       {showForm && <EntityForm entity="infoItems" onClose={() => setShowForm(false)} onSaved={() => setShowForm(false)} />}
       {editItem && <EntityForm entity="infoItems" mode="update" record={editItem} onClose={() => setEditItem(null)} onSaved={() => setEditItem(null)} />}
+      {showImport && <BulkImport entity="infoItems" onClose={() => setShowImport(false)} onSaved={() => setShowImport(false)} />}
     </div>
   );
 }

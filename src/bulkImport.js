@@ -85,13 +85,13 @@ export function rowToPayload(entity, headers, cells) {
 }
 
 // 逐条导入：headers 为 CSV 表头行（用于校验列序，也可不校验直接按 buildColumns 顺序）；rows 为数据行
-export async function importRows(entity, rows) {
+export async function importRows(entity, rows, createFn = create) {
   const success = [];
   const errors = [];
   for (let i = 0; i < rows.length; i++) {
     const payload = rowToPayload(entity, null, rows[i]);
     try {
-      const record = await create(entity, payload);
+      const record = await createFn(entity, payload);
       success.push(record);
     } catch (e) {
       errors.push({ row: i + 1, errors: [e.message] });
