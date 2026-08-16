@@ -87,6 +87,13 @@ export const ENTITIES = Object.keys(SCHEMAS);
 export const CREATABLE = ENTITIES.filter((e) => SCHEMAS[e].creatable);
 export const UPDATABLE = ENTITIES.filter((e) => SCHEMAS[e].updatable);
 
+// update 时客户端不可修改的字段：派生字段（code/nameEn/termIds 服务端生成）+ 只读源字段（nameCn 改名需重派生）。
+// 与 create 的「服务端强制派生」口径一致，堵住 PUT 篡改派生字段的缺口。
+const IMMUTABLE_ON_UPDATE = {
+  infoItems: ['code', 'nameEn', 'termIds', 'nameCn'],
+  refDatas: ['code'],
+};
+
 export function idKeyOf(entity) {
   return SCHEMAS[entity]?.idKey ?? 'id';
 }
@@ -100,10 +107,18 @@ function persist() {
 function ensureInit() {
   if (state !== null) return state;
   if (existsSync(dataFile)) {
+    let persisted = null;
     try {
-      state = JSON.parse(readFileSync(dataFile, 'utf-8'));
+      persisted = JSON.parse(readFileSync(dataFile, 'utf-8'));
     } catch {
-      state = structuredClone(seed); // 文件损坏时回退种子
+      persisted = null; // 文件损坏 → 回退种子
+    }
+    // 版本校验：持久化版本落后/缺失于种子版本时自动重种，避免 stale data.json 掩盖新种子字段（白屏根因）。
+    // 重种会丢弃历史写入（demo 可接受，本就是当前 manual 做法）。
+    if (persisted && persisted.meta?.schemaVersion === seed.meta.schemaVersion) {
+      state = persisted;
+    } else {
+      state = structuredClone(seed);
       persist();
     }
   } else {
@@ -291,10 +306,13 @@ export function update(entity, keyValue, payload = {}) {
   if (!schema.updatable) return { ok: false, errors: [`实体 ${entity} 不支持修改`], code: 'not_supported' };
   const existing = state[entity].find((x) => String(x[schema.idKey]) === String(keyValue));
   if (!existing) return { ok: false, errors: [`未找到 ${entity} 中 ${schema.idKey}=${keyValue}`], code: 'not_found' };
-  const errors = validate(entity, payload, { isUpdate: true, existing });
-  if (errors.length) return { ok: false, errors, code: 'invalid' };
+  // 剥离不可篡改字段（主键 + 派生/只读源字段），客户端传入即忽略，与 create 的「服务端强制派生」口径一致，
+  // 防止 PUT 破坏信息项命名三元一致性（nameCn↔nameEn↔termIds）与参考数据编号自增。
   const clean = { ...payload };
-  delete clean[schema.idKey]; // 主键不可篡改
+  delete clean[schema.idKey];
+  for (const key of IMMUTABLE_ON_UPDATE[entity] || []) delete clean[key];
+  const errors = validate(entity, clean, { isUpdate: true, existing });
+  if (errors.length) return { ok: false, errors, code: 'invalid' };
   Object.assign(existing, clean);
   persist();
   return { ok: true, record: existing };

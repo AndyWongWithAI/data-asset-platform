@@ -30,7 +30,7 @@ export default function BulkImport({ entity, onClose, onSaved }) {
     const rows = parseCsv(text);
     if (rows.length < 2) return; // 至少表头 + 1 数据行
     setBusy(true);
-    const res = await importRows(entity, rows.slice(1), createRecord); // 丢弃表头
+    const res = await importRows(entity, rows[0], rows.slice(1), createRecord); // 表头用于列校验
     setBusy(false);
     setResult(res);
   };
@@ -49,9 +49,11 @@ export default function BulkImport({ entity, onClose, onSaved }) {
         </div>
         {result && (
           <div className="form-help" style={{ marginTop: 8 }}>
-            {result.errors.length === 0
-              ? <span>导入完成：成功 {result.success.length} 条。</span>
-              : <span>成功 {result.success.length} 条 / 失败 {result.errors.length} 行：{result.errors.map((e) => `第${e.row + 1}行 ${e.errors.join('；')}`).join('；')}</span>}
+            {result.headerError
+              ? <span>导入中止：{result.headerError}</span>
+              : result.errors.length === 0
+                ? <span>导入完成：成功 {result.success.length} 条。</span>
+                : <span>成功 {result.success.length} 条 / 失败 {result.errors.length} 行：{result.errors.map((e) => `第${e.row + 1}行 ${e.errors.join('；')}`).join('；')}</span>}
           </div>
         )}
         <div className="form-actions">

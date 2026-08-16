@@ -1,6 +1,9 @@
 const D = {
   meta: {
     title: '数据资产管理平台',
+    // 种子结构版本：后端持久化 data.json 版本落后/缺失时自动重种，避免 stale 数据掩盖新增字段。
+    // ⚠️ 任何改动种子结构（增删实体/字段/枚举）都必须 +1，否则线上旧 data.json 不会被重种。
+    schemaVersion: 1,
     disclaimer: '⚠ 参考模型声明：基于广东院公开业务信息构建的演示模型，非广东院实际部署、仅供演示。不虚构内部运营数据。',
     stats: { applications: 5, databases: 5, tables: 10, fields: 51, rules: 8, baseTerms: 28, valueDomains: 6, refDatas: 5, infoItems: 10, masterData: 5, lineage: 9, batchFiles: 8, prodMetadatas: 3, services: 5, securityCatalog: 13, portalAssets: 8, portalRequests: 4 },
   },

@@ -58,38 +58,81 @@ export function parseCsv(text) {
   return rows;
 }
 
-// CSV 行 → payload：按字段 type 解析
+// 单元格 → 解析结果：{ skip: true }（空值/无法解析）或 { value }。空值返回 skip，不写入 payload。
+function parseCell(field, raw) {
+  const s = String(raw ?? '').trim();
+  if (s === '') return { skip: true };
+  if (field.type === 'subtable') {
+    return { value: s.split('|').filter(Boolean).map((seg) => {
+      const [code, name] = seg.split(':');
+      return { code: (code || '').trim(), name: (name || '').trim() };
+    }) };
+  }
+  if (field.multi) return { value: s.split(/[,，]/).map((x) => x.trim()).filter(Boolean) };
+  if (field.type === 'bool') return { value: s === 'true' || s === '是' || s === '1' };
+  if (field.type === 'number') {
+    const n = parseFloat(s);
+    if (Number.isNaN(n)) return { skip: true };
+    return { value: n };
+  }
+  return { value: s };
+}
+
+// CSV 行 → payload：按 buildColumns 固定顺序取值（单元测试 / 模板示例用；导入走 rowToPayloadMapped 按表头对齐）
 export function rowToPayload(entity, headers, cells) {
   const cols = buildColumns(entity);
   const payload = {};
   cols.forEach((f, idx) => {
-    const raw = (cells[idx] ?? '').trim();
-    if (raw === '') return;
-    if (f.type === 'subtable') {
-      payload[f.key] = raw.split('|').filter(Boolean).map((seg) => {
-        const [code, name] = seg.split(':');
-        return { code: (code || '').trim(), name: (name || '').trim() };
-      });
-    } else if (f.multi) {
-      payload[f.key] = raw.split(/[,，]/).map((s) => s.trim()).filter(Boolean);
-    } else if (f.type === 'bool') {
-      payload[f.key] = raw === 'true' || raw === '是' || raw === '1';
-    } else if (f.type === 'number') {
-      const n = parseFloat(raw);
-      if (!Number.isNaN(n)) payload[f.key] = n;
-    } else {
-      payload[f.key] = raw;
-    }
+    const parsed = parseCell(f, cells[idx]);
+    if (parsed.skip) return;
+    payload[f.key] = parsed.value;
   });
   return payload;
 }
 
-// 逐条导入：headers 为 CSV 表头行（用于校验列序，也可不校验直接按 buildColumns 顺序）；rows 为数据行
-export async function importRows(entity, rows, createFn = create) {
+// CSV 行 → payload：按表头映射后的列索引取值（列顺序可任意，不再要求与模板一致）
+export function rowToPayloadMapped(entity, mapping, cells) {
+  const idxByKey = new Map(mapping.map(({ field, idx }) => [field.key, idx]));
+  const payload = {};
+  for (const f of buildColumns(entity)) {
+    const parsed = parseCell(f, cells[idxByKey.get(f.key)]);
+    if (parsed.skip) continue;
+    payload[f.key] = parsed.value;
+  }
+  return payload;
+}
+
+// 表头行 → 列映射：按 label 精确匹配（去 BOM/首尾空白）。返回 { mapping, missing, extra }。
+// missing = 模板必需列但表头缺失；extra = 表头中存在但无法识别的列（列名拼错/多余列）。
+export function mapHeaders(headers, entity) {
+  const cols = buildColumns(entity);
+  const cleaned = (headers || []).map((h) => String(h ?? '').replace(/^\ufeff/, '').trim());
+  const mapping = [];
+  const missing = [];
+  for (const f of cols) {
+    const idx = cleaned.indexOf(f.label);
+    if (idx === -1) missing.push(f.label);
+    else mapping.push({ field: f, idx });
+  }
+  const extra = cleaned
+    .filter((h) => h && !cols.some((f) => f.label === h))
+    .map((label) => ({ label }));
+  return { mapping, missing, extra };
+}
+
+// 逐条导入：headerRow 为 CSV 表头行（按 label 校验列；缺列/未知列直接中止，不静默错位导入）；rows 为数据行
+export async function importRows(entity, headerRow, rows, createFn = create) {
+  const { mapping, missing, extra } = mapHeaders(headerRow, entity);
+  if (missing.length || extra.length) {
+    const msgs = [];
+    if (missing.length) msgs.push(`缺少必需列：${missing.join('、')}`);
+    if (extra.length) msgs.push(`未知列：${extra.map((e) => e.label).join('、')}`);
+    return { success: [], errors: [], headerError: msgs.join('；') };
+  }
   const success = [];
   const errors = [];
   for (let i = 0; i < rows.length; i++) {
-    const payload = rowToPayload(entity, null, rows[i]);
+    const payload = rowToPayloadMapped(entity, mapping, rows[i]);
     try {
       const record = await createFn(entity, payload);
       success.push(record);
