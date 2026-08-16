@@ -395,8 +395,8 @@ def main():
         assert page.locator('.table tbody tr', has_text='scada_alarm_raw').count() == 1
         # 字段级差异明细：漂移字段 active_power_value
         assert page.locator('.table tbody tr', has_text='active_power_value').count() == 1
-        # 只读：无写操作按钮
-        assert page.locator('button', has_text='新增').count() == 0
+        # 只读：无写操作按钮（范围限定工作区，排除侧边栏「门户资产新增」导航项）
+        assert page.locator('.tab-panel button', has_text='新增').count() == 0
         # ④ 文件交换（列表 + 详情 + 审批链 + 源表转跳 + 占位）
         click_menu(page, '文件交换')
         assert page.locator('.tab', has_text='文件交换').count() == 1
@@ -482,6 +482,29 @@ def main():
         assert page.locator('.flow-step').count() >= 3
         # 右上角「资产门户」按钮存在
         assert page.locator('.header button', has_text='资产门户').count() == 1
+
+        # ⑧ 门户资产新增（仅由门户管理「发起上架」转跳进入，不在侧边栏）
+        click_menu(page, '门户管理')
+        page.locator('button', has_text='发起上架').click()
+        assert page.locator('.tab.active', has_text='门户资产新增').count() == 1
+        assert page.locator('.sidebar-item', has_text='门户资产新增').count() == 0
+        for label in ['资产名', '业务分类', '业务介绍', '责任业务方', '使用方式', '安全分级']:
+            assert page.locator('.form-label', has_text=label).count() == 1, f'缺字段 {label}'
+        # 打包资产搜索器：类型筛选 + 名称搜索
+        assert page.locator('.picker-search select').count() == 1
+        assert page.locator('.picker-search input').count() == 1
+        # 已选资产清单表头「资产类型」「资产名称」 + 默认空清单
+        assert page.locator('th', has_text='资产类型').count() >= 1
+        assert page.locator('th', has_text='资产名称').count() >= 1
+        assert page.locator('.table tbody', has_text='尚未选择资产').count() == 1
+        # 勾选候选 → 清单出现一行（数据表在前）
+        page.locator('.picker-results input[type=checkbox]').first.check()
+        assert page.locator('.table tbody tr', has_text='数据表').count() == 1
+        # 名称搜索过滤：命中 / 无命中
+        page.locator('.picker-search input').fill('测风')
+        assert page.locator('.picker-results label').count() >= 1
+        page.locator('.picker-search input').fill('zzz_not_exist')
+        assert page.locator('.picker-empty', has_text='无匹配资产').count() == 1
 
         # 跨模块转跳：质量看板 → 定位字段 → 打开表详情 tab
         page.locator('.tab', has_text='数据质量看板').click()
