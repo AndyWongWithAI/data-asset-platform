@@ -11,6 +11,7 @@
     "preview": "vite preview",
     "test": "node --test",
     "test:page": "python3 test/page_test.py",
+    "test:portal": "python3 test/portal_page_test.py",
     "server": "node server/index.js"
   },
   "dependencies": {
