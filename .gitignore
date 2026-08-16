@@ -1,3 +1,5 @@
 node_modules/
 dist/
+dist-portal/
+dist-temp/
 server/data.json
