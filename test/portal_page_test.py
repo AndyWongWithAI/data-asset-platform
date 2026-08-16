@@ -44,9 +44,19 @@ def main():
         assert page.locator('.detail-panel button', has_text='下载数据').count() >= 1
         page.locator('.detail-panel .link', has_text='返回目录').click()
         assert page.locator('.asset-card').count() == 8
+        # 申请类资产 → 「申请开通」占位
+        page.locator('.asset-card', has_text='风资源评估 API').click()
+        assert page.locator('.detail-panel button', has_text='申请开通').count() >= 1
+        page.locator('.detail-panel .link', has_text='返回目录').click()
+        assert page.locator('.asset-card').count() == 8
         # 我的申请
         page.locator('.portal-nav button', has_text='我的申请').click()
         assert page.locator('.table tbody tr').count() == 4
+        # 右上角「资产管理」回跳（点击触发导航，离开门户 base）
+        before = page.url
+        page.locator('.header button', has_text='资产管理').click()
+        page.wait_for_timeout(500)
+        assert page.url != before, '点击资产管理后应离开门户 URL'
         print('portal_page_test PASS')
         browser.close()
 
