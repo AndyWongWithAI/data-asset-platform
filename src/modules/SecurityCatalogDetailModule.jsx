@@ -14,16 +14,6 @@ export default function SecurityCatalogDetailModule({ onNavigate, assetId }) {
   const fields = (cat.fieldIds || [])
     .map((fid) => data.fields.find((f) => f.id === fid))
     .filter(Boolean);
-  // 按字段所属表分组（保持 fieldIds 顺序），字段级定位：只挂本数据类型的字段，非整表字段
-  const grouped = [];
-  for (const f of fields) {
-    let g = grouped.find((x) => x.tableId === f.tableId);
-    if (!g) {
-      g = { tableId: f.tableId, table: data.tables.find((t) => t.id === f.tableId), fields: [] };
-      grouped.push(g);
-    }
-    g.fields.push(f);
-  }
 
   return (
     <div className="detail-panel">
@@ -33,31 +23,31 @@ export default function SecurityCatalogDetailModule({ onNavigate, assetId }) {
         <div><span>二级分类</span><b>{cat.category2}</b></div>
         <div><span>数据类型</span><b>{cat.dataType}</b></div>
         <div><span>数据分级</span><Tag tone={LEVEL_TONE[cat.level]}>{cat.level}</Tag></div>
-        <div><span>定位字段</span><b>{fields.length ? `${fields.length} 个${grouped.length > 1 ? ` · 跨 ${grouped.length} 表` : ''}` : '—'}</b></div>
       </div>
       {fields.length ? (
-        grouped.map(({ table, fields: fs }) => (
-          <div key={table.id}>
-            <h4>定位表 · {table.nameCn}{table.desc ? ` — ${table.desc}` : ''}（{fs.length} 个字段）</h4>
-            <table className="table">
-              <thead><tr><th>字段中文名</th><th>英文码</th><th>安全分级</th><th>来源</th><th>操作</th></tr></thead>
-              <tbody>
-                {fs.map((f) => {
-                  const { source } = fieldSecuritySource(f, data.infoItems);
-                  return (
-                    <tr key={f.id}>
-                      <td>{f.business.nameCn}</td>
-                      <td><code>{f.business.code}</code></td>
-                      <td><Tag tone={LEVEL_TONE[f.management.securityLevel] || 'default'}>{f.management.securityLevel}</Tag></td>
-                      <td><Tag tone={SOURCE_TONE[source] || 'default'}>{SOURCE_LABEL[source] || source}</Tag></td>
-                      <td><button className="link" onClick={() => onNavigate('tableDetail', { tableId: table.id, fieldId: f.id, title: table.nameCn })}>定位</button></td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        ))
+        <table className="table">
+          <thead>
+            <tr><th>表名</th><th>字段中文名</th><th>字段英文名</th><th>字段安全分级来源</th><th>操作</th></tr>
+          </thead>
+          <tbody>
+            {fields.map((f) => {
+              const table = data.tables.find((t) => t.id === f.tableId);
+              const { source } = fieldSecuritySource(f, data.infoItems);
+              return (
+                <tr key={f.id}>
+                  <td>{table?.nameCn ?? '—'}</td>
+                  <td>{f.business.nameCn}</td>
+                  <td><code>{f.business.code}</code></td>
+                  <td>
+                    <Tag tone={LEVEL_TONE[f.management.securityLevel] || 'default'}>{f.management.securityLevel}</Tag>{' '}
+                    <Tag tone={SOURCE_TONE[source] || 'default'}>{SOURCE_LABEL[source] || source}</Tag>
+                  </td>
+                  <td><button className="link" onClick={() => onNavigate('tableDetail', { tableId: f.tableId, fieldId: f.id, title: table?.nameCn })}>定位</button></td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
       ) : (
         <div className="empty-hint">该数据类型暂无平台内字段定位（分类目录覆盖范围大于已登记资产）</div>
       )}
