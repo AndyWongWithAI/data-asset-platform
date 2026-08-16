@@ -344,7 +344,7 @@ test('masterData 元数据级字段齐全 + 审批记录完整', () => {
   }
 });
 
-test('securityCatalog 13 条 + id 唯一 + 分级/分类/定位合法', () => {
+test('securityCatalog 13 条 + id 唯一 + 分级/分类/定位合法 + 至少 1 条跨多表', () => {
   assert.ok(Array.isArray(D.securityCatalog), 'data 应含 securityCatalog 数组');
   assert.equal(D.securityCatalog.length, 13, 'securityCatalog 应恰好 13 条');
   assert.equal(ids(D.securityCatalog).size, D.securityCatalog.length, 'securityCatalog id 重复');
@@ -355,12 +355,14 @@ test('securityCatalog 13 条 + id 唯一 + 分级/分类/定位合法', () => {
     assert.ok(sc.id && sc.category1 && sc.category2 && sc.dataType, `securityCatalog ${sc.id} 缺 id/category1/category2/dataType`);
     assert.ok(levels.has(sc.level), `securityCatalog ${sc.id} level ${sc.level} 非法（应 ∈ L1-L4）`);
     assert.ok(categories.has(sc.category1), `securityCatalog ${sc.id} category1 ${sc.category1} 非法（应 ∈ 5 能力域）`);
-    if (sc.tableId != null) assert.ok(tableIds.has(sc.tableId), `securityCatalog ${sc.id} tableId ${sc.tableId} 不存在`);
+    assert.ok(Array.isArray(sc.tableIds), `securityCatalog ${sc.id} 缺 tableIds 数组`);
+    for (const tid of sc.tableIds) assert.ok(tableIds.has(tid), `securityCatalog ${sc.id} tableIds ${tid} 不存在`);
   }
+  assert.ok(D.securityCatalog.some((sc) => sc.tableIds.length >= 2), 'securityCatalog 应至少 1 条跨多表定位');
   assert.equal(D.meta.stats.securityCatalog, 13, 'meta.stats.securityCatalog 应为 13');
 });
 
-test('securityCatalog 分级一致性：tableId 非空时 level === 该表字段最高分级', () => {
+test('securityCatalog 分级一致性：level === 定位表（含跨多表）字段最高分级', () => {
   const tableIds = ids(D.tables);
   const fieldsByTable = new Map();
   for (const f of D.fields) {
@@ -368,15 +370,18 @@ test('securityCatalog 分级一致性：tableId 非空时 level === 该表字段
     fieldsByTable.get(f.tableId).push(f);
   }
   for (const sc of D.securityCatalog) {
-    if (sc.tableId == null) continue;
-    assert.ok(tableIds.has(sc.tableId), `securityCatalog ${sc.id} tableId ${sc.tableId} 不存在`);
-    const fields = fieldsByTable.get(sc.tableId) || [];
-    const maxRank = Math.max(...fields.map((f) => LEVEL_RANK[f.management.securityLevel] ?? 0));
-    assert.ok(Number.isFinite(maxRank) && maxRank > 0, `securityCatalog ${sc.id} 表 ${sc.tableId} 无字段或字段分级非法`);
+    if (!sc.tableIds || sc.tableIds.length === 0) continue;
+    const maxRank = Math.max(
+      ...sc.tableIds.flatMap((tid) => {
+        assert.ok(tableIds.has(tid), `securityCatalog ${sc.id} tableIds ${tid} 不存在`);
+        return (fieldsByTable.get(tid) || []).map((f) => LEVEL_RANK[f.management.securityLevel] ?? 0);
+      })
+    );
+    assert.ok(Number.isFinite(maxRank) && maxRank > 0, `securityCatalog ${sc.id} 定位表无字段或字段分级非法`);
     assert.equal(
       LEVEL_RANK[sc.level],
       maxRank,
-      `securityCatalog ${sc.id} level ${sc.level} 应等于表 ${sc.tableId} 字段最高分级（LEVEL_RANK ${maxRank}）`
+      `securityCatalog ${sc.id} level ${sc.level} 应等于定位表字段最高分级（LEVEL_RANK ${maxRank}）`
     );
   }
 });
