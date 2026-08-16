@@ -33,7 +33,7 @@ export default function MasterDataDetailModule({ onNavigate, assetId }) {
           </div>
           <div style={{ marginTop: 12 }}>
             {linkedTables.length > 0
-              ? <button className="btn-primary" onClick={() => onNavigate('tableDetail', { tableId: linkedTables[0].id, title: linkedTables[0].nameCn })}>转跳结构化元数据</button>
+              ? <button className="btn-primary" onClick={() => onNavigate('tableDetail', { tableId: linkedTables[0].id, title: linkedTables[0].nameCn })}>转跳表结构</button>
               : <span className="form-help">该主数据无关联表</span>}
           </div>
         </div>

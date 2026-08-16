@@ -62,25 +62,25 @@ def main():
         assert page.locator('.sidebar-group-dir').count() == 3
         assert page.locator('.sidebar-group-dir', has_text='系统管理').count() == 1
         page.locator('.sidebar-group-dir', has_text='设计态·定义').click()
-        assert page.locator('.sidebar-item', has_text='结构化元数据').count() == 0
+        assert page.locator('.sidebar-item', has_text='表结构').count() == 0
         page.locator('.sidebar-group-dir', has_text='设计态·定义').click()
-        assert page.locator('.sidebar-item', has_text='结构化元数据').count() == 1
+        assert page.locator('.sidebar-item', has_text='表结构').count() == 1
         # 侧边栏搜索框：按目录名过滤
         search = page.locator('.sidebar-search input')
         search.fill('文件')
         assert page.locator('.sidebar-sub', has_text='文件交换').count() == 1
         assert page.locator('.sidebar-sub', has_text='数据服务').count() == 0
-        assert page.locator('.sidebar-item', has_text='结构化元数据').count() == 0
+        assert page.locator('.sidebar-item', has_text='表结构').count() == 0
         search.fill('数据交换')
         assert page.locator('.sidebar-sub', has_text='文件交换').count() == 1
         assert page.locator('.sidebar-sub', has_text='数据服务').count() == 1
         search.fill('不存在的目录')
         assert page.locator('.sidebar-empty').count() == 1
         search.fill('')
-        assert page.locator('.sidebar-item', has_text='结构化元数据').count() == 1
+        assert page.locator('.sidebar-item', has_text='表结构').count() == 1
         # 打开资产目录
-        click_menu(page, '结构化元数据')
-        assert page.locator('.tab', has_text='结构化元数据').count() == 1
+        click_menu(page, '表结构')
+        assert page.locator('.tab', has_text='表结构').count() == 1
         assert page.locator('.table tbody tr').count() >= 5
         # 检索区分：应用/业务域下拉 + 表名输入
         assert page.locator('.search-bar select').count() == 2
@@ -280,7 +280,7 @@ def main():
         assert page.locator('.tab.active', has_text='参考数据详情').count() == 1
         assert page.locator('.detail-panel h3', has_text='电压等级').count() == 1
         # 关联标准转跳（需求 5）：M1 资产目录 → 测风数据表「查看」→ 点「关联标准」→ 信息项详情
-        click_menu(page, '结构化元数据')
+        click_menu(page, '表结构')
         assert page.locator('.table tbody tr').count() >= 5
         page.locator('.table tbody tr', has_text='测风数据表').locator('.link', has_text='查看').click()
         page.locator('.sub-tabs button', has_text='字段元数据').click()
@@ -291,7 +291,7 @@ def main():
         assert page.locator('.detail-panel h3', has_text='风速值').count() == 1
         assert page.locator('.detail-panel h3', has_text='电压等级编码').count() == 0
         # 关联规则跳转：字段明细「关联规则」列 → 具体规则详情
-        click_menu(page, '结构化元数据')
+        click_menu(page, '表结构')
         page.locator('.table tbody tr', has_text='测风数据表').locator('.link', has_text='查看').click()
         page.locator('.sub-tabs button', has_text='字段元数据').click()
         assert page.locator('.field-table').count() == 1
@@ -337,7 +337,7 @@ def main():
         assert page.locator('.field-table').count() == 1
         assert page.locator('.row-active').count() == 1
         # 字段元数据「安全分级」列反向转跳：水深 → 海底地形测绘数据分类详情
-        click_menu(page, '结构化元数据')
+        click_menu(page, '表结构')
         page.locator('.table tbody tr', has_text='海底地形测绘表').locator('.link', has_text='查看').click()
         page.locator('.sub-tabs button', has_text='字段元数据').click()
         assert page.locator('.field-table').count() == 1
@@ -418,7 +418,7 @@ def main():
         page.locator('.detail-panel .link', has_text='查看').click()
         assert page.locator('.detail-head').count() == 1   # 表详情默认表级元数据
         assert page.locator('.row-active').count() == 0   # 表详情非字段定位，无高亮
-        # 入站详情：库级字段 + 生产元数据快照 + 转跳结构化元数据目录
+        # 入站详情：库级字段 + 生产元数据快照 + 转跳表结构目录
         click_menu(page, '文件交换')
         page.locator('.table tbody tr', has_text='SCADA遥测数据接入').locator('.link').first.click()
         assert page.locator('.tab.active', has_text='文件交换详情').count() == 1
@@ -427,7 +427,7 @@ def main():
         assert page.locator('.detail-panel', has_text='生产元数据快照').count() == 1
         assert page.locator('.detail-panel', has_text='scada_alarm_raw').count() == 1
         page.locator('.detail-panel .link', has_text='查看目录').click()
-        assert page.locator('.tab.active', has_text='结构化元数据').count() == 1
+        assert page.locator('.tab.active', has_text='表结构').count() == 1
         # ⑥ 数据服务（列表 + 详情 + 审批链 + 封装资产转跳 + 占位）
         click_menu(page, '数据服务')
         assert page.locator('.tab', has_text='数据服务').count() == 1
