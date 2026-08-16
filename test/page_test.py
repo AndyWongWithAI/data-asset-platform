@@ -100,6 +100,12 @@ def main():
         assert page.locator('.modal button', has_text='下载模板').count() == 1
         page.locator('.modal button', has_text='关闭').click()
         assert page.locator('.modal').count() == 0
+        # 表结构 编辑（真写入口，非「开发中」占位）
+        page.locator('.table tbody tr', has_text='测风数据表').locator('button', has_text='编辑').first.click()
+        assert page.locator('.modal h3', has_text='编辑表').count() == 1
+        assert page.locator('.modal label', has_text='主题域').count() == 1
+        page.locator('.modal button', has_text='取消').click()
+        assert page.locator('.modal').count() == 0
         # 查看按钮 → 打开表详情（默认表级元数据 tab，五子 tab）
         page.locator('.table tbody tr .link').first.click()
         assert page.locator('.tab', has_text='测风数据表').count() == 1
@@ -112,6 +118,25 @@ def main():
         # 字段粒度清单自适应
         assert_table_fills(page)
         assert_no_hscroll(page)
+        # 字段编辑（真写入口）
+        page.locator('.field-table tbody tr', has_text='风速值').locator('button', has_text='编辑').first.click()
+        assert page.locator('.modal h3', has_text='编辑字段').count() == 1
+        assert page.locator('.modal label', has_text='字段中文名').count() == 1
+        assert page.locator('.modal label', has_text='安全分级').count() == 1
+        page.locator('.modal button', has_text='取消').click()
+        assert page.locator('.modal').count() == 0
+        # 字段新增 + 批量导入（真写入口）
+        page.locator('button', has_text='新增字段').click()
+        assert page.locator('.modal h3', has_text='新增字段').count() == 1
+        assert page.locator('.modal label', has_text='字段编码').count() == 1
+        assert page.locator('.modal label', has_text='所属表').count() == 1
+        page.locator('.modal button', has_text='取消').click()
+        assert page.locator('.modal').count() == 0
+        page.locator('button', has_text='批量导入').click()
+        assert page.locator('.modal-lg').count() == 1
+        assert page.locator('.modal button', has_text='下载模板').count() == 1
+        page.locator('.modal button', has_text='关闭').click()
+        assert page.locator('.modal').count() == 0
         # 窄视口下仍自适应（字段详情为最宽表）
         page.set_viewport_size({'width': 900, 'height': 700})
         assert_table_fills(page)

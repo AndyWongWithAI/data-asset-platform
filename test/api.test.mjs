@@ -15,11 +15,11 @@ function freshStore() {
   return dataFile;
 }
 
-test('init 加载种子：9 实体 + 数量正确', () => {
+test('init 加载种子：10 实体 + 数量正确', () => {
   freshStore();
   const s = getState();
-  assert.equal(ENTITIES.length, 9);
-  assert.deepEqual(ENTITIES.sort(), ['baseTerms', 'infoItems', 'masterData', 'portalAssets', 'qualityRules', 'refDatas', 'security', 'tables', 'valueDomains'].sort());
+  assert.equal(ENTITIES.length, 10);
+  assert.deepEqual(ENTITIES.sort(), ['baseTerms', 'fields', 'infoItems', 'masterData', 'portalAssets', 'qualityRules', 'refDatas', 'security', 'tables', 'valueDomains'].sort());
   assert.equal(s.applications.length, 5);
   assert.equal(s.tables.length, 10);
   assert.equal(s.fields.length, 51);
@@ -33,9 +33,9 @@ test('init 加载种子：9 实体 + 数量正确', () => {
   assert.equal(s.portalAssets.length, 8);
 });
 
-test('CREATABLE 7 实体 / UPDATABLE 6 实体', () => {
-  assert.deepEqual(CREATABLE.sort(), ['baseTerms', 'infoItems', 'portalAssets', 'qualityRules', 'refDatas', 'tables', 'valueDomains'].sort());
-  assert.deepEqual(UPDATABLE.sort(), ['baseTerms', 'infoItems', 'qualityRules', 'refDatas', 'security', 'valueDomains'].sort());
+test('CREATABLE 8 实体 / UPDATABLE 8 实体', () => {
+  assert.deepEqual(CREATABLE.sort(), ['baseTerms', 'fields', 'infoItems', 'portalAssets', 'qualityRules', 'refDatas', 'tables', 'valueDomains'].sort());
+  assert.deepEqual(UPDATABLE.sort(), ['baseTerms', 'fields', 'infoItems', 'qualityRules', 'refDatas', 'security', 'tables', 'valueDomains'].sort());
 });
 
 test('create tables：成功 + id 生成 + 服务端派生 history/partitions/indexes', () => {
@@ -315,7 +315,7 @@ test('HTTP 集成：GET /_entities 返回 entities/idKeys/creatable/updatable', 
     assert.equal(meta.idKeys.security, 'level');
     assert.ok(meta.creatable.includes('baseTerms'));
     assert.ok(!meta.creatable.includes('security'));
-    assert.deepEqual(meta.updatable.sort(), ['baseTerms', 'infoItems', 'qualityRules', 'refDatas', 'security', 'valueDomains'].sort());
+    assert.deepEqual(meta.updatable.sort(), ['baseTerms', 'fields', 'infoItems', 'qualityRules', 'refDatas', 'security', 'tables', 'valueDomains'].sort());
   } finally {
     server.close();
   }
@@ -486,6 +486,128 @@ test('update refDatas：code（CK 自增编号）不可篡改', () => {
   const after = getState().refDatas.find((r) => r.id === 'rd_voltage');
   assert.equal(after.code, before.code, 'code 不应被篡改');
   assert.equal(after.name, '改名的电压等级', 'name 应正常更新');
+});
+
+// ===== 表结构 / 字段编辑 =====
+test('update tables：改表级元数据成功 + 子表/历史不可篡改', () => {
+  freshStore();
+  const before = getState().tables.find((t) => t.id === 't_wind');
+  const r = update('tables', 't_wind', {
+    nameCn: '测风数据表（改）', tableType: '技术表', desc: '新描述',
+    partitions: [{ field: 'hack' }], indexes: [{ name: 'hack' }], history: [{ action: 'hack' }],
+  });
+  assert.equal(r.ok, true);
+  const after = getState().tables.find((t) => t.id === 't_wind');
+  assert.equal(after.nameCn, '测风数据表（改）');
+  assert.equal(after.tableType, '技术表');
+  assert.equal(after.desc, '新描述');
+  assert.deepEqual(after.partitions, before.partitions, 'partitions 不可篡改');
+  assert.deepEqual(after.indexes, before.indexes, 'indexes 不可篡改');
+  assert.deepEqual(after.history, before.history, 'history 不可篡改');
+});
+
+test('update tables：nameEn 改到已有表名 → 唯一性报错', () => {
+  freshStore();
+  const other = getState().tables.find((t) => t.id !== 't_wind');
+  const r = update('tables', 't_wind', { nameEn: other.nameEn });
+  assert.equal(r.ok, false);
+  assert.ok(r.errors.some((e) => e.includes('nameEn')));
+});
+
+test('update fields：改嵌套元数据成功 + 白名单外字段不可篡改', () => {
+  freshStore();
+  const before = getState().fields.find((f) => f.id === 'f_wind_speed');
+  const r = update('fields', 'f_wind_speed', {
+    id: 'f_hacked', tableId: 't_other', seq: 999,
+    business: { nameCn: '风速值（改）', code: 'HACKED', definition: '新定义', masterDataId: 'md_turbine' },
+    technical: { type: 'decimal(6,2)', length: 12, isPK: true, qualityRuleIds: ['qr_hack'] },
+    management: { owner: '新组', updateFrequency: '5分钟', standardId: 'ii_wind_speed', securityLevel: 'L3' },
+  });
+  assert.equal(r.ok, true);
+  const after = getState().fields.find((f) => f.id === 'f_wind_speed');
+  assert.equal(after.id, 'f_wind_speed', 'id 不可篡改');
+  assert.equal(after.tableId, 't_wind', 'tableId 不可篡改');
+  assert.equal(after.seq, 1, 'seq 不可篡改');
+  assert.equal(after.business.code, before.business.code, 'code 不可篡改');
+  assert.equal(after.business.nameCn, '风速值（改）');
+  assert.equal(after.business.definition, '新定义');
+  assert.equal(after.business.masterDataId, 'md_turbine');
+  assert.equal(after.technical.type, 'decimal(6,2)');
+  assert.equal(after.technical.length, 12);
+  assert.equal(after.technical.isPK, true);
+  assert.deepEqual(after.technical.qualityRuleIds, before.technical.qualityRuleIds, 'qualityRuleIds 不可篡改');
+  assert.equal(after.management.owner, '新组');
+  assert.equal(after.management.updateFrequency, '5分钟');
+  assert.equal(after.management.securityLevel, 'L3');
+});
+
+test('update fields：securityLevel 低于关联信息项分级 → 继承链拦截', () => {
+  freshStore();
+  // f_wind_speed 关联 ii_wind_speed（L2），改 L1 低于信息项 → conflict 拦截
+  const r = update('fields', 'f_wind_speed', { management: { securityLevel: 'L1' } });
+  assert.equal(r.ok, false);
+  assert.ok(r.errors.some((e) => e.includes('安全分级')));
+});
+
+test('update fields：securityLevel 上调（custom-upgrade）→ 成功', () => {
+  freshStore();
+  // f_wind_speed 关联 ii_wind_speed（L2），改 L3 高于信息项 → 合法自定义升级
+  const r = update('fields', 'f_wind_speed', { management: { securityLevel: 'L3' } });
+  assert.equal(r.ok, true);
+  assert.equal(r.record.management.securityLevel, 'L3');
+});
+
+test('create fields：成功 + id/seq/masterDataType 服务端派生', () => {
+  freshStore();
+  const before = getState().fields.filter((f) => f.tableId === 't_wind').length;
+  const r = create('fields', {
+    tableId: 't_wind',
+    business: { code: 'new_field', nameCn: '新字段', definition: '测试', masterDataId: 'md_turbine' },
+    technical: { type: 'decimal(5,2)', length: 7 },
+    management: { owner: '测试组', updateFrequency: '1天' },
+  });
+  assert.equal(r.ok, true);
+  assert.equal(r.record.id, 'f_1');
+  assert.equal(r.record.tableId, 't_wind');
+  assert.equal(r.record.seq, before + 1, 'seq 表内自增');
+  assert.equal(r.record.business.code, 'new_field');
+  assert.equal(r.record.business.masterDataType, '风机', 'masterDataType 从主数据 entityType 派生');
+  assert.deepEqual(r.record.technical.qualityRuleIds, [], 'qualityRuleIds 空数组起步');
+  assert.equal(getState().fields.filter((f) => f.tableId === 't_wind').length, before + 1);
+});
+
+test('create fields：同表 code 唯一 → 报错', () => {
+  freshStore();
+  const existing = getState().fields.find((f) => f.tableId === 't_wind');
+  const r = create('fields', {
+    tableId: 't_wind',
+    business: { code: existing.business.code, nameCn: '重复' },
+    technical: { type: 'int' },
+    management: { owner: 'x' },
+  });
+  assert.equal(r.ok, false);
+  assert.ok(r.errors.some((e) => e.includes('字段编码')));
+});
+
+test('create fields：缺必填 → 报错', () => {
+  freshStore();
+  const r = create('fields', { tableId: 't_wind', business: { nameCn: '缺 code 和 type' } });
+  assert.equal(r.ok, false);
+  assert.ok(r.errors.some((e) => e.includes('business.code')));
+  assert.ok(r.errors.some((e) => e.includes('technical.type')));
+  assert.ok(r.errors.some((e) => e.includes('management.owner')));
+});
+
+test('create fields：securityLevel 低于关联信息项 → 继承链拦截', () => {
+  freshStore();
+  const r = create('fields', {
+    tableId: 't_wind',
+    business: { code: 'conflict_new', nameCn: '冲突' },
+    technical: { type: 'int' },
+    management: { owner: 'x', standardId: 'ii_wind_speed', securityLevel: 'L1' },
+  });
+  assert.equal(r.ok, false);
+  assert.ok(r.errors.some((e) => e.includes('安全分级')));
 });
 
 // ===== schemaVersion 版本迁移测试 =====

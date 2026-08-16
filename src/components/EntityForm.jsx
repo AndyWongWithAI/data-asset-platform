@@ -3,6 +3,7 @@ import { useData } from '../DataContext.jsx';
 import { FORM_SCHEMAS, ENTITY_TITLES } from '../schema.js';
 import { analyzeNameCn } from '../infoItemNaming.js';
 import { filterRefOptions } from '../entityFilter.js';
+import { getNested, unflatten } from '../nested.js';
 
 // 通用标签取值：按引用目标实体的可读字段渲染下拉/复选选项文本。
 export function labelOf(entity, item) {
@@ -22,7 +23,7 @@ function buildInitialValues(schema, record) {
   const vals = {};
   for (const f of schema) {
     if (f.type === 'derived') continue;
-    const raw = record ? record[f.key] : undefined;
+    const raw = record ? getNested(record, f.key) : undefined;
     if (f.type === 'bool') vals[f.key] = raw ? true : false;
     else if (f.type === 'multiref') vals[f.key] = Array.isArray(raw) ? [...raw] : [];
     else if (f.type === 'subtable') vals[f.key] = Array.isArray(raw) ? raw.map((r) => ({ ...r })) : [];
@@ -70,14 +71,16 @@ function buildPayload(schema, values, mode = 'create') {
       payload[f.key] = v;
     }
   }
-  return payload;
+  // 点号 key（如 business.nameCn）组装为嵌套对象；无点号的实体原样返回
+  return unflatten(payload);
 }
 
-export default function EntityForm({ entity, mode = 'create', record = null, title, onClose, onSaved }) {
+export default function EntityForm({ entity, mode = 'create', record = null, title, initialValues = {}, onClose, onSaved }) {
   const { data, createRecord, updateRecord } = useData();
   const schema = FORM_SCHEMAS[entity] || [];
 
-  const [values, setValues] = useState(() => buildInitialValues(schema, record));
+  // initialValues：预设值（如字段新增时注入 tableId=当前表），覆盖 buildInitialValues 的默认空值
+  const [values, setValues] = useState(() => ({ ...buildInitialValues(schema, record), ...initialValues }));
   const [errors, setErrors] = useState({});
   const [submitError, setSubmitError] = useState('');
 

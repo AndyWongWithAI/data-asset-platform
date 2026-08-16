@@ -1,11 +1,13 @@
 import { FORM_SCHEMAS } from './schema.js';
 import { create } from './api.js';
+import { getNested, unflatten } from './nested.js';
 
 // 批量导入纯函数：列定义 / CSV 解析 / 模板生成 / 逐条导入。不依赖 React，可 node --test。
 
-// 列定义：从 FORM_SCHEMAS 取非 derived/readonly 字段（readonlyOnUpdate 不影响 create，仍导入）
-export function buildColumns(entity) {
-  return (FORM_SCHEMAS[entity] || []).filter((f) => f.type !== 'derived' && !f.readonly);
+// 列定义：从 FORM_SCHEMAS 取非 derived/readonly 字段（readonlyOnUpdate 不影响 create，仍导入）。
+// excludeKeys：上下文注入的字段（如字段批量导入的 tableId）不进模板列，由 defaults 兜底。
+export function buildColumns(entity, excludeKeys = []) {
+  return (FORM_SCHEMAS[entity] || []).filter((f) => f.type !== 'derived' && !f.readonly && !excludeKeys.includes(f.key));
 }
 
 // 单元格序列化：把种子示例值转成 CSV 单元格文本
@@ -20,10 +22,10 @@ export function serializeCell(field, value) {
 }
 
 // 模板 CSV：表头 + 一行示例
-export function buildTemplateCsv(entity, sample) {
-  const cols = buildColumns(entity);
+export function buildTemplateCsv(entity, sample, excludeKeys = []) {
+  const cols = buildColumns(entity, excludeKeys);
   const header = cols.map((f) => f.label);
-  const row = cols.map((f) => serializeCell(f, sample ? sample[f.key] : undefined));
+  const row = cols.map((f) => serializeCell(f, sample ? getNested(sample, f.key) : undefined));
   return [header, row].map((cells) => cells.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(',')).join('\n');
 }
 
@@ -87,25 +89,25 @@ export function rowToPayload(entity, headers, cells) {
     if (parsed.skip) return;
     payload[f.key] = parsed.value;
   });
-  return payload;
+  return unflatten(payload);
 }
 
-// CSV 行 → payload：按表头映射后的列索引取值（列顺序可任意，不再要求与模板一致）
+// CSV 行 → payload：按表头映射后的列索引取值（列顺序可任意，不再要求与模板一致）。
+// mapping 由 mapHeaders 产出（已排除 defaults 注入的字段），点号 key 最后 unflatten 成嵌套对象。
 export function rowToPayloadMapped(entity, mapping, cells) {
-  const idxByKey = new Map(mapping.map(({ field, idx }) => [field.key, idx]));
   const payload = {};
-  for (const f of buildColumns(entity)) {
-    const parsed = parseCell(f, cells[idxByKey.get(f.key)]);
+  for (const { field, idx } of mapping) {
+    const parsed = parseCell(field, cells[idx]);
     if (parsed.skip) continue;
-    payload[f.key] = parsed.value;
+    payload[field.key] = parsed.value;
   }
-  return payload;
+  return unflatten(payload);
 }
 
 // 表头行 → 列映射：按 label 精确匹配（去 BOM/首尾空白）。返回 { mapping, missing, extra }。
 // missing = 模板必需列但表头缺失；extra = 表头中存在但无法识别的列（列名拼错/多余列）。
-export function mapHeaders(headers, entity) {
-  const cols = buildColumns(entity);
+export function mapHeaders(headers, entity, excludeKeys = []) {
+  const cols = buildColumns(entity, excludeKeys);
   const cleaned = (headers || []).map((h) => String(h ?? '').replace(/^\ufeff/, '').trim());
   const mapping = [];
   const missing = [];
@@ -120,9 +122,11 @@ export function mapHeaders(headers, entity) {
   return { mapping, missing, extra };
 }
 
-// 逐条导入：headerRow 为 CSV 表头行（按 label 校验列；缺列/未知列直接中止，不静默错位导入）；rows 为数据行
-export async function importRows(entity, headerRow, rows, createFn = create) {
-  const { mapping, missing, extra } = mapHeaders(headerRow, entity);
+// 逐条导入：headerRow 为 CSV 表头行（按 label 校验列；缺列/未知列直接中止，不静默错位导入）；rows 为数据行。
+// defaults：上下文注入的固定值（如字段批量导入的 tableId），不进模板列、不校验、逐条合并到 payload。
+export async function importRows(entity, headerRow, rows, createFn = create, defaults = {}) {
+  const excludeKeys = Object.keys(defaults);
+  const { mapping, missing, extra } = mapHeaders(headerRow, entity, excludeKeys);
   if (missing.length || extra.length) {
     const msgs = [];
     if (missing.length) msgs.push(`缺少必需列：${missing.join('、')}`);
@@ -134,7 +138,7 @@ export async function importRows(entity, headerRow, rows, createFn = create) {
   for (let i = 0; i < rows.length; i++) {
     const payload = rowToPayloadMapped(entity, mapping, rows[i]);
     try {
-      const record = await createFn(entity, payload);
+      const record = await createFn(entity, { ...defaults, ...payload });
       success.push(record);
     } catch (e) {
       errors.push({ row: i + 1, errors: [e.message] });

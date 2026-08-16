@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { useData } from '../DataContext.jsx';
 import Tag from '../components/Tag.jsx';
 import ComingSoonAction from '../components/ComingSoonAction.jsx';
+import EntityForm from '../components/EntityForm.jsx';
+import BulkImport from '../components/BulkImport.jsx';
 import { fieldSecuritySource, fieldSecurityCatalog } from '../fieldSecurity.js';
 
 const LEVEL_TONE = { L1: 'ok', L2: 'default', L3: 'warn', L4: 'danger' };
@@ -12,6 +14,9 @@ const TABS = ['表级元数据', '字段元数据', '分区', '索引', '版本�
 export default function TableDetailModule({ assetId, onNavigate }) {
   const { data } = useData();
   const [tab, setTab] = useState(assetId?.fieldId ? '字段元数据' : '表级元数据');
+  const [editingField, setEditingField] = useState(null);
+  const [showFieldForm, setShowFieldForm] = useState(false);
+  const [showFieldImport, setShowFieldImport] = useState(false);
 
   // 字段定位转跳（复用已打开的表详情 tab）时，切换到「字段元数据」并高亮目标字段
   useEffect(() => {
@@ -55,14 +60,14 @@ export default function TableDetailModule({ assetId, onNavigate }) {
       {tab === '字段元数据' && (
         <>
           <div className="module-actions">
-            <ComingSoonAction label="新增字段" />
-            <ComingSoonAction label="批量导入" />
+            <button className="btn-primary" onClick={() => setShowFieldForm(true)}>新增字段</button>
+            <button className="btn-secondary" onClick={() => setShowFieldImport(true)}>批量导入</button>
           </div>
           <table className="table field-table">
           <thead>
             <tr>
               <th>#</th><th>字段名</th><th>编码</th><th>业务定义</th><th>技术类型</th><th>键</th>
-              <th>关联规则</th><th>关联标准</th><th>安全分级</th><th>主数据</th><th>责任人</th><th>更新频率</th>
+              <th>关联规则</th><th>关联标准</th><th>安全分级</th><th>主数据</th><th>责任人</th><th>更新频率</th><th>操作</th>
             </tr>
           </thead>
           <tbody>
@@ -103,6 +108,7 @@ export default function TableDetailModule({ assetId, onNavigate }) {
                   <td>{md ? md.name : '—'}</td>
                   <td>{f.management.owner}</td>
                   <td>{f.management.updateFrequency}</td>
+                  <td><button className="link" onClick={() => setEditingField(f)}>编辑</button></td>
                 </tr>
               );
             })}
@@ -172,6 +178,10 @@ export default function TableDetailModule({ assetId, onNavigate }) {
           )
           : <div className="empty-hint">该表无版本历史</div>
       )}
+
+      {editingField && <EntityForm entity="fields" mode="update" record={editingField} onClose={() => setEditingField(null)} onSaved={() => setEditingField(null)} />}
+      {showFieldForm && <EntityForm entity="fields" initialValues={{ tableId: table.id }} onClose={() => setShowFieldForm(false)} onSaved={() => setShowFieldForm(false)} />}
+      {showFieldImport && <BulkImport entity="fields" defaults={{ tableId: table.id }} onClose={() => setShowFieldImport(false)} onSaved={() => setShowFieldImport(false)} />}
     </div>
   );
 }
