@@ -406,6 +406,35 @@ def main():
         page.locator('.detail-panel .link', has_text='查看').first.click()
         assert page.locator('.detail-head').count() == 1
 
+        # ⑧ 数据服务接入指南（十六期）：三类接入契约 + 复制按钮 + 无鉴权/密钥
+        # API 类型（svc_001 风资源评估 API）
+        click_menu(page, '数据服务')
+        page.locator('.table tbody tr', has_text='风资源评估 API').locator('button.link').first.click()
+        assert page.locator('.tab.active', has_text='数据服务详情').count() == 1
+        assert page.locator('.detail-panel', has_text='接入指南').count() == 1
+        assert page.locator('.detail-panel', has_text='接口地址').count() == 1
+        assert page.locator('.detail-panel', has_text='请求方法').count() == 1
+        assert page.locator('.detail-panel', has_text='请求示例').count() == 1
+        assert page.locator('.detail-panel', has_text='响应示例').count() == 1
+        assert page.locator('.detail-panel button', has_text='复制').count() >= 2
+        # 不出现鉴权/密钥
+        assert page.locator('.detail-panel', has_text='密钥').count() == 0
+        assert page.locator('.detail-panel', has_text='鉴权').count() == 0
+        assert page.locator('.detail-panel', has_text='API Key').count() == 0
+        # 订阅类型（svc_002 SCADA 实时数据订阅）
+        click_menu(page, '数据服务')
+        page.locator('.table tbody tr', has_text='SCADA 实时数据订阅').locator('button.link').first.click()
+        assert page.locator('.detail-panel', has_text='协议').count() == 1
+        assert page.locator('.detail-panel', has_text='MQTT').count() >= 1
+        assert page.locator('.detail-panel', has_text='订阅主题').count() == 1
+        assert page.locator('.detail-panel', has_text='消息字段').count() == 1
+        # 数据包类型（svc_004 海域限制因素共享）
+        click_menu(page, '数据服务')
+        page.locator('.table tbody tr', has_text='海域限制因素共享').locator('button.link').first.click()
+        assert page.locator('.detail-panel', has_text='文件格式').count() == 1
+        assert page.locator('.detail-panel', has_text='下载地址').count() == 1
+        assert page.locator('.detail-panel', has_text='包含字段').count() == 1
+
         # ⑦ 门户管理（上架列表 + 审批链详情 + 占位写按钮）
         click_menu(page, '门户管理')
         assert page.locator('.tab', has_text='门户管理').count() == 1
