@@ -385,6 +385,11 @@ def main():
         assert page.locator('.score-info', has_text='已贯').count() == 1   # 贯标率（约 12%）
         assert page.locator('.table', has_text='名称未对齐').count() >= 1  # 应贯未贯明细含原因列
         assert page.locator('.table', has_text='无关联标准').count() >= 1
+        # 应用维度贯标率 + 明细表表头（应用名称/表名称/字段名称/原因/操作，无安全分级）
+        assert page.locator('h3', has_text='应用维度贯标率').count() == 1
+        assert page.locator('th', has_text='应用名称').count() == 2  # 应用维度表 + 明细表各一列
+        assert page.locator('th', has_text='表名称').count() == 1
+        assert page.locator('th', has_text='字段名称').count() == 1
         # ③ 元数据比对（生产态差异清单，只读）
         click_menu(page, '元数据比对')
         assert page.locator('.tab', has_text='元数据比对').count() == 1
