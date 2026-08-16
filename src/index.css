@@ -149,3 +149,16 @@ textarea.form-input { resize: vertical; min-height: 60px; font-family: inherit; 
 .expr-chip { display: inline-block; margin: 3px 4px 0 0; padding: 2px 8px; border: 1px solid #c9cdd4; border-radius: 3px; background: #f2f3f5; color: #4e5969; font-size: 12px; cursor: pointer; }
 .expr-chip:hover { border-color: #165dff; color: #165dff; }
 .derived-value { padding: 8px 12px; border-radius: 4px; background: #f2f3f5; color: #86909c; font-size: 13px; min-height: 35px; }
+.form-success { background: #e8ffea; color: #0e8a16; border: 1px solid #b7ebc0; border-radius: 4px; padding: 8px 12px; margin-bottom: 12px; font-size: 13px; }
+
+/* ===== 门户资产新增页（打包资产搜索多选器） ===== */
+.portal-create h3 { margin-bottom: 16px; }
+.portal-create h4 { margin: 20px 0 10px; }
+.picker { background: #fff; border: 1px solid #e5e6eb; border-radius: 4px; padding: 12px 16px; }
+.picker-search { display: flex; gap: 8px; margin-bottom: 12px; }
+.picker-search select { width: 140px; }
+.picker-search input { flex: 1; }
+.picker-results { display: flex; flex-direction: column; gap: 6px; max-height: 260px; overflow-y: auto; }
+.picker-results label { display: flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer; }
+.picker-results .muted { margin-left: 4px; }
+.picker-empty { color: #86909c; font-size: 13px; padding: 8px 0; }

@@ -29,6 +29,9 @@ export const MODULE_GROUPS = [
 // 非侧边栏模块：表详情（多实例，每张表一个 tab，标题取表名）
 const TABLE_DETAIL = { key: 'tableDetail', title: '表详情', implemented: true, multi: true };
 
+// 非侧边栏模块：门户资产新增（仅由门户管理「发起上架」转跳进入，单实例复用）
+const PORTAL_ASSET_CREATE = { key: 'portalAssetCreate', title: '门户资产新增', implemented: true };
+
 // 非侧边栏模块：列表/详情拆分后的详情 tab（单实例复用，标题固定，点新对象切换内容）
 const DETAIL_MODULES = [
   { key: 'infoItemDetail', title: '信息项详情', implemented: true },
@@ -44,7 +47,7 @@ const DETAIL_MODULES = [
 ];
 
 const flatten = (items) => items.flatMap((i) => (i.children ? flatten(i.children) : [i]));
-export const MODULES = [...MODULE_GROUPS.flatMap((g) => flatten(g.items)), TABLE_DETAIL, ...DETAIL_MODULES];
+export const MODULES = [...MODULE_GROUPS.flatMap((g) => flatten(g.items)), TABLE_DETAIL, PORTAL_ASSET_CREATE, ...DETAIL_MODULES];
 
 export function createInitialState() {
   return { tabs: [], activeTabId: null, nextTabId: 1 };

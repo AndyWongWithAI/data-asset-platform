@@ -1,20 +1,17 @@
-import { useState } from 'react';
 import { useData } from '../DataContext.jsx';
 import Tag from '../components/Tag.jsx';
 import ComingSoonAction from '../components/ComingSoonAction.jsx';
-import EntityForm from '../components/EntityForm.jsx';
 
 const LEVEL_TONE = { L1: 'ok', L2: 'default', L3: 'warn', L4: 'danger' };
 const STATUS_TONE = { 已上架: 'ok', 审批中: 'warn', 已下架: 'default' };
 
 export default function PortalManagementModule({ onNavigate }) {
   const { data } = useData();
-  const [creating, setCreating] = useState(false);
   const assets = data.portalAssets || [];
   return (
     <div>
       <div className="search-bar">
-        <button className="btn-primary" onClick={() => setCreating(true)}>发起上架</button>
+        <button className="btn-primary" onClick={() => onNavigate('portalAssetCreate')}>发起上架</button>
         <ComingSoonAction label="批量导入" />
       </div>
       <table className="table">
@@ -34,7 +31,6 @@ export default function PortalManagementModule({ onNavigate }) {
           ))}
         </tbody>
       </table>
-      {creating && <EntityForm entity="portalAssets" mode="create" onClose={() => setCreating(false)} onSaved={() => setCreating(false)} />}
     </div>
   );
 }

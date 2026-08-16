@@ -24,6 +24,7 @@ import SecurityDetailModule from '../modules/SecurityDetailModule.jsx';
 import SecurityCatalogDetailModule from '../modules/SecurityCatalogDetailModule.jsx';
 import PortalManagementModule from '../modules/PortalManagementModule.jsx';
 import PortalManagementDetailModule from '../modules/PortalManagementDetailModule.jsx';
+import PortalAssetCreateModule from '../modules/PortalAssetCreateModule.jsx';
 import PlaceholderModule from '../modules/PlaceholderModule.jsx';
 
 export default function TabWorkspace({ state, dispatch }) {
@@ -72,6 +73,8 @@ export default function TabWorkspace({ state, dispatch }) {
                                   ? <PortalManagementModule onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
                                   : activeTab.moduleKey === 'portalManagementDetail'
                                     ? <PortalManagementDetailModule assetId={activeTab.assetId} />
+                                    : activeTab.moduleKey === 'portalAssetCreate'
+                                      ? <PortalAssetCreateModule />
                                     : activeTab.moduleKey === 'lineageBoard'
                                       ? <LineageModule onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
                                       : activeTab.moduleKey === 'fileExchange'

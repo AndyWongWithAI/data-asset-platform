@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { MODULE_GROUPS, MODULES, createInitialState, openTab, closeTab, navigate, filterModuleGroups } from '../src/state.js';
 
-test('MODULE_GROUPS 3 组 + standard/数据交换 父级目录 + MODULES 14 叶子 + tableDetail + 10 详情共 25', () => {
+test('MODULE_GROUPS 3 组 + standard/数据交换 父级目录 + MODULES 14 叶子 + tableDetail + 门户资产新增 + 10 详情共 26', () => {
   assert.deepEqual(MODULE_GROUPS.map((g) => g.name), ['生产态·治理看板', '设计态·定义', '系统管理']);
   const design = MODULE_GROUPS.find((g) => g.name === '设计态·定义');
   const standard = design.items.find((i) => i.key === 'standard');
@@ -16,7 +16,7 @@ test('MODULE_GROUPS 3 组 + standard/数据交换 父级目录 + MODULES 14 叶�
   assert.deepEqual(sysAdmin.items.map((i) => i.key), ['portalManagement'], '门户管理 应在 系统管理 下');
   assert.ok(!design.items.some((i) => i.key === 'portalManagement'), '门户管理 不应再在 设计态·定义 下');
   const leafKeys = MODULES.map((m) => m.key);
-  assert.equal(leafKeys.length, 25); // 14 叶子模块 + tableDetail + 10 详情模块
+  assert.equal(leafKeys.length, 26); // 14 叶子模块 + tableDetail + 门户资产新增 + 10 详情模块
   assert.ok(!leafKeys.includes('standard'), 'standard 父级不应是模块');
   assert.ok(!leafKeys.includes('dataExchange'), '数据交换 父级不应是模块');
   assert.ok(leafKeys.includes('tableDetail'));
@@ -25,6 +25,7 @@ test('MODULE_GROUPS 3 组 + standard/数据交换 父级目录 + MODULES 14 叶�
   for (const k of detailKeys) assert.ok(leafKeys.includes(k), `详情模块 ${k} 应在 MODULES`);
   assert.ok(leafKeys.includes('portalManagement'), '门户管理应在 MODULES');
   assert.ok(leafKeys.includes('portalManagementDetail'), '门户管理详情应在 MODULES');
+  assert.ok(leafKeys.includes('portalAssetCreate'), '门户资产新增应在 MODULES');
 });
 
 test('openTab 首次打开追加并激活，重复打开不重复追加', () => {
@@ -74,6 +75,14 @@ test('MODULES 含非侧边栏 tableDetail（多实例），且不进侧边栏', 
   assert.ok(td && td.multi === true);
   const sidebarKeys = MODULE_GROUPS.flatMap((g) => g.items.map((i) => i.key));
   assert.ok(!sidebarKeys.includes('tableDetail'));
+});
+
+test('门户资产新增为非侧边栏模块：仅由「发起上架」转跳进入，不进侧边栏', () => {
+  const pa = MODULES.find((m) => m.key === 'portalAssetCreate');
+  assert.ok(pa, '门户资产新增应在 MODULES');
+  const collect = (items) => items.flatMap((i) => (i.children ? collect(i.children) : [i.key]));
+  const sidebarKeys = MODULE_GROUPS.flatMap((g) => collect(g.items));
+  assert.ok(!sidebarKeys.includes('portalAssetCreate'), '门户资产新增不应在侧边栏');
 });
 
 test('filterModuleGroups 空查询原样返回；命中叶子/父级目录名/分组名分别过滤', () => {
