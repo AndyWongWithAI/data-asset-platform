@@ -21,6 +21,7 @@ import MasterDataDetailModule from '../modules/MasterDataDetailModule.jsx';
 import FileExchangeDetailModule from '../modules/FileExchangeDetailModule.jsx';
 import DataServiceDetailModule from '../modules/DataServiceDetailModule.jsx';
 import SecurityDetailModule from '../modules/SecurityDetailModule.jsx';
+import SecurityCatalogDetailModule from '../modules/SecurityCatalogDetailModule.jsx';
 import PlaceholderModule from '../modules/PlaceholderModule.jsx';
 
 export default function TabWorkspace({ state, dispatch }) {
@@ -87,7 +88,9 @@ export default function TabWorkspace({ state, dispatch }) {
                                                     ? <DataServiceDetailModule assetId={activeTab.assetId} onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
                                                     : activeTab.moduleKey === 'securityDetail'
                                                       ? <SecurityDetailModule assetId={activeTab.assetId} onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
-                                                      : <PlaceholderModule moduleKey={activeTab.moduleKey} />
+                                                      : activeTab.moduleKey === 'securityCatalogDetail'
+                                                        ? <SecurityCatalogDetailModule assetId={activeTab.assetId} onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
+                                                        : <PlaceholderModule moduleKey={activeTab.moduleKey} />
           : <div className="empty-hint">点击左侧导航打开模块</div>}
       </div>
     </div>

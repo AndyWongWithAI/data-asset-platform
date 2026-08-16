@@ -9,13 +9,16 @@ export default function SecurityModule({ onNavigate }) {
   const { data } = useData();
   const [tab, setTab] = useState('overview');
   const [editingLevel, setEditingLevel] = useState(null);
+  const [category1, setCategory1] = useState('all');
   const countByLevel = (lv) => data.fields.filter((f) => f.management.securityLevel === lv).length;
+  const category1Options = [...new Set(data.securityCatalog.map((sc) => sc.category1))];
+  const filteredCatalog = data.securityCatalog.filter((sc) => category1 === 'all' || sc.category1 === category1);
 
   return (
     <div>
       <div className="sub-tabs">
         <button className={tab === 'overview' ? 'sub-active' : ''} onClick={() => setTab('overview')}>分级总览</button>
-        <button className={tab === 'detail' ? 'sub-active' : ''} onClick={() => setTab('detail')}>分级明细</button>
+        <button className={tab === 'detail' ? 'sub-active' : ''} onClick={() => setTab('detail')}>分类目录</button>
       </div>
 
       {tab === 'overview' && (
@@ -28,6 +31,7 @@ export default function SecurityModule({ onNavigate }) {
                 <span>脱敏策略：{s.mask || '无'}</span>
                 <span>字段数：{countByLevel(s.level)}</span>
               </div>
+              <button className="link" onClick={() => onNavigate('securityDetail', { securityLevel: s.level })}>查看定位</button>
               <button className="link" onClick={() => setEditingLevel(s)}>调整</button>
             </div>
           ))}
@@ -35,21 +39,33 @@ export default function SecurityModule({ onNavigate }) {
       )}
 
       {tab === 'detail' && (
-        <table className="table">
-          <thead><tr><th>级别</th><th>名称</th><th>描述</th><th>脱敏策略</th><th>定位数量</th><th>操作</th></tr></thead>
-          <tbody>
-            {data.security.map((s) => (
-              <tr key={s.level}>
-                <td><Tag tone={LEVEL_TONE[s.level]}>{s.level}</Tag></td>
-                <td>{s.name}</td>
-                <td>{s.desc}</td>
-                <td>{s.mask || '无'}</td>
-                <td>{countByLevel(s.level)}</td>
-                <td><button className="link" onClick={() => onNavigate('securityDetail', { securityLevel: s.level })}>{s.level} · {s.name}</button></td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div>
+          <div className="search-bar">
+            <select value={category1} onChange={(e) => setCategory1(e.target.value)} aria-label="按一级分类筛选">
+              <option value="all">全部</option>
+              {category1Options.map((c) => <option key={c} value={c}>{c}</option>)}
+            </select>
+          </div>
+          <table className="table">
+            <thead><tr><th>一级分类</th><th>二级分类</th><th>数据类型</th><th>数据分级</th><th>定位</th><th>操作</th></tr></thead>
+            <tbody>
+              {filteredCatalog.map((sc) => {
+                const t = sc.tableId ? data.tables.find((x) => x.id === sc.tableId) : null;
+                return (
+                  <tr key={sc.id}>
+                    <td>{sc.category1}</td>
+                    <td>{sc.category2}</td>
+                    <td>{sc.dataType}</td>
+                    <td><Tag tone={LEVEL_TONE[sc.level]}>{sc.level}</Tag></td>
+                    <td>{t ? t.nameCn : '—'}</td>
+                    <td><button className="link" onClick={() => onNavigate('securityCatalogDetail', { catalogId: sc.id })}>查看定位</button></td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+          {filteredCatalog.length === 0 && <div className="empty-hint">暂无匹配的分类目录</div>}
+        </div>
       )}
       {editingLevel && <EntityForm entity="security" mode="update" record={editingLevel} onClose={() => setEditingLevel(null)} onSaved={() => setEditingLevel(null)} />}
     </div>
