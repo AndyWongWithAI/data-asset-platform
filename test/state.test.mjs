@@ -2,15 +2,19 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { MODULE_GROUPS, MODULES, createInitialState, openTab, closeTab, navigate } from '../src/state.js';
 
-test('MODULE_GROUPS 3 组 + standard 父级含 4 子项 + MODULES 14 叶子 + tableDetail + 9 详情共 24', () => {
-  assert.deepEqual(MODULE_GROUPS.map((g) => g.name), ['生产态·治理看板', '设计态·定义', '数据交换']);
+test('MODULE_GROUPS 2 组 + standard/数据交换 父级目录 + MODULES 14 叶子 + tableDetail + 9 详情共 24', () => {
+  assert.deepEqual(MODULE_GROUPS.map((g) => g.name), ['生产态·治理看板', '设计态·定义']);
   const design = MODULE_GROUPS.find((g) => g.name === '设计态·定义');
   const standard = design.items.find((i) => i.key === 'standard');
   assert.ok(standard && standard.children, 'standard 应为父级目录');
   assert.deepEqual(standard.children.map((c) => c.key), ['baseTerm', 'valueDomain', 'refData', 'infoItem']);
+  const dataExchange = design.items.find((i) => i.key === 'dataExchange');
+  assert.ok(dataExchange && dataExchange.children, '数据交换 应为设计态下的父级目录');
+  assert.deepEqual(dataExchange.children.map((c) => c.key), ['fileExchange', 'dataService']);
   const leafKeys = MODULES.map((m) => m.key);
   assert.equal(leafKeys.length, 24); // 14 叶子模块 + tableDetail + 9 详情模块
   assert.ok(!leafKeys.includes('standard'), 'standard 父级不应是模块');
+  assert.ok(!leafKeys.includes('dataExchange'), '数据交换 父级不应是模块');
   assert.ok(leafKeys.includes('tableDetail'));
   assert.ok(leafKeys.includes('metadataCompare'), '元数据比对应在 MODULES');
   const detailKeys = ['infoItemDetail', 'valueDomainDetail', 'refDataDetail', 'qualityDetail', 'masterdataDetail', 'fileExchangeDetail', 'dataServiceDetail', 'securityDetail', 'securityCatalogDetail'];

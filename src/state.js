@@ -17,10 +17,10 @@ export const MODULE_GROUPS = [
     ]},
     { key: 'security', title: '数据安全', implemented: true },
     { key: 'masterdata', title: '主数据', implemented: true },
-  ]},
-  { name: '数据交换', items: [
-    { key: 'fileExchange', title: '文件交换', implemented: true },
-    { key: 'dataService', title: '数据服务', implemented: true },
+    { key: 'dataExchange', title: '数据交换', implemented: true, children: [
+      { key: 'fileExchange', title: '文件交换', implemented: true },
+      { key: 'dataService', title: '数据服务', implemented: true },
+    ]},
   ]},
 ];
 
