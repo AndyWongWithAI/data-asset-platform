@@ -15,11 +15,11 @@ function freshStore() {
   return dataFile;
 }
 
-test('init 加载种子：7 实体 + 数量正确', () => {
+test('init 加载种子：8 实体 + 数量正确', () => {
   freshStore();
   const s = getState();
-  assert.equal(ENTITIES.length, 7);
-  assert.deepEqual(ENTITIES.sort(), ['baseTerms', 'infoItems', 'masterData', 'qualityRules', 'refDatas', 'security', 'valueDomains'].sort());
+  assert.equal(ENTITIES.length, 8);
+  assert.deepEqual(ENTITIES.sort(), ['baseTerms', 'infoItems', 'masterData', 'portalAssets', 'qualityRules', 'refDatas', 'security', 'valueDomains'].sort());
   assert.equal(s.applications.length, 5);
   assert.equal(s.tables.length, 10);
   assert.equal(s.fields.length, 51);
@@ -30,10 +30,11 @@ test('init 加载种子：7 实体 + 数量正确', () => {
   assert.equal(s.qualityRules.length, 8);
   assert.equal(s.masterData.length, 5);
   assert.equal(s.security.length, 4);
+  assert.equal(s.portalAssets.length, 8);
 });
 
-test('CREATABLE 5 实体 / UPDATABLE 6 实体', () => {
-  assert.deepEqual(CREATABLE.sort(), ['baseTerms', 'infoItems', 'qualityRules', 'refDatas', 'valueDomains'].sort());
+test('CREATABLE 6 实体 / UPDATABLE 6 实体', () => {
+  assert.deepEqual(CREATABLE.sort(), ['baseTerms', 'infoItems', 'portalAssets', 'qualityRules', 'refDatas', 'valueDomains'].sort());
   assert.deepEqual(UPDATABLE.sort(), ['baseTerms', 'infoItems', 'qualityRules', 'refDatas', 'security', 'valueDomains'].sort());
 });
 
@@ -471,4 +472,55 @@ test('schemaVersion：版本一致 → 保留持久化写入（不误重种）',
   create('baseTerms', { nameCn: '保留', nameEn: 'keep_word', synonyms: [], isClassWord: false });
   init({ dataFile }); // 重新加载，版本一致，不重种
   assert.ok(getState().baseTerms.some((t) => t.nameEn === 'keep_word'), '版本一致时写入应保留');
+});
+
+// ===== portalAssets 发起上架 =====
+test('create portalAssets：成功 + 审批中 + 审批链首步 + id 自增', () => {
+  const dataFile = freshStore();
+  const before = getState().portalAssets.length;
+  const r = create('portalAssets', {
+    name: '测试上架资产', category: '风资源', desc: '测试', dataOwner: '风资源室',
+    usageType: '下载', securityLevel: 'L2', tableIds: ['t_wind'], serviceIds: [],
+  });
+  assert.equal(r.ok, true);
+  assert.equal(r.record.id, 'pa_9');
+  assert.equal(r.record.status, '审批中', '发起上架应进入审批中');
+  assert.equal(r.record.featured, false);
+  assert.equal(r.record.approval.length, 1, '审批链应有首步');
+  assert.equal(r.record.approval[0].step, '发起上架');
+  assert.equal(r.record.approval[0].action, '提交');
+  assert.equal(getState().portalAssets.length, before + 1);
+  // 持久化：重新 init 读回
+  init({ dataFile });
+  assert.ok(getState().portalAssets.some((a) => a.name === '测试上架资产'));
+});
+
+test('create portalAssets：表与服务至少选一，空打包报错', () => {
+  freshStore();
+  const r = create('portalAssets', {
+    name: '空打包', category: '风资源', desc: 'x', dataOwner: '风资源室',
+    usageType: '下载', securityLevel: 'L2', tableIds: [], serviceIds: [],
+  });
+  assert.equal(r.ok, false);
+  assert.ok(r.errors.some((e) => e.includes('至少选择一项')));
+});
+
+test('create portalAssets：securityLevel 低于打包对象最高分级 → 报错', () => {
+  freshStore();
+  const r = create('portalAssets', {
+    name: '低分级', category: '海洋勘测', desc: 'x', dataOwner: '海洋勘测室',
+    usageType: '下载', securityLevel: 'L3', tableIds: ['t_topo'], serviceIds: [],
+  });
+  assert.equal(r.ok, false);
+  assert.ok(r.errors.some((e) => e.includes('低于打包对象')));
+});
+
+test('create portalAssets：securityLevel 上调至打包对象最高分级 → 成功', () => {
+  freshStore();
+  const r = create('portalAssets', {
+    name: '合规分级', category: '海洋勘测', desc: 'x', dataOwner: '海洋勘测室',
+    usageType: '下载', securityLevel: 'L4', tableIds: ['t_topo'], serviceIds: [],
+  });
+  assert.equal(r.ok, true);
+  assert.equal(r.record.securityLevel, 'L4');
 });
