@@ -2,7 +2,6 @@
 export const MODULE_GROUPS = [
   { name: '生产态·治理看板', items: [
     { key: 'qualityBoard', title: '数据质量看板', implemented: true },
-    { key: 'lineageBoard', title: '数据血缘看板', implemented: true },
     { key: 'standardBoard', title: '数据标准看板', implemented: true },
     { key: 'metadataCompare', title: '元数据比对', implemented: true },
   ]},

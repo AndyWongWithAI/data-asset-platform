@@ -385,37 +385,7 @@ def main():
         assert page.locator('.score-info', has_text='已贯').count() == 1   # 贯标率（约 12%）
         assert page.locator('.table', has_text='名称未对齐').count() >= 1  # 应贯未贯明细含原因列
         assert page.locator('.table', has_text='无关联标准').count() >= 1
-        # ③ 数据血缘看板（列表 + UML 血缘图 + 字段级一级/N级交互 + 节点转跳）
-        click_menu(page, '数据血缘看板')
-        assert page.locator('.tab', has_text='数据血缘看板').count() == 1
-        assert page.locator('.table tbody tr').count() >= 10
-        page.locator('.table tbody tr .link', has_text='查看血缘图').first.click()
-        # 表级视图：类框 + 表级线默认蓝色（无 is-dimmed）
-        assert page.locator('.lineage-table-box').count() >= 2
-        assert page.locator('.lineage-edge-table').count() >= 1
-        assert page.locator('.lineage-edge-table.is-dimmed').count() == 0
-        # 交换方式标注在连线上
-        assert page.locator('.lineage-edge-mode').count() >= 1
-        # 一级：点中心表「风速」字段 → 表级线变灰 + 字段级线出现
-        page.locator('.lineage-field-row', has_text='风速').first.click()
-        assert page.locator('.lineage-edge-table.is-dimmed').count() >= 1
-        assert page.locator('.lineage-edge-field').count() == 1
-        # 再点同字段 → 清空回表级视图
-        page.locator('.lineage-field-row', has_text='风速').first.click()
-        assert page.locator('.lineage-edge-field').count() == 0
-        assert page.locator('.lineage-edge-table.is-dimmed').count() == 0
-        # N 级：返回列表，进 t_scada 画布，点上游表字段「主数据编码」→ 字段级线延伸 ≥ 2 条
-        page.locator('button', has_text='返回列表').click()
-        page.locator('.table tbody tr', has_text='SCADA 遥测表').locator('.link', has_text='查看血缘图').click()
-        page.locator('.lineage-field-row', has_text='主数据编码').first.click()
-        assert page.locator('.lineage-edge-field').count() >= 2
-        # 清空
-        page.locator('.lineage-field-row', has_text='主数据编码').first.click()
-        assert page.locator('.lineage-edge-field').count() == 0
-        # 点表名条 → 转跳 M1 表详情（默认表级元数据）
-        page.locator('.table-title-hitbox').first.click()
-        assert page.locator('.detail-head').count() == 1
-        # ④ 元数据比对（生产态差异清单，只读）
+        # ③ 元数据比对（生产态差异清单，只读）
         click_menu(page, '元数据比对')
         assert page.locator('.tab', has_text='元数据比对').count() == 1
         # 5 个计数卡片
@@ -427,7 +397,7 @@ def main():
         assert page.locator('.table tbody tr', has_text='active_power_value').count() == 1
         # 只读：无写操作按钮
         assert page.locator('button', has_text='新增').count() == 0
-        # ⑤ 文件交换（列表 + 详情 + 审批链 + 源表转跳 + 占位）
+        # ④ 文件交换（列表 + 详情 + 审批链 + 源表转跳 + 占位）
         click_menu(page, '文件交换')
         assert page.locator('.tab', has_text='文件交换').count() == 1
         assert page.locator('.table tbody tr').count() >= 5
