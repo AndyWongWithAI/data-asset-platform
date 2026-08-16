@@ -1,6 +1,7 @@
 // 数据存储与校验核心逻辑，纯 Node，可单测（不依赖 Express）
 import seed from '../src/data.js';
 import { analyzeNameCn } from '../src/infoItemNaming.js';
+import { LEVEL_RANK } from '../src/fieldSecurity.js';
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
@@ -80,6 +81,20 @@ const SCHEMAS = {
     enum: {},
     types: {},
     refs: {},
+  },
+  portalAssets: {
+    idKey: 'id', idPrefix: 'pa', creatable: true, updatable: false,
+    required: ['name', 'category', 'dataOwner', 'usageType', 'securityLevel'],
+    unique: ['name'],
+    enum: {
+      category: ['风资源', '海洋勘测', '风机设备', '运营监测', '海域环境'],
+      usageType: ['下载', '申请'],
+      securityLevel: ['L1', 'L2', 'L3', 'L4'],
+      status: ['审批中', '已上架', '已下架'],
+    },
+    types: { tableIds: 'array', serviceIds: 'array', approval: 'array' },
+    refs: { tableIds: 'tables', serviceIds: 'services' },
+    default: { status: '审批中', featured: false, govSpecialist: '业务数据治理专员', manager: '数据管理人员' },
   },
 };
 
@@ -266,6 +281,31 @@ function domainErrors(entity, payload) {
     if (typeof payload.length === 'number' && payload.length <= 0) errors.push('字段 length 必须大于 0');
     if (typeof payload.precision === 'number' && payload.precision < 0) errors.push('字段 precision 必须大于等于 0');
   }
+  if (entity === 'portalAssets') {
+    // 打包对象：表与服务至少其一非空
+    const tableIds = Array.isArray(payload.tableIds) ? payload.tableIds : [];
+    const serviceIds = Array.isArray(payload.serviceIds) ? payload.serviceIds : [];
+    if (!tableIds.length && !serviceIds.length) {
+      errors.push('打包数据表与数据服务至少选择一项');
+    }
+    // 治理一致性：securityLevel >= max(打包表字段最高级, 打包服务分级)
+    let maxRank = 0;
+    for (const tid of tableIds) {
+      for (const f of state.fields.filter((f) => f.tableId === tid)) {
+        const r = LEVEL_RANK[f.management?.securityLevel];
+        if (r) maxRank = Math.max(maxRank, r);
+      }
+    }
+    for (const sid of serviceIds) {
+      const s = state.services.find((x) => x.id === sid);
+      const r = LEVEL_RANK[s?.securityLevel];
+      if (r) maxRank = Math.max(maxRank, r);
+    }
+    const ownRank = LEVEL_RANK[payload.securityLevel];
+    if (ownRank != null && maxRank > 0 && ownRank < maxRank) {
+      errors.push(`安全分级 ${payload.securityLevel} 低于打包对象的最高分级，需上调至 L${maxRank} 及以上`);
+    }
+  }
   return errors;
 }
 
@@ -286,6 +326,13 @@ export function create(entity, payload = {}) {
   if (entity === 'refDatas') {
     // 编号服务端自增，客户端不可注入
     finalPayload = { ...payload, code: nextRefDataCode() };
+  }
+  if (entity === 'portalAssets') {
+    // 审批链服务端生成首步「发起上架」，后续审批 / 上架由占位流程推进
+    finalPayload = {
+      ...payload,
+      approval: [{ step: '发起上架', actor: payload.manager || '数据管理人员', action: '提交', time: new Date().toISOString().slice(0, 10), comment: '' }],
+    };
   }
   const domain = domainErrors(entity, finalPayload);
   if (domain.length) return { ok: false, errors: domain, code: 'invalid' };

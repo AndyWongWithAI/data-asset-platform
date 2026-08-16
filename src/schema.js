@@ -56,6 +56,17 @@ export const FORM_SCHEMAS = {
     { key: 'desc', label: '描述', type: 'text', required: true },
     { key: 'mask', label: '脱敏策略', type: 'text' },
   ],
+
+  portalAssets: [
+    { key: 'name', label: '资产名', type: 'text', required: true },
+    { key: 'category', label: '业务分类', type: 'enum', required: true, enum: ['风资源', '海洋勘测', '风机设备', '运营监测', '海域环境'] },
+    { key: 'desc', label: '业务介绍', type: 'text', required: true },
+    { key: 'dataOwner', label: '责任业务方', type: 'text', required: true },
+    { key: 'usageType', label: '使用方式', type: 'enum', required: true, enum: ['下载', '申请'] },
+    { key: 'securityLevel', label: '安全分级', type: 'enum', required: true, enum: ['L1', 'L2', 'L3', 'L4'], help: '不得低于打包对象的最高分级' },
+    { key: 'tableIds', label: '打包数据表', type: 'multiref', ref: 'tables', help: '数据表与数据服务至少选择一项' },
+    { key: 'serviceIds', label: '打包数据服务', type: 'multiref', ref: 'services' },
+  ],
 };
 
 // 实体名 → 中文标题（供表单标题与主控复用）
@@ -66,4 +77,5 @@ export const ENTITY_TITLES = {
   infoItems: '信息项',
   qualityRules: '质量规则',
   security: '安全分级',
+  portalAssets: '门户资产',
 };
