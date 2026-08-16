@@ -33,7 +33,6 @@ export default function BulkImport({ entity, onClose, onSaved }) {
     const res = await importRows(entity, rows.slice(1), createRecord); // 丢弃表头
     setBusy(false);
     setResult(res);
-    if (res.errors.length === 0) onSaved?.();
   };
 
   return (
