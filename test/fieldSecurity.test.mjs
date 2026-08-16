@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import data from '../src/data.js';
-import { fieldSecuritySource } from '../src/fieldSecurity.js';
+import { fieldSecuritySource, fieldSecurityCatalog } from '../src/fieldSecurity.js';
 
 test('custom：字段未关联信息项 → 自定义', () => {
   const f = data.fields.find((x) => x.management.standardId == null);
@@ -40,4 +40,12 @@ test('信息项无 securityLevel → custom（可空信息项兜底）', () => {
     [{ id: 'ii_wind_speed' }]
   );
   assert.equal(r.source, 'custom');
+});
+
+test('fieldSecurityCatalog：字段 → 分类目录条目（反向查找）', () => {
+  assert.equal(fieldSecurityCatalog('f_topo_depth', data.securityCatalog)?.id, 'sc_005');
+  assert.equal(fieldSecurityCatalog('f_cable_route', data.securityCatalog)?.id, 'sc_005'); // 跨表字段仍归属海底地形测绘
+  assert.equal(fieldSecurityCatalog('f_cable_type', data.securityCatalog)?.id, 'sc_007');
+  assert.equal(fieldSecurityCatalog('f_scada_turbine', data.securityCatalog), null); // 主数据引用字段不在任何分类
+  assert.equal(fieldSecurityCatalog('f_wind_project', data.securityCatalog), null);
 });

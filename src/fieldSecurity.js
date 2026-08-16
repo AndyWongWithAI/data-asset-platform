@@ -26,3 +26,9 @@ export function fieldSecuritySource(field, infoItems) {
   }
   return { level, source };
 }
+
+// 字段 → 数据安全分类目录条目（fieldIds 反向查找，纯函数）。
+// 字段未登记进任何分类（如主数据引用字段）→ null。
+export function fieldSecurityCatalog(fieldId, securityCatalog) {
+  return (securityCatalog || []).find((c) => (c.fieldIds || []).includes(fieldId)) || null;
+}

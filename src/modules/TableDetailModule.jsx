@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useData } from '../DataContext.jsx';
 import Tag from '../components/Tag.jsx';
-import { fieldSecuritySource } from '../fieldSecurity.js';
+import { fieldSecuritySource, fieldSecurityCatalog } from '../fieldSecurity.js';
 
 const LEVEL_TONE = { L1: 'ok', L2: 'default', L3: 'warn', L4: 'danger' };
 const SOURCE_LABEL = { inherit: '继承自信息项', 'custom-upgrade': '自定义升级', custom: '自定义', conflict: '冲突' };
@@ -69,6 +69,7 @@ export default function TableDetailModule({ assetId, onNavigate }) {
                 ? data.masterData.find((m) => m.id === f.business.masterDataId) : null;
               const sec = data.security.find((s) => s.level === f.management.securityLevel);
               const secSrc = fieldSecuritySource(f, data.infoItems);
+              const secCat = fieldSecurityCatalog(f.id, data.securityCatalog);
               return (
                 <tr key={f.id} className={f.id === assetId?.fieldId ? 'row-active' : ''}>
                   <td>{f.seq}</td>
@@ -86,6 +87,12 @@ export default function TableDetailModule({ assetId, onNavigate }) {
                   <td>
                     <Tag tone={LEVEL_TONE[f.management.securityLevel] || 'default'}>{f.management.securityLevel} {sec?.name}</Tag>{' '}
                     <Tag tone={SOURCE_TONE[secSrc.source] || 'default'}>{SOURCE_LABEL[secSrc.source] || secSrc.source}</Tag>
+                    {secCat && (
+                      <>
+                        <br />
+                        <button className="link" onClick={() => onNavigate('securityCatalogDetail', { catalogId: secCat.id })}>{secCat.dataType}</button>
+                      </>
+                    )}
                   </td>
                   <td>{md ? md.name : '—'}</td>
                   <td>{f.management.owner}</td>

@@ -247,6 +247,14 @@ def main():
         page.locator('.detail-panel table tbody tr .link', has_text='定位').first.click()
         assert page.locator('.field-table').count() == 1
         assert page.locator('.row-active').count() == 1
+        # 字段元数据「安全分级」列反向转跳：水深 → 海底地形测绘数据分类详情
+        click_menu(page, '结构化元数据')
+        page.locator('.table tbody tr', has_text='海底地形测绘表').locator('.link', has_text='查看').click()
+        page.locator('.sub-tabs button', has_text='字段元数据').click()
+        assert page.locator('.field-table').count() == 1
+        page.locator('.field-table tbody tr', has_text='水深').locator('.link', has_text='海底地形测绘数据').click()
+        assert page.locator('.tab.active', has_text='数据安全分类详情').count() == 1
+        assert page.locator('.detail-panel h3', has_text='海底地形测绘数据').count() == 1
         # M5 主数据管理（同步占位，不可新增；清单 5 列 + 详情三 tab）
         click_menu(page, '主数据')
         assert page.locator('.tab', has_text='主数据').count() == 1
