@@ -2,15 +2,18 @@ import { useState } from 'react';
 import { useData } from '../DataContext.jsx';
 import Tag from '../components/Tag.jsx';
 import EntityForm from '../components/EntityForm.jsx';
-import ComingSoonAction from '../components/ComingSoonAction.jsx';
+import BulkImport from '../components/BulkImport.jsx';
 
 const SEVERITY_TONE = { 严重: 'danger', 警告: 'warn', 提示: 'default' };
 
 export default function QualityModule({ onNavigate }) {
-  const { data } = useData();
+  const { data, updateRecord } = useData();
   const [type, setType] = useState('all');
   const [showForm, setShowForm] = useState(false);
+  const [showImport, setShowImport] = useState(false);
+  const [editItem, setEditItem] = useState(null);
   const filtered = data.qualityRules.filter((r) => type === 'all' || r.type === type);
+  const toggleStatus = (r) => updateRecord('qualityRules', r.id, { status: r.status === '停用' ? '启用' : '停用' });
   return (
     <div>
       <div className="search-bar">
@@ -19,7 +22,7 @@ export default function QualityModule({ onNavigate }) {
           {['准确性', '完整性', '一致性', '及时性'].map((t) => <option key={t} value={t}>{t}</option>)}
         </select>
         <button className="btn-primary" onClick={() => setShowForm(true)}>新增规则</button>
-        <ComingSoonAction label="批量导入" />
+        <button className="btn-secondary" onClick={() => setShowImport(true)}>批量导入</button>
       </div>
       <table className="table">
         <thead><tr><th>规则名</th><th>类型</th><th>绑定字段</th><th>校验表达式</th><th>阈值</th><th>严重级别</th><th>状态</th><th>操作</th></tr></thead>
@@ -34,14 +37,16 @@ export default function QualityModule({ onNavigate }) {
                 <td><code>{r.expr}</code></td>
                 <td>{r.threshold}</td>
                 <td><Tag tone={SEVERITY_TONE[r.severity]}>{r.severity}</Tag></td>
-                <td>{r.status}</td>
-                <td><ComingSoonAction label="编辑" variant="link" /> <ComingSoonAction label="停用" variant="link" /></td>
+                <td>{r.status === '停用' ? <Tag tone="warn">停用</Tag> : <Tag tone="ok">启用</Tag>}</td>
+                <td><button className="link" onClick={() => setEditItem(r)}>编辑</button> <button className="link" onClick={() => toggleStatus(r)}>{r.status === '停用' ? '启用' : '停用'}</button></td>
               </tr>
             );
           })}
         </tbody>
       </table>
       {showForm && <EntityForm entity="qualityRules" onClose={() => setShowForm(false)} onSaved={() => setShowForm(false)} />}
+      {editItem && <EntityForm entity="qualityRules" mode="update" record={editItem} onClose={() => setEditItem(null)} onSaved={() => setEditItem(null)} />}
+      {showImport && <BulkImport entity="qualityRules" onClose={() => setShowImport(false)} onSaved={() => setShowImport(false)} />}
     </div>
   );
 }

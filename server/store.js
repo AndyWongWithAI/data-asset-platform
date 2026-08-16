@@ -20,41 +20,45 @@ let dataFile = DEFAULT_DATA_FILE;
 // 领域规则（信息项命名、动态属性、变更影响、条件必填等）留 P2，此处只做结构校验。
 const SCHEMAS = {
   baseTerms: {
-    idKey: 'id', idPrefix: 'term', creatable: true, updatable: false,
+    idKey: 'id', idPrefix: 'term', creatable: true, updatable: true,
     required: ['nameCn', 'nameEn', 'isClassWord'],
     unique: ['nameEn'],
-    enum: {},
+    enum: { status: ['启用', '停用'] },
     types: { synonyms: 'array', isClassWord: 'bool' },
     refs: {},
+    default: { status: '启用' },
   },
   valueDomains: {
-    idKey: 'id', idPrefix: 'vd', creatable: true, updatable: false,
+    idKey: 'id', idPrefix: 'vd', creatable: true, updatable: true,
     required: ['code', 'dataType', 'length', 'precision'],
     unique: ['code'],
-    enum: { dataType: ['varchar', 'decimal'] },
+    enum: { dataType: ['varchar', 'decimal'], status: ['启用', '停用'] },
     types: { length: 'number', precision: 'number' },
     refs: {},
+    default: { status: '启用' },
   },
   refDatas: {
-    idKey: 'id', idPrefix: 'rd', creatable: true, updatable: false,
+    idKey: 'id', idPrefix: 'rd', creatable: true, updatable: true,
     required: ['code', 'name', 'values'],
     unique: ['code'],
-    enum: {},
+    enum: { status: ['启用', '停用'] },
     types: { values: 'array' },
     refs: {},
+    default: { status: '启用' },
   },
   infoItems: {
-    idKey: 'id', idPrefix: 'ii', creatable: true, updatable: false,
+    idKey: 'id', idPrefix: 'ii', creatable: true, updatable: true,
     required: ['code', 'nameCn', 'nameEn', 'type', 'termIds', 'valueDomainId'],
     unique: ['code', 'nameEn'],
     // securityLevel 用枚举兜底而非 refs：refs 校验按 `state[target].map(x => x.id)` 取集合，
     // 而 security 主键是 `level`（无 id 字段），refs 会误报所有 L1-L4 引用不存在。
-    enum: { type: ['技术', '业务'], securityLevel: ['L1', 'L2', 'L3', 'L4'] },
+    enum: { type: ['技术', '业务'], securityLevel: ['L1', 'L2', 'L3', 'L4'], status: ['启用', '停用'] },
     types: { termIds: 'array' },
     refs: { valueDomainId: 'valueDomains', refDataId: 'refDatas', bizDomainId: 'bizDomains', termIds: 'baseTerms' },
+    default: { status: '启用' },
   },
   qualityRules: {
-    idKey: 'id', idPrefix: 'qr', creatable: true, updatable: false,
+    idKey: 'id', idPrefix: 'qr', creatable: true, updatable: true,
     required: ['name', 'type', 'targetFieldId', 'expr', 'threshold', 'severity', 'status'],
     unique: [],
     enum: { type: ['准确性', '完整性', '一致性', '及时性'], severity: ['严重', '警告', '提示'], status: ['启用', '停用'] },
@@ -274,7 +278,7 @@ export function create(entity, payload = {}) {
   const errors = validate(entity, finalPayload);
   if (errors.length) return { ok: false, errors, code: 'invalid' };
   const id = nextId(entity);
-  const record = { ...finalPayload, [schema.idKey]: id }; // 服务端生成 id 优先，客户端不可注入
+  const record = { ...(schema.default || {}), ...finalPayload, [schema.idKey]: id }; // default 铺底，服务端生成 id 优先，客户端不可注入
   state[entity].push(record);
   persist();
   return { ok: true, record };

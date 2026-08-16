@@ -28,7 +28,7 @@ export const FORM_SCHEMAS = {
   ],
 
   infoItems: [
-    { key: 'nameCn', label: '中文名', type: 'text', required: true, placeholder: '如：风机标识', help: '输入后自动拆词翻译，英文名与词根自动派生' },
+    { key: 'nameCn', label: '中文名', type: 'text', required: true, readonlyOnUpdate: true, placeholder: '如：风机标识', help: '编辑时只读；输入后自动拆词翻译，英文名与词根自动派生' },
     { key: 'nameEn', label: '英文名', type: 'derived' },
     { key: 'type', label: '类型', type: 'enum', required: true, enum: ['技术', '业务'] },
     { key: 'bizDomainId', label: '业务域', type: 'ref', ref: 'bizDomains', help: 'type=业务时必填' },
