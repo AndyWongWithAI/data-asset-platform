@@ -13,7 +13,7 @@ export default function PortalMyRequests({ onOpenAsset }) {
         <thead><tr><th>资产</th><th>类型</th><th>状态</th><th>申请时间</th><th>说明</th></tr></thead>
         <tbody>
           {requests.map((r) => {
-            const asset = data.portalAssets.find((a) => a.id === r.portalAssetId);
+            const asset = (data.portalAssets || []).find((a) => a.id === r.portalAssetId);
             return (
               <tr key={r.id}>
                 <td>{asset ? <button className="link" onClick={() => onOpenAsset(asset.id)}>{asset.name}</button> : r.portalAssetId}</td>

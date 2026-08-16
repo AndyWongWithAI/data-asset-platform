@@ -6,7 +6,7 @@ const LEVEL_TONE = { L1: 'ok', L2: 'default', L3: 'warn', L4: 'danger' };
 
 export default function PortalAssetDetail({ assetId, onBack }) {
   const { data } = useData();
-  const asset = data.portalAssets.find((a) => a.id === assetId);
+  const asset = (data.portalAssets || []).find((a) => a.id === assetId);
   if (!asset) return <div className="empty-hint">未找到该资产</div>;
 
   const tables = (asset.tableIds || []).map((id) => data.tables.find((t) => t.id === id)).filter(Boolean);
