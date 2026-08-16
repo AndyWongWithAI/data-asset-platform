@@ -210,25 +210,35 @@ def main():
         page.locator('.field-table tbody tr', has_text='风速值').locator('.link', has_text='测风风速取值越界').click()
         assert page.locator('.tab.active', has_text='规则详情').count() == 1
         assert page.locator('.detail-panel h3', has_text='测风风速取值越界').count() == 1
-        # M4 数据安全分级
+        # M4 数据安全分级（十四期：分级总览 + 分类目录 + 分类详情下钻）
         click_menu(page, '数据安全')
         assert page.locator('.tab', has_text='数据安全').count() == 1
         assert page.locator('.score-row').count() >= 4   # L1-L4 分级总览
         page.locator('.score-row .link', has_text='调整').first.click()
         assert page.locator('.modal-lg').count() == 1
         page.locator('.modal button', has_text='取消').click()
-        # 切到分级明细（分级维度 L1-L4 各一行）→ 点分级进详情
-        page.locator('.sub-tabs button', has_text='分级明细').click()
-        assert page.locator('.table tbody tr').count() >= 4
-        assert page.locator('.table tbody tr .link', has_text='L4 · 涉密').count() == 1   # 分级维度行存在
-        page.locator('.table tbody tr .link', has_text='L3 · 敏感').click()
+        # 分级总览「查看定位」→ 安全分级详情（按级定位：L3 同时含继承/自定义升级来源）
+        page.locator('.score-row', has_text='L3 · 敏感').locator('.link', has_text='查看定位').click()
         assert page.locator('.tab.active', has_text='安全分级详情').count() == 1
         assert page.locator('.detail-panel').count() == 1
-        # 分级详情：L3 下字段列表 + 来源 Tag（继承 / 自定义升级）
         assert page.locator('.detail-panel table tbody tr').count() >= 1
         assert page.locator('.detail-panel .tag', has_text='继承').count() >= 1
         assert page.locator('.detail-panel .tag', has_text='自定义升级').count() >= 1
-        # 分级详情「定位」→ 字段级高亮转跳 M1
+        # 点回侧边栏「数据安全」→ 点子 tab「分类目录」→ 6 列表格 + 一级分类下拉筛选
+        click_menu(page, '数据安全')
+        page.locator('.sub-tabs button', has_text='分类目录').click()
+        assert page.locator('.table thead th', has_text='一级分类').count() == 1
+        assert page.locator('.table thead th', has_text='二级分类').count() == 1
+        assert page.locator('.table thead th', has_text='数据类型').count() == 1
+        assert page.locator('.table thead th', has_text='数据分级').count() == 1
+        assert page.locator('.table tbody tr').count() == 13
+        assert page.locator('.search-bar select').count() == 1
+        # 分类目录「海底地形测绘数据」查看定位 → 数据安全分类详情（f_topo_coord 关联 ii_sea_area L4=继承）
+        page.locator('.table tbody tr', has_text='海底地形测绘数据').locator('.link', has_text='查看定位').click()
+        assert page.locator('.tab.active', has_text='数据安全分类详情').count() == 1
+        assert page.locator('.detail-panel').count() == 1
+        assert page.locator('.detail-panel .tag', has_text='继承').count() >= 1
+        # 分类详情「定位」→ 字段级高亮转跳 M1
         page.locator('.detail-panel table tbody tr .link', has_text='定位').first.click()
         assert page.locator('.field-table').count() == 1
         assert page.locator('.row-active').count() == 1
