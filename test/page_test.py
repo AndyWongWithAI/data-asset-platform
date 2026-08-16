@@ -405,6 +405,18 @@ def main():
         page.locator('.detail-panel .link', has_text='查看').first.click()
         assert page.locator('.detail-head').count() == 1
 
+        # ⑦ 门户管理（上架列表 + 审批链详情 + 占位写按钮）
+        click_menu(page, '门户管理')
+        assert page.locator('.tab', has_text='门户管理').count() == 1
+        assert page.locator('.table tbody tr').count() == 8
+        assert page.locator('button', has_text='发起上架').count() == 1
+        page.locator('.table tbody tr .link').first.click()
+        assert page.locator('.tab.active', has_text='门户管理详情').count() == 1
+        assert page.locator('.detail-panel', has_text='责任业务方').count() == 1
+        assert page.locator('.flow-step').count() >= 3
+        # 右上角「资产门户」按钮存在
+        assert page.locator('.header button', has_text='资产门户').count() == 1
+
         # 跨模块转跳：质量看板 → 定位字段 → 打开表详情 tab
         page.locator('.tab', has_text='数据质量看板').click()
         page.locator('.issue .link').first.click()

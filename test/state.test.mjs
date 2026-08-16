@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { MODULE_GROUPS, MODULES, createInitialState, openTab, closeTab, navigate, filterModuleGroups } from '../src/state.js';
 
-test('MODULE_GROUPS 2 组 + standard/数据交换 父级目录 + MODULES 14 叶子 + tableDetail + 9 详情共 24', () => {
+test('MODULE_GROUPS 2 组 + standard/数据交换 父级目录 + MODULES 15 叶子 + tableDetail + 10 详情共 26', () => {
   assert.deepEqual(MODULE_GROUPS.map((g) => g.name), ['生产态·治理看板', '设计态·定义']);
   const design = MODULE_GROUPS.find((g) => g.name === '设计态·定义');
   const standard = design.items.find((i) => i.key === 'standard');
@@ -12,13 +12,15 @@ test('MODULE_GROUPS 2 组 + standard/数据交换 父级目录 + MODULES 14 叶�
   assert.ok(dataExchange && dataExchange.children, '数据交换 应为设计态下的父级目录');
   assert.deepEqual(dataExchange.children.map((c) => c.key), ['fileExchange', 'dataService']);
   const leafKeys = MODULES.map((m) => m.key);
-  assert.equal(leafKeys.length, 24); // 14 叶子模块 + tableDetail + 9 详情模块
+  assert.equal(leafKeys.length, 26); // 15 叶子模块 + tableDetail + 10 详情模块
   assert.ok(!leafKeys.includes('standard'), 'standard 父级不应是模块');
   assert.ok(!leafKeys.includes('dataExchange'), '数据交换 父级不应是模块');
   assert.ok(leafKeys.includes('tableDetail'));
   assert.ok(leafKeys.includes('metadataCompare'), '元数据比对应在 MODULES');
-  const detailKeys = ['infoItemDetail', 'valueDomainDetail', 'refDataDetail', 'qualityDetail', 'masterdataDetail', 'fileExchangeDetail', 'dataServiceDetail', 'securityDetail', 'securityCatalogDetail'];
+  const detailKeys = ['infoItemDetail', 'valueDomainDetail', 'refDataDetail', 'qualityDetail', 'masterdataDetail', 'fileExchangeDetail', 'dataServiceDetail', 'securityDetail', 'securityCatalogDetail', 'portalManagementDetail'];
   for (const k of detailKeys) assert.ok(leafKeys.includes(k), `详情模块 ${k} 应在 MODULES`);
+  assert.ok(leafKeys.includes('portalManagement'), '门户管理应在 MODULES');
+  assert.ok(leafKeys.includes('portalManagementDetail'), '门户管理详情应在 MODULES');
 });
 
 test('openTab 首次打开追加并激活，重复打开不重复追加', () => {
