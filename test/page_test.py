@@ -224,19 +224,22 @@ def main():
         assert page.locator('.detail-panel table tbody tr').count() >= 1
         assert page.locator('.detail-panel .tag', has_text='继承').count() >= 1
         assert page.locator('.detail-panel .tag', has_text='自定义升级').count() >= 1
-        # 点回侧边栏「数据安全」→ 点子 tab「分类目录」→ 6 列表格 + 一级分类下拉筛选
+        # 点回侧边栏「数据安全」→ 点子 tab「分类目录」→ 四列+操作表格（无定位列）+ 一级分类下拉筛选
         click_menu(page, '数据安全')
         page.locator('.sub-tabs button', has_text='分类目录').click()
         assert page.locator('.table thead th', has_text='一级分类').count() == 1
         assert page.locator('.table thead th', has_text='二级分类').count() == 1
         assert page.locator('.table thead th', has_text='数据类型').count() == 1
         assert page.locator('.table thead th', has_text='数据分级').count() == 1
+        assert page.locator('.table thead th', has_text='操作').count() == 1
+        assert page.locator('.table thead th', has_text='定位').count() == 0   # 定位列已删
         assert page.locator('.table tbody tr').count() == 13
         assert page.locator('.search-bar select').count() == 1
-        # 分类目录「海底地形测绘数据」查看定位 → 数据安全分类详情（f_topo_coord 关联 ii_sea_area L4=继承）
-        page.locator('.table tbody tr', has_text='海底地形测绘数据').locator('.link', has_text='查看定位').click()
+        # 分类目录「海底地形测绘数据」查看明细 → 数据安全分类详情（跨 3 表定位：测绘/海缆/升压站；f_topo_coord 关联 ii_sea_area L4=继承）
+        page.locator('.table tbody tr', has_text='海底地形测绘数据').locator('.link', has_text='查看明细').click()
         assert page.locator('.tab.active', has_text='数据安全分类详情').count() == 1
         assert page.locator('.detail-panel').count() == 1
+        assert page.locator('.detail-panel h4', has_text='定位表').count() == 3   # 跨 3 张表定位
         assert page.locator('.detail-panel .tag', has_text='继承').count() >= 1
         # 分类详情「定位」→ 字段级高亮转跳 M1
         page.locator('.detail-panel table tbody tr .link', has_text='定位').first.click()

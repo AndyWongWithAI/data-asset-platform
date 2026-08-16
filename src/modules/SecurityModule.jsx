@@ -47,21 +47,17 @@ export default function SecurityModule({ onNavigate }) {
             </select>
           </div>
           <table className="table">
-            <thead><tr><th>一级分类</th><th>二级分类</th><th>数据类型</th><th>数据分级</th><th>定位</th><th>操作</th></tr></thead>
+            <thead><tr><th>一级分类</th><th>二级分类</th><th>数据类型</th><th>数据分级</th><th>操作</th></tr></thead>
             <tbody>
-              {filteredCatalog.map((sc) => {
-                const t = sc.tableId ? data.tables.find((x) => x.id === sc.tableId) : null;
-                return (
-                  <tr key={sc.id}>
-                    <td>{sc.category1}</td>
-                    <td>{sc.category2}</td>
-                    <td>{sc.dataType}</td>
-                    <td><Tag tone={LEVEL_TONE[sc.level]}>{sc.level}</Tag></td>
-                    <td>{t ? t.nameCn : '—'}</td>
-                    <td><button className="link" onClick={() => onNavigate('securityCatalogDetail', { catalogId: sc.id })}>查看定位</button></td>
-                  </tr>
-                );
-              })}
+              {filteredCatalog.map((sc) => (
+                <tr key={sc.id}>
+                  <td>{sc.category1}</td>
+                  <td>{sc.category2}</td>
+                  <td>{sc.dataType}</td>
+                  <td><Tag tone={LEVEL_TONE[sc.level]}>{sc.level}</Tag></td>
+                  <td><button className="link" onClick={() => onNavigate('securityCatalogDetail', { catalogId: sc.id })}>查看明细</button></td>
+                </tr>
+              ))}
             </tbody>
           </table>
           {filteredCatalog.length === 0 && <div className="empty-hint">暂无匹配的分类目录</div>}
