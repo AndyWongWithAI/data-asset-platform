@@ -31,10 +31,10 @@ def main():
         assert page.locator('.asset-card').count() == 8
         # 统计条：已上架 8 · 业务分类 5 · 关联服务 5
         assert page.locator('.portal-stat-num').all_inner_texts() == ['8', '5', '5']
-        # 精选区：featured 3 张置顶 + 全部区 5 张
-        assert page.locator('.portal-section-title').count() == 2
-        assert page.locator('.asset-grid').nth(0).locator('.asset-card').count() == 3
-        assert page.locator('.asset-grid').nth(1).locator('.asset-card').count() == 5
+        # 精选资产：单一列表 + 精选角标置顶（精选不拆区，仍在全部资产中）
+        assert page.locator('.asset-grid').count() == 1
+        assert page.locator('.asset-featured').count() == 3
+        assert page.locator('.asset-card').nth(0).locator('.asset-featured').count() == 1
         # 分类导航筛选
         page.locator('.portal-cats button', has_text='海洋勘测').click()
         assert page.locator('.asset-card').count() == 2

@@ -26,11 +26,12 @@ export default function PortalCatalog({ onOpenAsset }) {
     if (kw && !(a.name.includes(kw) || a.desc.includes(kw))) return false;
     return true;
   });
-  const featured = assets.filter((a) => a.featured);
-  const others = assets.filter((a) => !a.featured);
+  // 精选置顶（featured 排前），不单独拆区——精选资产仍属于全部资产
+  const sorted = [...assets].sort((a, b) => Number(b.featured) - Number(a.featured));
 
   const renderCard = (a) => (
     <div className="asset-card" key={a.id} style={{ '--cat': CAT_COLOR[a.category] }} onClick={() => onOpenAsset(a.id)}>
+      {a.featured && <span className="asset-featured">★ 精选</span>}
       <h3>{a.name}</h3>
       <div className="asset-meta">
         <span className="asset-cat">{a.category}</span>
@@ -57,18 +58,7 @@ export default function PortalCatalog({ onOpenAsset }) {
         </div>
         <input placeholder="搜索资产…" value={kw} onChange={(e) => setKw(e.target.value)} />
       </div>
-      {featured.length > 0 && (
-        <>
-          <div className="portal-section-title"><span className="star">★</span>精选资产</div>
-          <div className="asset-grid">{featured.map(renderCard)}</div>
-        </>
-      )}
-      {others.length > 0 && (
-        <>
-          <div className="portal-section-title">全部资产</div>
-          <div className="asset-grid">{others.map(renderCard)}</div>
-        </>
-      )}
+      <div className="asset-grid">{sorted.map(renderCard)}</div>
       {assets.length === 0 && <div className="empty-hint">暂无匹配的数据资产</div>}
     </div>
   );
