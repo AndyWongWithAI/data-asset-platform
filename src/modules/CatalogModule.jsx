@@ -11,6 +11,7 @@ export default function CatalogModule({ onNavigate }) {
   const [keyword, setKeyword] = useState('');
   const [showForm, setShowForm] = useState(false);
   const [showImport, setShowImport] = useState(false);
+  const [editingTable, setEditingTable] = useState(null);
 
   const filtered = data.tables.filter((t) => {
     if (appId !== 'all' && t.appId !== appId) return false;
@@ -44,7 +45,7 @@ export default function CatalogModule({ onNavigate }) {
               <td>{data.applications.find((a) => a.id === t.appId)?.name}</td>
               <td>{data.databases.find((d) => d.id === t.dbId)?.name}</td>
               <td>{data.bizDomains.find((b) => b.id === t.bizDomainId)?.name}</td>
-              <td><button className="link" onClick={() => onNavigate('tableDetail', { tableId: t.id, title: t.nameCn })}>查看</button> <ComingSoonAction label="编辑" variant="link" /> <ComingSoonAction label="下线" variant="link" /></td>
+              <td><button className="link" onClick={() => onNavigate('tableDetail', { tableId: t.id, title: t.nameCn })}>查看</button> <button className="link" onClick={() => setEditingTable(t)}>编辑</button> <ComingSoonAction label="下线" variant="link" /></td>
             </tr>
           ))}
         </tbody>
@@ -52,6 +53,7 @@ export default function CatalogModule({ onNavigate }) {
       {filtered.length === 0 && <div className="empty-hint">无匹配的表，请调整筛选条件</div>}
       {showForm && <EntityForm entity="tables" onClose={() => setShowForm(false)} onSaved={() => setShowForm(false)} />}
       {showImport && <BulkImport entity="tables" onClose={() => setShowImport(false)} onSaved={() => setShowImport(false)} />}
+      {editingTable && <EntityForm entity="tables" mode="update" record={editingTable} onClose={() => setEditingTable(null)} onSaved={() => setEditingTable(null)} />}
     </div>
   );
 }

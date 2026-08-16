@@ -81,6 +81,25 @@ export const FORM_SCHEMAS = {
     { key: 'masterDataId', label: '关联主数据', type: 'ref', ref: 'masterData', help: '可选' },
     { key: 'desc', label: '表描述', type: 'text', placeholder: '如：测风塔实测风速/风向/湍流' },
   ],
+
+  // 字段（M1 唯一锚点）：可新增 + 编辑。嵌套三块结构用点号 key 读写（business/technical/management）。
+  // tableId（所属表）+ business.code（字段编码）readonlyOnUpdate：新增时填写/选表，编辑时只读。
+  // id/seq/masterDataType/qualityRuleIds 服务端派生故不出现在表单。
+  fields: [
+    { key: 'tableId', label: '所属表', type: 'ref', ref: 'tables', required: true, readonlyOnUpdate: true, help: '新增时选择所属表，编辑时只读' },
+    { key: 'business.code', label: '字段编码', type: 'text', required: true, readonlyOnUpdate: true, placeholder: '如 wind_speed_value' },
+    { key: 'business.nameCn', label: '字段中文名', type: 'text', required: true },
+    { key: 'business.definition', label: '业务定义', type: 'text' },
+    { key: 'business.masterDataId', label: '关联主数据', type: 'ref', ref: 'masterData', help: '可选' },
+    { key: 'technical.type', label: '技术类型', type: 'text', required: true },
+    { key: 'technical.length', label: '长度', type: 'number' },
+    { key: 'technical.isPK', label: '主键', type: 'bool' },
+    { key: 'technical.isFK', label: '外键', type: 'bool' },
+    { key: 'management.standardId', label: '关联标准', type: 'ref', ref: 'infoItems', help: '贯标信息项，可选' },
+    { key: 'management.securityLevel', label: '安全分级', type: 'enum', enum: ['L1', 'L2', 'L3', 'L4'], help: '不得低于关联信息项分级' },
+    { key: 'management.owner', label: '责任人', type: 'text', required: true },
+    { key: 'management.updateFrequency', label: '更新频率', type: 'text' },
+  ],
 };
 
 // 实体名 → 中文标题（供表单标题与主控复用）
@@ -93,4 +112,5 @@ export const ENTITY_TITLES = {
   security: '安全分级',
   portalAssets: '门户资产',
   tables: '表',
+  fields: '字段',
 };

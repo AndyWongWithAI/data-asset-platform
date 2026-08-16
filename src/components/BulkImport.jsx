@@ -3,17 +3,19 @@ import { useData } from '../DataContext.jsx';
 import { buildColumns, buildTemplateCsv, parseCsv, importRows } from '../bulkImport.js';
 
 // 批量导入弹窗：模板下载 + CSV 文件上传 + 逐条导入 + 结果汇总。纯前端，逐条走后端 create。
-export default function BulkImport({ entity, onClose, onSaved }) {
+// defaults：上下文注入的固定值（如字段批量导入的 tableId），不进模板列、逐条合并到 payload。
+export default function BulkImport({ entity, defaults = {}, onClose, onSaved }) {
   const { data, createRecord } = useData();
   const [result, setResult] = useState(null);
   const [busy, setBusy] = useState(false);
   const fileRef = useRef(null);
 
-  const cols = buildColumns(entity);
+  const excludeKeys = Object.keys(defaults);
+  const cols = buildColumns(entity, excludeKeys);
   const sample = (data[entity] || [])[0];
 
   const downloadTemplate = () => {
-    const csv = buildTemplateCsv(entity, sample);
+    const csv = buildTemplateCsv(entity, sample, excludeKeys);
     const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -30,7 +32,7 @@ export default function BulkImport({ entity, onClose, onSaved }) {
     const rows = parseCsv(text);
     if (rows.length < 2) return; // 至少表头 + 1 数据行
     setBusy(true);
-    const res = await importRows(entity, rows[0], rows.slice(1), createRecord); // 表头用于列校验
+    const res = await importRows(entity, rows[0], rows.slice(1), createRecord, defaults); // 表头用于列校验
     setBusy(false);
     setResult(res);
   };

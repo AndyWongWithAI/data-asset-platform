@@ -91,3 +91,45 @@ test('importRows 表头正确 → 按表头对齐导入', async () => {
   assert.equal(created[0].valueDomainId, 'vd_varchar10');
   assert.equal(created[0].securityLevel, 'L2');
 });
+
+// ===== 字段（嵌套结构 + defaults 注入）=====
+const FIELD_HEADERS = ['字段编码', '字段中文名', '业务定义', '关联主数据', '技术类型', '长度', '主键', '外键', '关联标准', '安全分级', '责任人', '更新频率'];
+
+test('buildColumns fields 排除 defaults 注入的 tableId', () => {
+  const cols = buildColumns('fields', ['tableId']);
+  assert.deepEqual(cols.map((c) => c.key), ['business.code', 'business.nameCn', 'business.definition', 'business.masterDataId', 'technical.type', 'technical.length', 'technical.isPK', 'technical.isFK', 'management.standardId', 'management.securityLevel', 'management.owner', 'management.updateFrequency']);
+  assert.ok(!cols.some((c) => c.key === 'tableId'), 'tableId 应从模板列排除');
+});
+
+test('rowToPayloadMapped fields：点号 key unflatten 成嵌套对象', () => {
+  const { mapping, missing } = mapHeaders(FIELD_HEADERS, 'fields', ['tableId']);
+  assert.equal(missing.length, 0);
+  const p = rowToPayloadMapped('fields', mapping, ['test_field', '测试字段', '测风塔风速', '', 'decimal(5,2)', '7', 'false', 'false', '', 'L2', '测试组', '10分钟']);
+  assert.equal(p.business.code, 'test_field');
+  assert.equal(p.business.nameCn, '测试字段');
+  assert.equal(p.business.definition, '测风塔风速');
+  assert.equal(p.business.masterDataId, undefined, '空值跳过');
+  assert.equal(p.technical.type, 'decimal(5,2)');
+  assert.equal(p.technical.length, 7);
+  assert.equal(p.technical.isPK, false);
+  assert.equal(p.management.securityLevel, 'L2');
+  assert.equal(p.management.owner, '测试组');
+  assert.equal(p.management.updateFrequency, '10分钟');
+});
+
+test('importRows fields 带 defaults：tableId 注入每条', async () => {
+  const created = [];
+  const createFn = async (entity, payload) => { created.push(payload); return payload; };
+  const res = await importRows('fields', FIELD_HEADERS, [
+    ['f_a', '字段A', '', '', 'int', '', 'false', 'false', '', '', '甲组', ''],
+    ['f_b', '字段B', '', '', 'varchar', '', 'false', 'false', '', '', '乙组', ''],
+  ], createFn, { tableId: 't_wind' });
+  assert.equal(res.headerError, undefined);
+  assert.equal(res.errors.length, 0);
+  assert.equal(created.length, 2);
+  assert.equal(created[0].tableId, 't_wind', 'tableId 由 defaults 注入');
+  assert.equal(created[0].business.code, 'f_a');
+  assert.equal(created[0].management.owner, '甲组');
+  assert.equal(created[1].tableId, 't_wind');
+  assert.equal(created[1].business.code, 'f_b');
+});

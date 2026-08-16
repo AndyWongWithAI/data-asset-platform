@@ -2,6 +2,7 @@
 import seed from '../src/data.js';
 import { analyzeNameCn } from '../src/infoItemNaming.js';
 import { LEVEL_RANK } from '../src/fieldSecurity.js';
+import { getNested, deepMerge } from '../src/nested.js';
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
@@ -83,12 +84,28 @@ const SCHEMAS = {
     refs: {},
   },
   tables: {
-    idKey: 'id', idPrefix: 't', creatable: true, updatable: false,
+    idKey: 'id', idPrefix: 't', creatable: true, updatable: true,
     required: ['nameCn', 'nameEn', 'tableType', 'appId', 'dbId', 'bizDomainId', 'subjectId'],
     unique: ['nameEn'],
     enum: { tableType: ['业务表', '技术表'] },
     types: {},
     refs: { appId: 'applications', dbId: 'databases', bizDomainId: 'bizDomains', masterDataId: 'masterData' },
+  },
+  // 字段（M1 唯一锚点）：可新增 + 编辑。嵌套三块结构（business/technical/management），
+  // 点号 key 供 validate 结构校验，editable 白名单堵住 id/tableId/seq/code/qualityRuleIds 等不可篡改字段（仅 edit 生效）。
+  // create 必填含 tableId（所属表）+ business.code（表内唯一）+ nameCn/type/owner；seq/masterDataType/qualityRuleIds 服务端派生。
+  fields: {
+    idKey: 'id', idPrefix: 'f', creatable: true, updatable: true,
+    required: ['tableId', 'business.code', 'business.nameCn', 'technical.type', 'management.owner'],
+    unique: [],
+    enum: { 'management.securityLevel': ['L1', 'L2', 'L3', 'L4'] },
+    types: { 'technical.length': 'number', 'technical.isPK': 'bool', 'technical.isFK': 'bool' },
+    refs: { tableId: 'tables', 'management.standardId': 'infoItems', 'business.masterDataId': 'masterData' },
+    editable: {
+      business: ['nameCn', 'definition', 'masterDataId'],
+      technical: ['type', 'length', 'isPK', 'isFK'],
+      management: ['standardId', 'securityLevel', 'owner', 'updateFrequency'],
+    },
   },
   portalAssets: {
     idKey: 'id', idPrefix: 'pa', creatable: true, updatable: false,
@@ -115,6 +132,7 @@ export const UPDATABLE = ENTITIES.filter((e) => SCHEMAS[e].updatable);
 const IMMUTABLE_ON_UPDATE = {
   infoItems: ['code', 'nameEn', 'termIds', 'nameCn'],
   refDatas: ['code'],
+  tables: ['partitions', 'indexes', 'history'], // 子表 / 版本历史由表详情与后续功能维护，编辑表级元数据时不可篡改
 };
 
 export function idKeyOf(entity) {
@@ -199,33 +217,52 @@ function checkType(type, v) {
   }
 }
 
+// 嵌套白名单过滤：只保留 schema.editable 声明的字段（如 fields 的 business/technical/management 三块），
+// 堵住 id/tableId/seq/code/qualityRuleIds 等不可篡改字段被 PUT 注入。
+function filterEditable(payload, editable) {
+  const out = {};
+  for (const [group, keys] of Object.entries(editable)) {
+    const src = payload[group];
+    if (src && typeof src === 'object' && !Array.isArray(src)) {
+      const g = {};
+      for (const k of keys) {
+        if (src[k] !== undefined) g[k] = src[k];
+      }
+      if (Object.keys(g).length) out[group] = g;
+    }
+  }
+  return out;
+}
+
 export function validate(entity, payload, { isUpdate = false, existing = null } = {}) {
   const schema = SCHEMAS[entity];
   const errors = [];
   if (!schema) return [`未知实体 ${entity}`];
-  // update 时 required 针对合并结果（局部更新不误报），其余校验只针对 payload 出现的字段
-  const merged = isUpdate && existing ? { ...existing, ...payload } : payload;
+  // update 时 required 针对合并结果（局部更新不误报），嵌套实体用 deepMerge 保留未编辑子块；
+  // 其余校验只针对 payload 出现的字段。点号 key（如 business.nameCn）统一走 getNested。
+  const merged = isUpdate && existing ? deepMerge(existing, payload) : payload;
   const existingKey = existing ? existing[schema.idKey] : null;
 
   // 1. 必填
   for (const key of schema.required) {
-    if (isEmpty(merged[key])) errors.push(`字段 ${key} 必填`);
+    if (isEmpty(getNested(merged, key))) errors.push(`字段 ${key} 必填`);
   }
   // 2. 枚举
   for (const [key, allowed] of Object.entries(schema.enum)) {
-    if (payload[key] !== undefined && payload[key] !== null && !allowed.includes(payload[key])) {
-      errors.push(`字段 ${key} 取值「${payload[key]}」非法，应为 ${allowed.join('/')}`);
+    const v = getNested(payload, key);
+    if (v !== undefined && v !== null && !allowed.includes(v)) {
+      errors.push(`字段 ${key} 取值「${v}」非法，应为 ${allowed.join('/')}`);
     }
   }
   // 3. 类型
   for (const [key, type] of Object.entries(schema.types || {})) {
-    const v = payload[key];
+    const v = getNested(payload, key);
     if (v === undefined || v === null) continue;
     if (!checkType(type, v)) errors.push(`字段 ${key} 类型应为 ${type}`);
   }
   // 4. 引用存在性（数组字段逐元素校验，空值跳过）
   for (const [key, target] of Object.entries(schema.refs)) {
-    const val = payload[key];
+    const val = getNested(payload, key);
     if (val === undefined || val === null || val === '') continue;
     const targetIds = new Set(state[target].map((x) => x.id));
     const vals = Array.isArray(val) ? val : [val];
@@ -235,9 +272,10 @@ export function validate(entity, payload, { isUpdate = false, existing = null } 
   }
   // 5. 唯一性（排除自身）
   for (const key of schema.unique) {
-    if (payload[key] === undefined || payload[key] === null) continue;
-    const dup = state[entity].find((x) => x[key] === payload[key] && x[schema.idKey] !== existingKey);
-    if (dup) errors.push(`字段 ${key} 值「${payload[key]}」重复`);
+    const v = getNested(payload, key);
+    if (v === undefined || v === null) continue;
+    const dup = state[entity].find((x) => getNested(x, key) === v && x[schema.idKey] !== existingKey);
+    if (dup) errors.push(`字段 ${key} 值「${v}」重复`);
   }
   return errors;
 }
@@ -278,8 +316,9 @@ function nextRefDataCode() {
   return `CK${String(max + 1).padStart(4, '0')}`;
 }
 
-// 条件必填 + 数值约束（跨实体）
-function domainErrors(entity, payload) {
+// 条件必填 + 数值约束 + 领域规则（跨实体）。
+// ctx.merged：update 时合并后的最终记录，供依赖「最终态」的规则（如字段分级继承链）判断；create 时等于 payload。
+function domainErrors(entity, payload, ctx = {}) {
   const errors = [];
   if (entity === 'infoItems' && payload.type === '业务') {
     if (isEmpty(payload.bizDomainId)) errors.push('字段 bizDomainId 必填（业务类信息项）');
@@ -321,6 +360,26 @@ function domainErrors(entity, payload) {
       errors.push(`安全分级 ${payload.securityLevel} 低于打包对象的最高分级，需上调至 L${maxRank} 及以上`);
     }
   }
+  if (entity === 'fields') {
+    const final = ctx.merged || payload;
+    // 字段编码表内唯一（跨表可重复，表内不可重复）
+    const tableId = getNested(final, 'tableId');
+    const code = getNested(final, 'business.code');
+    if (tableId && code) {
+      const dup = state.fields.find((f) => f.tableId === tableId && f.business?.code === code && f.id !== (ctx.existing?.id));
+      if (dup) errors.push(`字段编码「${code}」在所属表内已存在`);
+    }
+    // 安全分级继承链：字段最终分级不得低于关联信息项分级（conflict 拦截），用 merged 判断最终态
+    const standardId = getNested(final, 'management.standardId');
+    const securityLevel = getNested(final, 'management.securityLevel');
+    if (standardId && securityLevel) {
+      const item = state.infoItems.find((i) => i.id === standardId);
+      const itemLevel = item?.securityLevel;
+      if (itemLevel && LEVEL_RANK[securityLevel] != null && LEVEL_RANK[itemLevel] != null && LEVEL_RANK[securityLevel] < LEVEL_RANK[itemLevel]) {
+        errors.push(`安全分级 ${securityLevel} 低于关联信息项「${item.nameCn}」的 ${itemLevel}，需上调或先解除关联标准`);
+      }
+    }
+  }
   return errors;
 }
 
@@ -359,7 +418,19 @@ export function create(entity, payload = {}) {
       history: [{ version: 'v1.0', time: new Date().toISOString().slice(0, 10), operator: '数据治理组', action: '新建', desc: '登记新表元数据' }],
     };
   }
-  const domain = domainErrors(entity, finalPayload);
+  if (entity === 'fields') {
+    // 新建字段服务端派生：seq = 表内最大序号 +1；masterDataType 随 masterDataId 从主数据 entityType 派生；
+    // qualityRuleIds 空数组起步（质量规则由质量模块维护）。客户端传了也无效。
+    const seq = state.fields.filter((f) => f.tableId === payload.tableId).reduce((m, f) => Math.max(m, f.seq || 0), 0) + 1;
+    const md = payload.business?.masterDataId ? state.masterData.find((m) => m.id === payload.business.masterDataId) : null;
+    finalPayload = {
+      ...payload,
+      seq,
+      business: { ...(payload.business || {}), masterDataType: md ? md.entityType : null },
+      technical: { ...(payload.technical || {}), qualityRuleIds: [] },
+    };
+  }
+  const domain = domainErrors(entity, finalPayload, { merged: finalPayload });
   if (domain.length) return { ok: false, errors: domain, code: 'invalid' };
 
   const errors = validate(entity, finalPayload);
@@ -380,12 +451,19 @@ export function update(entity, keyValue, payload = {}) {
   if (!existing) return { ok: false, errors: [`未找到 ${entity} 中 ${schema.idKey}=${keyValue}`], code: 'not_found' };
   // 剥离不可篡改字段（主键 + 派生/只读源字段），客户端传入即忽略，与 create 的「服务端强制派生」口径一致，
   // 防止 PUT 破坏信息项命名三元一致性（nameCn↔nameEn↔termIds）与参考数据编号自增。
-  const clean = { ...payload };
+  let clean = { ...payload };
   delete clean[schema.idKey];
   for (const key of IMMUTABLE_ON_UPDATE[entity] || []) delete clean[key];
+  // 嵌套白名单过滤：只保留 editable 声明的字段，堵住 id/tableId/seq/code/qualityRuleIds 等不可篡改字段
+  if (schema.editable) clean = filterEditable(clean, schema.editable);
+  // 嵌套合并（fields 局部更新保留未编辑子块；扁平实体 deepMerge 等价浅合并）
+  const merged = deepMerge(existing, clean);
+  // 领域规则（fields 分级继承链等依赖最终态，用 merged 判断）
+  const domain = domainErrors(entity, clean, { isUpdate: true, existing, merged });
+  if (domain.length) return { ok: false, errors: domain, code: 'invalid' };
   const errors = validate(entity, clean, { isUpdate: true, existing });
   if (errors.length) return { ok: false, errors, code: 'invalid' };
-  Object.assign(existing, clean);
+  Object.assign(existing, merged);
   persist();
   return { ok: true, record: existing };
 }
