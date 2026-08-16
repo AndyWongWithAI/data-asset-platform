@@ -17,6 +17,7 @@ export const MODULE_GROUPS = [
     ]},
     { key: 'security', title: '数据安全', implemented: true },
     { key: 'masterdata', title: '主数据', implemented: true },
+    { key: 'portalManagement', title: '门户管理', implemented: true },
     { key: 'dataExchange', title: '数据交换', implemented: true, children: [
       { key: 'fileExchange', title: '文件交换', implemented: true },
       { key: 'dataService', title: '数据服务', implemented: true },
@@ -38,6 +39,7 @@ const DETAIL_MODULES = [
   { key: 'dataServiceDetail', title: '数据服务详情', implemented: true },
   { key: 'securityDetail', title: '安全分级详情', implemented: true },
   { key: 'securityCatalogDetail', title: '数据安全分类详情', implemented: true },
+  { key: 'portalManagementDetail', title: '门户管理详情', implemented: true },
 ];
 
 const flatten = (items) => items.flatMap((i) => (i.children ? flatten(i.children) : [i]));

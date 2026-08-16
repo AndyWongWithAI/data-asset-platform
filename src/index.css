@@ -6,6 +6,9 @@ body { font-family: -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei",
 .header-title h1 { font-size: 16px; font-weight: 600; display: inline; margin-right: 12px; }
 .header-subtitle { font-size: 12px; color: #b6bcc6; }
 .header-disclaimer { font-size: 12px; color: #e6a23c; cursor: default; }
+.header-actions { display: flex; align-items: center; gap: 12px; }
+.header-link { border: 1px solid #4b5563; background: none; color: #e5e6eb; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; }
+.header-link:hover { background: #2a2f36; color: #fff; }
 .app-body { display: flex; flex: 1; overflow: hidden; }
 .sidebar { width: 200px; background: #fff; border-right: 1px solid #e5e6eb; overflow-y: auto; }
 .sidebar-search { position: sticky; top: 0; background: #fff; padding: 8px; border-bottom: 1px solid #e5e6eb; z-index: 1; }

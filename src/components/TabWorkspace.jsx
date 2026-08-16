@@ -22,6 +22,8 @@ import FileExchangeDetailModule from '../modules/FileExchangeDetailModule.jsx';
 import DataServiceDetailModule from '../modules/DataServiceDetailModule.jsx';
 import SecurityDetailModule from '../modules/SecurityDetailModule.jsx';
 import SecurityCatalogDetailModule from '../modules/SecurityCatalogDetailModule.jsx';
+import PortalManagementModule from '../modules/PortalManagementModule.jsx';
+import PortalManagementDetailModule from '../modules/PortalManagementDetailModule.jsx';
 import PlaceholderModule from '../modules/PlaceholderModule.jsx';
 
 export default function TabWorkspace({ state, dispatch }) {
@@ -66,31 +68,35 @@ export default function TabWorkspace({ state, dispatch }) {
                               ? <SecurityModule onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
                               : activeTab.moduleKey === 'masterdata'
                                 ? <MasterDataModule onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
-                                : activeTab.moduleKey === 'lineageBoard'
-                                  ? <LineageModule onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
-                                  : activeTab.moduleKey === 'fileExchange'
-                                    ? <FileExchangeModule onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
-                                    : activeTab.moduleKey === 'dataService'
-                                      ? <DataServiceModule onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
-                                      : activeTab.moduleKey === 'infoItemDetail'
-                                        ? <InfoItemDetailModule assetId={activeTab.assetId} onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
-                                        : activeTab.moduleKey === 'valueDomainDetail'
-                                          ? <ValueDomainDetailModule assetId={activeTab.assetId} onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
-                                          : activeTab.moduleKey === 'refDataDetail'
-                                            ? <RefDataDetailModule assetId={activeTab.assetId} onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
-                                            : activeTab.moduleKey === 'qualityDetail'
-                                              ? <QualityDetailModule assetId={activeTab.assetId} onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
-                                              : activeTab.moduleKey === 'masterdataDetail'
-                                                ? <MasterDataDetailModule assetId={activeTab.assetId} onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
-                                                : activeTab.moduleKey === 'fileExchangeDetail'
-                                                  ? <FileExchangeDetailModule assetId={activeTab.assetId} onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
-                                                  : activeTab.moduleKey === 'dataServiceDetail'
-                                                    ? <DataServiceDetailModule assetId={activeTab.assetId} onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
-                                                    : activeTab.moduleKey === 'securityDetail'
-                                                      ? <SecurityDetailModule assetId={activeTab.assetId} onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
-                                                      : activeTab.moduleKey === 'securityCatalogDetail'
-                                                        ? <SecurityCatalogDetailModule assetId={activeTab.assetId} onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
-                                                        : <PlaceholderModule moduleKey={activeTab.moduleKey} />
+                                : activeTab.moduleKey === 'portalManagement'
+                                  ? <PortalManagementModule onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
+                                  : activeTab.moduleKey === 'portalManagementDetail'
+                                    ? <PortalManagementDetailModule assetId={activeTab.assetId} />
+                                    : activeTab.moduleKey === 'lineageBoard'
+                                      ? <LineageModule onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
+                                      : activeTab.moduleKey === 'fileExchange'
+                                        ? <FileExchangeModule onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
+                                        : activeTab.moduleKey === 'dataService'
+                                          ? <DataServiceModule onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
+                                          : activeTab.moduleKey === 'infoItemDetail'
+                                            ? <InfoItemDetailModule assetId={activeTab.assetId} onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
+                                            : activeTab.moduleKey === 'valueDomainDetail'
+                                              ? <ValueDomainDetailModule assetId={activeTab.assetId} onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
+                                              : activeTab.moduleKey === 'refDataDetail'
+                                                ? <RefDataDetailModule assetId={activeTab.assetId} onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
+                                                : activeTab.moduleKey === 'qualityDetail'
+                                                  ? <QualityDetailModule assetId={activeTab.assetId} onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
+                                                  : activeTab.moduleKey === 'masterdataDetail'
+                                                    ? <MasterDataDetailModule assetId={activeTab.assetId} onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
+                                                    : activeTab.moduleKey === 'fileExchangeDetail'
+                                                      ? <FileExchangeDetailModule assetId={activeTab.assetId} onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
+                                                      : activeTab.moduleKey === 'dataServiceDetail'
+                                                        ? <DataServiceDetailModule assetId={activeTab.assetId} onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
+                                                        : activeTab.moduleKey === 'securityDetail'
+                                                          ? <SecurityDetailModule assetId={activeTab.assetId} onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
+                                                          : activeTab.moduleKey === 'securityCatalogDetail'
+                                                            ? <SecurityCatalogDetailModule assetId={activeTab.assetId} onNavigate={(moduleKey, assetId) => dispatch({ type: 'NAVIGATE', moduleKey, assetId })} />
+                                                            : <PlaceholderModule moduleKey={activeTab.moduleKey} />
           : <div className="empty-hint">点击左侧导航打开模块</div>}
       </div>
     </div>
