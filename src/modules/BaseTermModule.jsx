@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useData } from '../DataContext.jsx';
 import Tag from '../components/Tag.jsx';
 import EntityForm from '../components/EntityForm.jsx';
+import ComingSoonAction from '../components/ComingSoonAction.jsx';
 
 export default function BaseTermModule() {
   const { data } = useData();
@@ -24,9 +25,10 @@ export default function BaseTermModule() {
           <option value="nonClassWord">非类词</option>
         </select>
         <button className="btn-primary" onClick={() => setShowForm(true)}>新增术语</button>
+        <ComingSoonAction label="批量导入" />
       </div>
       <table className="table">
-        <thead><tr><th>中文名</th><th>英文名</th><th>同义词</th><th>是否类词</th></tr></thead>
+        <thead><tr><th>中文名</th><th>英文名</th><th>同义词</th><th>是否类词</th><th>操作</th></tr></thead>
         <tbody>
           {filtered.map((t) => (
             <tr key={t.id}>
@@ -34,6 +36,7 @@ export default function BaseTermModule() {
               <td><code>{t.nameEn}</code></td>
               <td>{preview(t)}</td>
               <td>{t.isClassWord ? <Tag tone="ok">类词</Tag> : '—'}</td>
+              <td><ComingSoonAction label="编辑" variant="link" /> <ComingSoonAction label="停用" variant="link" /></td>
             </tr>
           ))}
         </tbody>

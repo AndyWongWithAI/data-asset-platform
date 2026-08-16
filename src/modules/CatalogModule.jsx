@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useData } from '../DataContext.jsx';
+import ComingSoonAction from '../components/ComingSoonAction.jsx';
 
 export default function CatalogModule({ onNavigate }) {
   const { data } = useData();
@@ -27,6 +28,7 @@ export default function CatalogModule({ onNavigate }) {
         </select>
         <input placeholder="按表名检索（子字符串匹配）…" value={keyword}
           onChange={(e) => setKeyword(e.target.value)} />
+        <ComingSoonAction label="新增表" /> <ComingSoonAction label="批量导入" />
       </div>
       <table className="table">
         <thead><tr><th>表名</th><th>应用</th><th>库</th><th>业务域</th><th>操作</th></tr></thead>
@@ -37,7 +39,7 @@ export default function CatalogModule({ onNavigate }) {
               <td>{data.applications.find((a) => a.id === t.appId)?.name}</td>
               <td>{data.databases.find((d) => d.id === t.dbId)?.name}</td>
               <td>{data.bizDomains.find((b) => b.id === t.bizDomainId)?.name}</td>
-              <td><button className="link" onClick={() => onNavigate('tableDetail', { tableId: t.id, title: t.nameCn })}>查看</button></td>
+              <td><button className="link" onClick={() => onNavigate('tableDetail', { tableId: t.id, title: t.nameCn })}>查看</button> <ComingSoonAction label="编辑" variant="link" /> <ComingSoonAction label="下线" variant="link" /></td>
             </tr>
           ))}
         </tbody>

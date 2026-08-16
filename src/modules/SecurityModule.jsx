@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useData } from '../DataContext.jsx';
 import Tag from '../components/Tag.jsx';
 import EntityForm from '../components/EntityForm.jsx';
+import ComingSoonAction from '../components/ComingSoonAction.jsx';
 
 const LEVEL_TONE = { L1: 'ok', L2: 'default', L3: 'warn', L4: 'danger' };
 
@@ -45,6 +46,7 @@ export default function SecurityModule({ onNavigate }) {
               <option value="all">全部</option>
               {category1Options.map((c) => <option key={c} value={c}>{c}</option>)}
             </select>
+            <ComingSoonAction label="新增分类" /> <ComingSoonAction label="批量导入" />
           </div>
           <table className="table">
             <thead><tr><th>一级分类</th><th>二级分类</th><th>数据类型</th><th>数据分级</th><th>操作</th></tr></thead>
@@ -55,7 +57,7 @@ export default function SecurityModule({ onNavigate }) {
                   <td>{sc.category2}</td>
                   <td>{sc.dataType}</td>
                   <td><Tag tone={LEVEL_TONE[sc.level]}>{sc.level}</Tag></td>
-                  <td><button className="link" onClick={() => onNavigate('securityCatalogDetail', { catalogId: sc.id })}>查看明细</button></td>
+                  <td><button className="link" onClick={() => onNavigate('securityCatalogDetail', { catalogId: sc.id })}>查看明细</button> <ComingSoonAction label="编辑" variant="link" /> <ComingSoonAction label="删除" variant="link" /></td>
                 </tr>
               ))}
             </tbody>

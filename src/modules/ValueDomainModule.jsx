@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useData } from '../DataContext.jsx';
 import EntityForm from '../components/EntityForm.jsx';
+import ComingSoonAction from '../components/ComingSoonAction.jsx';
 
 export default function ValueDomainModule({ onNavigate }) {
   const { data } = useData();
@@ -9,9 +10,10 @@ export default function ValueDomainModule({ onNavigate }) {
     <div>
       <div className="search-bar">
         <button className="btn-primary" onClick={() => setShowForm(true)}>新增值域</button>
+        <ComingSoonAction label="批量导入" />
       </div>
       <table className="table">
-        <thead><tr><th>值域编号</th><th>数据类型</th><th>长度</th><th>精度</th></tr></thead>
+        <thead><tr><th>值域编号</th><th>数据类型</th><th>长度</th><th>精度</th><th>操作</th></tr></thead>
         <tbody>
           {data.valueDomains.map((v) => (
             <tr key={v.id}>
@@ -19,6 +21,7 @@ export default function ValueDomainModule({ onNavigate }) {
               <td><code>{v.dataType}</code></td>
               <td>{v.length}</td>
               <td>{v.precision}</td>
+              <td><ComingSoonAction label="编辑" variant="link" /> <ComingSoonAction label="停用" variant="link" /></td>
             </tr>
           ))}
         </tbody>

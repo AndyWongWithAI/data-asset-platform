@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useData } from '../DataContext.jsx';
 import EntityForm from '../components/EntityForm.jsx';
+import ComingSoonAction from '../components/ComingSoonAction.jsx';
 
 export default function InfoItemModule({ onNavigate }) {
   const { data } = useData();
@@ -11,9 +12,10 @@ export default function InfoItemModule({ onNavigate }) {
     <div>
       <div className="search-bar">
         <button className="btn-primary" onClick={() => setShowForm(true)}>新增信息项</button>
+        <ComingSoonAction label="批量导入" />
       </div>
       <table className="table">
-        <thead><tr><th>信息项编号</th><th>中文名</th><th>英文名</th><th>类型</th><th>值域</th><th>参考数据</th></tr></thead>
+        <thead><tr><th>信息项编号</th><th>中文名</th><th>英文名</th><th>类型</th><th>值域</th><th>参考数据</th><th>操作</th></tr></thead>
         <tbody>
           {data.infoItems.map((i) => (
             <tr key={i.id}>
@@ -23,6 +25,7 @@ export default function InfoItemModule({ onNavigate }) {
               <td>{i.type}</td>
               <td><code>{vdCode(i.valueDomainId)}</code></td>
               <td>{rdName(i.refDataId)}</td>
+              <td><ComingSoonAction label="编辑" variant="link" /> <ComingSoonAction label="停用" variant="link" /></td>
             </tr>
           ))}
         </tbody>
