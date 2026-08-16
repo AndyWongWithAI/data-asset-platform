@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useData } from '../DataContext.jsx';
 import { FORM_SCHEMAS, ENTITY_TITLES } from '../schema.js';
 import { analyzeNameCn } from '../infoItemNaming.js';
+import { filterRefOptions } from '../entityFilter.js';
 
 // 通用标签取值：按引用目标实体的可读字段渲染下拉/复选选项文本。
 export function labelOf(entity, item) {
@@ -41,7 +42,7 @@ const isEmpty = (v) =>
 function buildPayload(schema, values, mode = 'create') {
   const payload = {};
   for (const f of schema) {
-    if (f.type === 'derived' || f.readonly) continue;
+    if (f.type === 'derived' || f.readonly || (mode === 'update' && f.readonlyOnUpdate)) continue;
     const v = values[f.key];
     if (f.type === 'number') {
       if (v === '' || v == null) continue;
@@ -185,7 +186,7 @@ export default function EntityForm({ entity, mode = 'create', record = null, tit
     const full = ['subtable', 'dynamic', 'expr'].includes(f.type) || f.key === 'definition' || f.key === 'desc';
     let control;
 
-    if (f.readonly) {
+    if (f.readonly || (mode === 'update' && f.readonlyOnUpdate)) {
       control = <div className="derived-value">{val ?? '—'}</div>;
     } else if (f.type === 'derived') {
       control = <div className="derived-value">{derivedValue(f) || '—'}</div>;
@@ -211,7 +212,7 @@ export default function EntityForm({ entity, mode = 'create', record = null, tit
           control = (
             <select className="form-input" value={val ?? ''} onChange={(e) => setValue(f.key, e.target.value)}>
               <option value="">请选择</option>
-              {(data[f.ref] || []).map((item) => (
+              {filterRefOptions(data[f.ref], record, f.key).map((item) => (
                 <option key={item.id} value={item.id}>{labelOf(f.ref, item)}</option>
               ))}
             </select>
@@ -220,7 +221,7 @@ export default function EntityForm({ entity, mode = 'create', record = null, tit
         case 'multiref':
           control = (
             <div className="form-check-list">
-              {(data[f.ref] || []).map((item) => {
+              {filterRefOptions(data[f.ref], record, f.key).map((item) => {
                 const checked = (val || []).includes(item.id);
                 return (
                   <label key={item.id}>
