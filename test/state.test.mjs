@@ -2,8 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { MODULE_GROUPS, MODULES, createInitialState, openTab, closeTab, navigate, filterModuleGroups } from '../src/state.js';
 
-test('MODULE_GROUPS 2 组 + standard/数据交换 父级目录 + MODULES 15 叶子 + tableDetail + 10 详情共 26', () => {
-  assert.deepEqual(MODULE_GROUPS.map((g) => g.name), ['生产态·治理看板', '设计态·定义']);
+test('MODULE_GROUPS 3 组 + standard/数据交换 父级目录 + MODULES 15 叶子 + tableDetail + 10 详情共 26', () => {
+  assert.deepEqual(MODULE_GROUPS.map((g) => g.name), ['生产态·治理看板', '设计态·定义', '系统管理']);
   const design = MODULE_GROUPS.find((g) => g.name === '设计态·定义');
   const standard = design.items.find((i) => i.key === 'standard');
   assert.ok(standard && standard.children, 'standard 应为父级目录');
@@ -11,6 +11,10 @@ test('MODULE_GROUPS 2 组 + standard/数据交换 父级目录 + MODULES 15 叶�
   const dataExchange = design.items.find((i) => i.key === 'dataExchange');
   assert.ok(dataExchange && dataExchange.children, '数据交换 应为设计态下的父级目录');
   assert.deepEqual(dataExchange.children.map((c) => c.key), ['fileExchange', 'dataService']);
+  const sysAdmin = MODULE_GROUPS.find((g) => g.name === '系统管理');
+  assert.ok(sysAdmin, '系统管理 组应存在');
+  assert.deepEqual(sysAdmin.items.map((i) => i.key), ['portalManagement'], '门户管理 应在 系统管理 下');
+  assert.ok(!design.items.some((i) => i.key === 'portalManagement'), '门户管理 不应再在 设计态·定义 下');
   const leafKeys = MODULES.map((m) => m.key);
   assert.equal(leafKeys.length, 26); // 15 叶子模块 + tableDetail + 10 详情模块
   assert.ok(!leafKeys.includes('standard'), 'standard 父级不应是模块');

@@ -58,8 +58,9 @@ def main():
         # 顶部标题只保留「数据资产管理平台」
         assert page.locator('.header-title h1').inner_text() == '数据资产管理平台'
         assert page.locator('.header-subtitle').count() == 0
-        # 两个大分组可折叠/展开
-        assert page.locator('.sidebar-group-dir').count() == 2
+        # 三个大分组可折叠/展开
+        assert page.locator('.sidebar-group-dir').count() == 3
+        assert page.locator('.sidebar-group-dir', has_text='系统管理').count() == 1
         page.locator('.sidebar-group-dir', has_text='设计态·定义').click()
         assert page.locator('.sidebar-item', has_text='结构化元数据').count() == 0
         page.locator('.sidebar-group-dir', has_text='设计态·定义').click()
