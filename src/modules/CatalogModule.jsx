@@ -1,12 +1,16 @@
 import { useState } from 'react';
 import { useData } from '../DataContext.jsx';
 import ComingSoonAction from '../components/ComingSoonAction.jsx';
+import EntityForm from '../components/EntityForm.jsx';
+import BulkImport from '../components/BulkImport.jsx';
 
 export default function CatalogModule({ onNavigate }) {
   const { data } = useData();
   const [appId, setAppId] = useState('all');
   const [domainId, setDomainId] = useState('all');
   const [keyword, setKeyword] = useState('');
+  const [showForm, setShowForm] = useState(false);
+  const [showImport, setShowImport] = useState(false);
 
   const filtered = data.tables.filter((t) => {
     if (appId !== 'all' && t.appId !== appId) return false;
@@ -28,7 +32,8 @@ export default function CatalogModule({ onNavigate }) {
         </select>
         <input placeholder="按表名检索（子字符串匹配）…" value={keyword}
           onChange={(e) => setKeyword(e.target.value)} />
-        <ComingSoonAction label="新增表" /> <ComingSoonAction label="批量导入" />
+        <button className="btn-primary" onClick={() => setShowForm(true)}>新增表</button>
+        <button className="btn-secondary" onClick={() => setShowImport(true)}>批量导入</button>
       </div>
       <table className="table">
         <thead><tr><th>表名</th><th>应用</th><th>库</th><th>业务域</th><th>操作</th></tr></thead>
@@ -45,6 +50,8 @@ export default function CatalogModule({ onNavigate }) {
         </tbody>
       </table>
       {filtered.length === 0 && <div className="empty-hint">无匹配的表，请调整筛选条件</div>}
+      {showForm && <EntityForm entity="tables" onClose={() => setShowForm(false)} onSaved={() => setShowForm(false)} />}
+      {showImport && <BulkImport entity="tables" onClose={() => setShowImport(false)} onSaved={() => setShowImport(false)} />}
     </div>
   );
 }

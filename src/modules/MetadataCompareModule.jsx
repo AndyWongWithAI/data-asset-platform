@@ -37,6 +37,8 @@ export default function MetadataCompareModule({ onNavigate }) {
 
   return (
     <div>
+      <h3>企业整体生产元数据情况</h3>
+
       <div className="search-bar" style={{ justifyContent: 'flex-end' }}>
         <ComingSoonAction label="导出生产表结构" />
       </div>
