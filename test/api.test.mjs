@@ -45,7 +45,7 @@ test('create tables：成功 + id 生成 + 服务端派生 history/partitions/in
   const before = getState().tables.length;
   const r = create('tables', {
     nameCn: '测试新表', nameEn: 'test_new_table', tableType: '业务表',
-    appId: 'app_res', dbId: 'db_res', bizDomainId: 'bd_resource', subjectId: 'bs_wind', desc: '测试描述',
+    appId: 'app_plm', dbId: 'db_plm', bizDomainId: 'bd_rnd', subjectId: 'bs_device', desc: '测试描述',
   });
   assert.equal(r.ok, true);
   assert.equal(r.record.id, 't_1');
@@ -63,7 +63,7 @@ test('create tables：subjectId 不存在于业务域主题域 → 报错', () =
   freshStore();
   const r = create('tables', {
     nameCn: '测试新表2', nameEn: 'test_new_table2', tableType: '业务表',
-    appId: 'app_res', dbId: 'db_res', bizDomainId: 'bd_resource', subjectId: 'bs_nonexistent',
+    appId: 'app_plm', dbId: 'db_plm', bizDomainId: 'bd_rnd', subjectId: 'bs_nonexistent',
   });
   assert.equal(r.ok, false);
   assert.ok(r.errors.some((e) => e.includes('subjectId')));
@@ -111,16 +111,16 @@ test('create infoItems：nameCn 拆词派生 + 引用校验（valueDomainId）',
   freshStore();
   // 合法：中文名拆词全命中（风机+标识），nameEn/termIds/code 由服务端派生
   const ok = create('infoItems', {
-    nameCn: '风机标识', type: '技术', valueDomainId: 'vd_varchar10', refDataId: null,
+    nameCn: '设备标识', type: '技术', valueDomainId: 'vd_varchar10', refDataId: null,
   });
   assert.equal(ok.ok, true);
-  assert.equal(ok.record.nameCn, '风机标识');
-  assert.equal(ok.record.nameEn, 'turbine_identifier');
-  assert.deepEqual(ok.record.termIds, ['term_turbine', 'term_identifier']);
+  assert.equal(ok.record.nameCn, '设备标识');
+  assert.equal(ok.record.nameEn, 'device_identifier');
+  assert.deepEqual(ok.record.termIds, ['term_device', 'term_identifier']);
 
   // 非法 valueDomainId
   const badVd = create('infoItems', {
-    nameCn: '风机标识', type: '技术', valueDomainId: 'vd_not_exist',
+    nameCn: '设备标识', type: '技术', valueDomainId: 'vd_not_exist',
   });
   assert.equal(badVd.ok, false);
   assert.ok(badVd.errors.some((e) => e.includes('valueDomainId')));
@@ -129,7 +129,7 @@ test('create infoItems：nameCn 拆词派生 + 引用校验（valueDomainId）',
 test('create infoItems：枚举非法 type → 报错', () => {
   freshStore();
   const r = create('infoItems', {
-    nameCn: '风机标识', type: '非法', valueDomainId: 'vd_varchar10',
+    nameCn: '设备标识', type: '非法', valueDomainId: 'vd_varchar10',
   });
   assert.equal(r.ok, false);
   assert.ok(r.errors.some((e) => e.includes('type')));
@@ -138,7 +138,7 @@ test('create infoItems：枚举非法 type → 报错', () => {
 test('create infoItems：客户端注入 code 被服务端重算（堵任意 code）', () => {
   freshStore();
   const r = create('infoItems', {
-    code: 'ABC', nameCn: '风机标识', type: '技术', valueDomainId: 'vd_varchar10',
+    code: 'ABC', nameCn: '设备标识', type: '技术', valueDomainId: 'vd_varchar10',
   });
   assert.equal(r.ok, true);
   assert.notEqual(r.record.code, 'ABC');
@@ -148,7 +148,7 @@ test('create infoItems：客户端注入 code 被服务端重算（堵任意 cod
 test('create infoItems：缺词根 → 报错（阻止提交），末位缺失不误报末位非类词', () => {
   freshStore();
   const r = create('infoItems', {
-    nameCn: '风机转速', type: '技术', valueDomainId: 'vd_varchar10',
+    nameCn: '设备转速', type: '技术', valueDomainId: 'vd_varchar10',
   });
   assert.equal(r.ok, false);
   assert.ok(r.errors.some((e) => e.includes('缺少词根') && e.includes('转速')));
@@ -180,7 +180,7 @@ test('update security：不存在 level → 报错', () => {
 
 test('update masterData → 不支持修改', () => {
   freshStore();
-  const r = update('masterData', 'md_turbine', { name: 'x' });
+  const r = update('masterData', 'md_cdu', { name: 'x' });
   assert.equal(r.ok, false);
   assert.ok(r.errors.some((e) => e.includes('不支持修改')));
 });
@@ -232,12 +232,12 @@ test('F5：补全枚举（dataType / status 非法）+ masterData 不支持新�
   assert.equal(r1.ok, false);
   assert.ok(r1.errors.some((e) => e.includes('dataType')));
 
-  const r2 = create('masterData', { code: 'XX-0001', entityType: '风机', name: 'x', definition: 'x', rule: 'x', owner: 'x' });
+  const r2 = create('masterData', { code: 'XX-0001', entityType: '液冷设备', name: 'x', definition: 'x', rule: 'x', owner: 'x' });
   assert.equal(r2.ok, false);
   assert.ok(r2.errors.some((e) => e.includes('不支持新增')));
 
   const r3 = create('qualityRules', {
-    name: 'x', type: '准确性', targetFieldId: 'f_wind_speed', expr: 'x', threshold: '100%', severity: '严重', status: '未知状态',
+    name: 'x', type: '准确性', targetFieldId: 'f_dev_model', expr: 'x', threshold: '100%', severity: '严重', status: '未知状态',
   });
   assert.equal(r3.ok, false);
   assert.ok(r3.errors.some((e) => e.includes('status')));
@@ -246,7 +246,7 @@ test('F5：补全枚举（dataType / status 非法）+ masterData 不支持新�
 test('F6：可空引用传空字符串不误报', () => {
   freshStore();
   const r = create('infoItems', {
-    nameCn: '风机标识', type: '技术', valueDomainId: 'vd_varchar10', refDataId: '',
+    nameCn: '设备标识', type: '技术', valueDomainId: 'vd_varchar10', refDataId: '',
   });
   assert.equal(r.ok, true);
 });
@@ -327,20 +327,20 @@ test('HTTP 集成：GET /_entities 返回 entities/idKeys/creatable/updatable', 
 test('P2：infoItems 传 nameCn → 自动派生 nameEn/termIds/code', () => {
   freshStore();
   const r = create('infoItems', {
-    nameCn: '电压等级标识', type: '技术', valueDomainId: 'vd_varchar10',
+    nameCn: '设备类型标识', type: '技术', valueDomainId: 'vd_varchar10',
   });
   assert.equal(r.ok, true);
-  assert.equal(r.record.nameCn, '电压等级标识');
-  assert.equal(r.record.nameEn, 'voltage_level_identifier');
+  assert.equal(r.record.nameCn, '设备类型标识');
+  assert.equal(r.record.nameEn, 'device_type_identifier');
   assert.equal(r.record.code, 'II0011'); // 种子最大 II0010 → II0011
   assert.equal(r.record.id, 'ii_1');
-  assert.deepEqual(r.record.termIds, ['term_voltage', 'term_level', 'term_identifier']);
+  assert.deepEqual(r.record.termIds, ['term_device', 'term_type', 'term_identifier']);
 });
 
 test('P2：infoItems 末位非类词 → 报错', () => {
   freshStore();
   const r = create('infoItems', {
-    nameCn: '电压等级', type: '技术', valueDomainId: 'vd_varchar10',
+    nameCn: '设备类型', type: '技术', valueDomainId: 'vd_varchar10',
   });
   assert.equal(r.ok, false);
   assert.ok(r.errors.some((e) => e.includes('末位') && e.includes('类词')));
@@ -349,7 +349,7 @@ test('P2：infoItems 末位非类词 → 报错', () => {
 test('P2：infoItems 末位非类词 → 给出可选类词清单', () => {
   freshStore();
   const r = create('infoItems', {
-    nameCn: '风机机型', type: '技术', valueDomainId: 'vd_varchar10',
+    nameCn: '设备型号', type: '技术', valueDomainId: 'vd_varchar10',
   });
   assert.equal(r.ok, false);
   const msg = r.errors.find((e) => e.includes('末位') && e.includes('类词'));
@@ -360,14 +360,14 @@ test('P2：infoItems 末位非类词 → 给出可选类词清单', () => {
 test('P2：infoItems type=业务 缺 bizDomainId → 报错；type=技术 可不传', () => {
   freshStore();
   const bad = create('infoItems', {
-    nameCn: '风机标识', type: '业务', valueDomainId: 'vd_varchar10',
+    nameCn: '设备标识', type: '业务', valueDomainId: 'vd_varchar10',
   });
   assert.equal(bad.ok, false);
   assert.ok(bad.errors.some((e) => e.includes('bizDomainId')));
   assert.ok(bad.errors.some((e) => e.includes('definition')));
 
   const ok = create('infoItems', {
-    nameCn: '海缆标识', type: '技术', valueDomainId: 'vd_varchar10',
+    nameCn: '冷源标识', type: '技术', valueDomainId: 'vd_varchar10',
   });
   assert.equal(ok.ok, true);
 });
@@ -397,32 +397,32 @@ test('P2：refDatas 编号自增（CK+四位补零，客户端不可注入）', 
 test('P2：拆词最大正向匹配（四字词根优先：日期时间 不被 日期 抢先）', () => {
   freshStore();
   const r = create('infoItems', {
-    nameCn: '预测日期时间', type: '技术', valueDomainId: 'vd_varchar10',
+    nameCn: '冷却液温度值', type: '技术', valueDomainId: 'vd_varchar10',
   });
   assert.equal(r.ok, true);
-  assert.equal(r.record.nameEn, 'forecast_datetime');
-  assert.deepEqual(r.record.termIds, ['term_forecast', 'term_datetime']);
+  assert.equal(r.record.nameEn, 'coolant_temperature_value');
+  assert.deepEqual(r.record.termIds, ['term_coolant', 'term_temperature', 'term_value']);
 });
 
 test('P2：单字类词末位（值）合法', () => {
   freshStore();
   const r = create('infoItems', {
-    nameCn: '功率值', type: '技术', valueDomainId: 'vd_dec52',
+    nameCn: '流量值', type: '技术', valueDomainId: 'vd_dec52',
   });
   assert.equal(r.ok, true);
-  assert.equal(r.record.nameEn, 'power_value');
-  assert.deepEqual(r.record.termIds, ['term_power', 'term_value']);
+  assert.equal(r.record.nameEn, 'flow_value');
+  assert.deepEqual(r.record.termIds, ['term_flow', 'term_value']);
 });
 
 test('P2：infoItems 客户端注入 nameEn/termIds 被服务端覆盖', () => {
   freshStore();
   const r = create('infoItems', {
-    nameCn: '风机标识', type: '技术', valueDomainId: 'vd_varchar10',
+    nameCn: '设备标识', type: '技术', valueDomainId: 'vd_varchar10',
     nameEn: 'hacked_name', termIds: ['term_hack'],
   });
   assert.equal(r.ok, true);
-  assert.equal(r.record.nameEn, 'turbine_identifier');
-  assert.deepEqual(r.record.termIds, ['term_turbine', 'term_identifier']);
+  assert.equal(r.record.nameEn, 'device_identifier');
+  assert.deepEqual(r.record.termIds, ['term_device', 'term_identifier']);
 });
 
 test('create 未传 status → 默认启用（4 实体）', () => {
@@ -467,12 +467,12 @@ test('update 主键不可篡改', () => {
 
 test('update infoItems：派生字段（code/nameEn/termIds/nameCn）不可篡改', () => {
   freshStore();
-  const before = getState().infoItems.find((i) => i.id === 'ii_voltage');
-  const r = update('infoItems', 'ii_voltage', {
+  const before = getState().infoItems.find((i) => i.id === 'ii_device_type');
+  const r = update('infoItems', 'ii_device_type', {
     code: 'II9999', nameEn: 'hacked_en', termIds: ['term_hack'], nameCn: '被篡改的名字', definition: '新定义',
   });
   assert.equal(r.ok, true);
-  const after = getState().infoItems.find((i) => i.id === 'ii_voltage');
+  const after = getState().infoItems.find((i) => i.id === 'ii_device_type');
   assert.equal(after.code, before.code, 'code 不应被篡改');
   assert.equal(after.nameEn, before.nameEn, 'nameEn 不应被篡改');
   assert.deepEqual(after.termIds, before.termIds, 'termIds 不应被篡改');
@@ -482,25 +482,25 @@ test('update infoItems：派生字段（code/nameEn/termIds/nameCn）不可篡�
 
 test('update refDatas：code（CK 自增编号）不可篡改', () => {
   freshStore();
-  const before = getState().refDatas.find((r) => r.id === 'rd_voltage');
-  const r = update('refDatas', 'rd_voltage', { code: 'CK9999', name: '改名的电压等级' });
+  const before = getState().refDatas.find((r) => r.id === 'rd_device_type');
+  const r = update('refDatas', 'rd_device_type', { code: 'CK9999', name: '改名的液冷设备类型' });
   assert.equal(r.ok, true);
-  const after = getState().refDatas.find((r) => r.id === 'rd_voltage');
+  const after = getState().refDatas.find((r) => r.id === 'rd_device_type');
   assert.equal(after.code, before.code, 'code 不应被篡改');
-  assert.equal(after.name, '改名的电压等级', 'name 应正常更新');
+  assert.equal(after.name, '改名的液冷设备类型', 'name 应正常更新');
 });
 
 // ===== 表结构 / 字段编辑 =====
 test('update tables：改表级元数据成功 + 子表/历史不可篡改', () => {
   freshStore();
-  const before = getState().tables.find((t) => t.id === 't_wind');
-  const r = update('tables', 't_wind', {
-    nameCn: '测风数据表（改）', tableType: '技术表', desc: '新描述',
+  const before = getState().tables.find((t) => t.id === 't_telemetry');
+  const r = update('tables', 't_telemetry', {
+    nameCn: '液冷设备档案表（改）', tableType: '技术表', desc: '新描述',
     partitions: [{ field: 'hack' }], indexes: [{ name: 'hack' }], history: [{ action: 'hack' }],
   });
   assert.equal(r.ok, true);
-  const after = getState().tables.find((t) => t.id === 't_wind');
-  assert.equal(after.nameCn, '测风数据表（改）');
+  const after = getState().tables.find((t) => t.id === 't_telemetry');
+  assert.equal(after.nameCn, '液冷设备档案表（改）');
   assert.equal(after.tableType, '技术表');
   assert.equal(after.desc, '新描述');
   assert.deepEqual(after.partitions, before.partitions, 'partitions 不可篡改');
@@ -510,30 +510,30 @@ test('update tables：改表级元数据成功 + 子表/历史不可篡改', () 
 
 test('update tables：nameEn 改到已有表名 → 唯一性报错', () => {
   freshStore();
-  const other = getState().tables.find((t) => t.id !== 't_wind');
-  const r = update('tables', 't_wind', { nameEn: other.nameEn });
+  const other = getState().tables.find((t) => t.id !== 't_telemetry');
+  const r = update('tables', 't_telemetry', { nameEn: other.nameEn });
   assert.equal(r.ok, false);
   assert.ok(r.errors.some((e) => e.includes('nameEn')));
 });
 
 test('update fields：改嵌套元数据成功 + 白名单外字段不可篡改', () => {
   freshStore();
-  const before = getState().fields.find((f) => f.id === 'f_wind_speed');
-  const r = update('fields', 'f_wind_speed', {
+  const before = getState().fields.find((f) => f.id === 'f_dev_model');
+  const r = update('fields', 'f_dev_model', {
     id: 'f_hacked', tableId: 't_other', seq: 999,
-    business: { nameCn: '风速值（改）', code: 'HACKED', definition: '新定义', masterDataId: 'md_turbine' },
+    business: { nameCn: '冷量分配单元型号名称（改）', code: 'HACKED', definition: '新定义', masterDataId: 'md_cdu' },
     technical: { type: 'decimal(6,2)', length: 12, isPK: true, qualityRuleIds: ['qr_hack'] },
-    management: { owner: '新组', updateFrequency: '5分钟', standardId: 'ii_wind_speed', securityLevel: 'L3' },
+    management: { owner: '新组', updateFrequency: '5分钟', standardId: 'ii_cdu_model', securityLevel: 'L3' },
   });
   assert.equal(r.ok, true);
-  const after = getState().fields.find((f) => f.id === 'f_wind_speed');
-  assert.equal(after.id, 'f_wind_speed', 'id 不可篡改');
-  assert.equal(after.tableId, 't_wind', 'tableId 不可篡改');
+  const after = getState().fields.find((f) => f.id === 'f_dev_model');
+  assert.equal(after.id, 'f_dev_model', 'id 不可篡改');
+  assert.equal(after.tableId, 't_device', 'tableId 不可篡改');
   assert.equal(after.seq, 1, 'seq 不可篡改');
   assert.equal(after.business.code, before.business.code, 'code 不可篡改');
-  assert.equal(after.business.nameCn, '风速值（改）');
+  assert.equal(after.business.nameCn, '冷量分配单元型号名称（改）');
   assert.equal(after.business.definition, '新定义');
-  assert.equal(after.business.masterDataId, 'md_turbine');
+  assert.equal(after.business.masterDataId, 'md_cdu');
   assert.equal(after.technical.type, 'decimal(6,2)');
   assert.equal(after.technical.length, 12);
   assert.equal(after.technical.isPK, true);
@@ -545,44 +545,44 @@ test('update fields：改嵌套元数据成功 + 白名单外字段不可篡改'
 
 test('update fields：securityLevel 低于关联信息项分级 → 继承链拦截', () => {
   freshStore();
-  // f_wind_speed 关联 ii_wind_speed（L2），改 L1 低于信息项 → conflict 拦截
-  const r = update('fields', 'f_wind_speed', { management: { securityLevel: 'L1' } });
+  // f_dev_model 关联 ii_cdu_model（L2），改 L1 低于信息项 → conflict 拦截
+  const r = update('fields', 'f_dev_model', { management: { securityLevel: 'L1' } });
   assert.equal(r.ok, false);
   assert.ok(r.errors.some((e) => e.includes('安全分级')));
 });
 
 test('update fields：securityLevel 上调（custom-upgrade）→ 成功', () => {
   freshStore();
-  // f_wind_speed 关联 ii_wind_speed（L2），改 L3 高于信息项 → 合法自定义升级
-  const r = update('fields', 'f_wind_speed', { management: { securityLevel: 'L3' } });
+  // f_dev_model 关联 ii_cdu_model（L2），改 L3 高于信息项 → 合法自定义升级
+  const r = update('fields', 'f_dev_model', { management: { securityLevel: 'L3' } });
   assert.equal(r.ok, true);
   assert.equal(r.record.management.securityLevel, 'L3');
 });
 
 test('create fields：成功 + id/seq/masterDataType 服务端派生', () => {
   freshStore();
-  const before = getState().fields.filter((f) => f.tableId === 't_wind').length;
+  const before = getState().fields.filter((f) => f.tableId === 't_telemetry').length;
   const r = create('fields', {
-    tableId: 't_wind',
-    business: { code: 'new_field', nameCn: '新字段', definition: '测试', masterDataId: 'md_turbine' },
+    tableId: 't_telemetry',
+    business: { code: 'new_field', nameCn: '新字段', definition: '测试', masterDataId: 'md_cdu' },
     technical: { type: 'decimal(5,2)', length: 7 },
     management: { owner: '测试组', updateFrequency: '1天' },
   });
   assert.equal(r.ok, true);
   assert.equal(r.record.id, 'f_1');
-  assert.equal(r.record.tableId, 't_wind');
+  assert.equal(r.record.tableId, 't_telemetry');
   assert.equal(r.record.seq, before + 1, 'seq 表内自增');
   assert.equal(r.record.business.code, 'new_field');
-  assert.equal(r.record.business.masterDataType, '风机', 'masterDataType 从主数据 entityType 派生');
+  assert.equal(r.record.business.masterDataType, '液冷设备', 'masterDataType 从主数据 entityType 派生');
   assert.deepEqual(r.record.technical.qualityRuleIds, [], 'qualityRuleIds 空数组起步');
-  assert.equal(getState().fields.filter((f) => f.tableId === 't_wind').length, before + 1);
+  assert.equal(getState().fields.filter((f) => f.tableId === 't_telemetry').length, before + 1);
 });
 
 test('create fields：同表 code 唯一 → 报错', () => {
   freshStore();
-  const existing = getState().fields.find((f) => f.tableId === 't_wind');
+  const existing = getState().fields.find((f) => f.tableId === 't_telemetry');
   const r = create('fields', {
-    tableId: 't_wind',
+    tableId: 't_telemetry',
     business: { code: existing.business.code, nameCn: '重复' },
     technical: { type: 'int' },
     management: { owner: 'x' },
@@ -593,7 +593,7 @@ test('create fields：同表 code 唯一 → 报错', () => {
 
 test('create fields：缺必填 → 报错', () => {
   freshStore();
-  const r = create('fields', { tableId: 't_wind', business: { nameCn: '缺 code 和 type' } });
+  const r = create('fields', { tableId: 't_telemetry', business: { nameCn: '缺 code 和 type' } });
   assert.equal(r.ok, false);
   assert.ok(r.errors.some((e) => e.includes('business.code')));
   assert.ok(r.errors.some((e) => e.includes('technical.type')));
@@ -603,10 +603,10 @@ test('create fields：缺必填 → 报错', () => {
 test('create fields：securityLevel 低于关联信息项 → 继承链拦截', () => {
   freshStore();
   const r = create('fields', {
-    tableId: 't_wind',
+    tableId: 't_telemetry',
     business: { code: 'conflict_new', nameCn: '冲突' },
     technical: { type: 'int' },
-    management: { owner: 'x', standardId: 'ii_wind_speed', securityLevel: 'L1' },
+    management: { owner: 'x', standardId: 'ii_cdu_model', securityLevel: 'L1' },
   });
   assert.equal(r.ok, false);
   assert.ok(r.errors.some((e) => e.includes('安全分级')));
@@ -624,14 +624,14 @@ test('create securityCatalog：成功 + id 自增 + status 默认启用', () => 
 
 test('create securityCatalog：dataType 唯一 → 报错', () => {
   freshStore();
-  const r = create('securityCatalog', { category1: '设计研发域', category2: '资源评估', dataType: '测风数据', level: 'L2' });
+  const r = create('securityCatalog', { category1: '设计研发域', category2: '产品设计', dataType: '液冷设备数据', level: 'L2' });
   assert.equal(r.ok, false);
   assert.ok(r.errors.some((e) => e.includes('dataType')));
 });
 
 test('create securityCatalog：level 非法 → 报错', () => {
   freshStore();
-  const r = create('securityCatalog', { category1: '支撑服务域', category2: '财务', dataType: '财务报表', level: 'L5' });
+  const r = create('securityCatalog', { category1: '智慧运维域', category2: '告警管理', dataType: '财务报表', level: 'L5' });
   assert.equal(r.ok, false);
   assert.ok(r.errors.some((e) => e.includes('level')));
 });
@@ -651,8 +651,8 @@ test('update securityCatalog：改 level + 停用/启用可逆', () => {
 
 test('update fields：securityLevel 低于关联分类等级 → 拦截', () => {
   freshStore();
-  // f_topo_depth 关联 sc_005（L4），改 L2 低于分类等级 → 治理自上而下拦截
-  const r = update('fields', 'f_topo_depth', { management: { securityLevel: 'L2' } });
+  // f_proc_pressure 关联 sc_005（L4），改 L2 低于分类等级 → 治理自上而下拦截
+  const r = update('fields', 'f_proc_pressure', { management: { securityLevel: 'L2' } });
   assert.equal(r.ok, false);
   assert.ok(r.errors.some((e) => e.includes('安全分级') && e.includes('分类')));
 });
@@ -660,9 +660,9 @@ test('update fields：securityLevel 低于关联分类等级 → 拦截', () => 
 test('update fields：解除分类关联后可降级', () => {
   freshStore();
   // 先解除 sc_005 关联，分类约束不再生效，再降级到 L2 → 成功
-  const unlink = update('fields', 'f_topo_depth', { management: { securityCatalogId: null } });
+  const unlink = update('fields', 'f_proc_pressure', { management: { securityCatalogId: null } });
   assert.equal(unlink.ok, true);
-  const r = update('fields', 'f_topo_depth', { management: { securityLevel: 'L2' } });
+  const r = update('fields', 'f_proc_pressure', { management: { securityLevel: 'L2' } });
   assert.equal(r.ok, true);
   assert.equal(r.record.management.securityLevel, 'L2');
 });
@@ -696,8 +696,8 @@ test('create portalAssets：成功 + 审批中 + 审批链首步 + id 自增', (
   const dataFile = freshStore();
   const before = getState().portalAssets.length;
   const r = create('portalAssets', {
-    name: '测试上架资产', category: '风资源', desc: '测试', dataOwner: '风资源室',
-    usageType: '下载', securityLevel: 'L2', tableIds: ['t_wind'], serviceIds: [],
+    name: '测试上架资产', category: '运行监测', desc: '测试', dataOwner: '智慧运维室',
+    usageType: '下载', securityLevel: 'L3', tableIds: ['t_telemetry'], serviceIds: [],
   });
   assert.equal(r.ok, true);
   assert.equal(r.record.id, 'pa_9');
@@ -715,7 +715,7 @@ test('create portalAssets：成功 + 审批中 + 审批链首步 + id 自增', (
 test('create portalAssets：表与服务至少选一，空打包报错', () => {
   freshStore();
   const r = create('portalAssets', {
-    name: '空打包', category: '风资源', desc: 'x', dataOwner: '风资源室',
+    name: '空打包', category: '运行监测', desc: 'x', dataOwner: '智慧运维室',
     usageType: '下载', securityLevel: 'L2', tableIds: [], serviceIds: [],
   });
   assert.equal(r.ok, false);
@@ -725,8 +725,8 @@ test('create portalAssets：表与服务至少选一，空打包报错', () => {
 test('create portalAssets：securityLevel 低于打包对象最高分级 → 报错', () => {
   freshStore();
   const r = create('portalAssets', {
-    name: '低分级', category: '海洋勘测', desc: 'x', dataOwner: '海洋勘测室',
-    usageType: '下载', securityLevel: 'L3', tableIds: ['t_topo'], serviceIds: [],
+    name: '低分级', category: '工艺标准', desc: 'x', dataOwner: '研发设计室',
+    usageType: '下载', securityLevel: 'L3', tableIds: ['t_process'], serviceIds: [],
   });
   assert.equal(r.ok, false);
   assert.ok(r.errors.some((e) => e.includes('低于打包对象')));
@@ -735,8 +735,8 @@ test('create portalAssets：securityLevel 低于打包对象最高分级 → 报
 test('create portalAssets：securityLevel 上调至打包对象最高分级 → 成功', () => {
   freshStore();
   const r = create('portalAssets', {
-    name: '合规分级', category: '海洋勘测', desc: 'x', dataOwner: '海洋勘测室',
-    usageType: '下载', securityLevel: 'L4', tableIds: ['t_topo'], serviceIds: [],
+    name: '合规分级', category: '工艺标准', desc: 'x', dataOwner: '研发设计室',
+    usageType: '下载', securityLevel: 'L4', tableIds: ['t_process'], serviceIds: [],
   });
   assert.equal(r.ok, true);
   assert.equal(r.record.securityLevel, 'L4');
