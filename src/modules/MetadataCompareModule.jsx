@@ -11,7 +11,7 @@ const TYPE_META = {
 
 const DRIFT_DIM = { type: '类型', nameCn: '中文名' };
 
-// 字段级差异的「生产侧 / 设计态侧」单元格：code · 中文名 · 类型（无则 —）
+// 字段级差异的「实际侧 / 登记侧」单元格：code · 中文名 · 类型（无则 —）
 function FieldSide({ side }) {
   if (!side) return <span className="muted">—</span>;
   return (
@@ -37,10 +37,10 @@ export default function MetadataCompareModule({ onNavigate }) {
 
   return (
     <div>
-      <h3>企业整体生产元数据情况</h3>
+      <h3>企业整体元数据情况</h3>
 
       <div className="search-bar" style={{ justifyContent: 'flex-end' }}>
-        <ComingSoonAction label="导出生产表结构" />
+        <ComingSoonAction label="导出表结构" />
       </div>
 
       <div className="stat-row">
@@ -55,7 +55,7 @@ export default function MetadataCompareModule({ onNavigate }) {
       <h3>表级差异</h3>
       {tableDiffs.length ? (
         <table className="table">
-          <thead><tr><th>差异类型</th><th>生产侧</th><th>设计态侧</th></tr></thead>
+          <thead><tr><th>差异类型</th><th>实际侧</th><th>登记侧</th></tr></thead>
           <tbody>
             {tableDiffs.map((d, i) => {
               const meta = TYPE_META[d.type];
@@ -82,7 +82,7 @@ export default function MetadataCompareModule({ onNavigate }) {
       <h3>字段级差异</h3>
       {fieldDiffs.length ? (
         <table className="table">
-          <thead><tr><th>差异类型</th><th>所属表</th><th>生产侧</th><th>设计态侧</th><th>漂移维度</th></tr></thead>
+          <thead><tr><th>差异类型</th><th>所属表</th><th>实际侧</th><th>登记侧</th><th>漂移维度</th></tr></thead>
           <tbody>
             {fieldDiffs.map((d, i) => {
               const meta = TYPE_META[d.type];
@@ -102,7 +102,7 @@ export default function MetadataCompareModule({ onNavigate }) {
         </table>
       ) : <div className="empty-hint">无字段级差异</div>}
 
-      {total === 0 && <div className="empty-hint">生产元数据与设计态元数据完全一致，无差异</div>}
+      {total === 0 && <div className="empty-hint">实际元数据与登记元数据完全一致，无差异</div>}
     </div>
   );
 }

@@ -34,12 +34,14 @@ export default function Sidebar({ groups, activeModuleKey, onOpen }) {
         <div className="sidebar-empty">无匹配目录</div>
       ) : (
         visibleGroups.map((group) => (
-          <div className="sidebar-group" key={group.name}>
-            <button className="sidebar-group-dir" onClick={() => toggle(group.name)}>
-              <span className="dir-arrow">{arrow(group.name)}</span>
-              <span>{group.name}</span>
-            </button>
-            {isOpen(group.name) &&
+          <div className="sidebar-group" key={group.name || '__root__'}>
+            {group.name && (
+              <button className="sidebar-group-dir" onClick={() => toggle(group.name)}>
+                <span className="dir-arrow">{arrow(group.name)}</span>
+                <span>{group.name}</span>
+              </button>
+            )}
+            {(group.name ? isOpen(group.name) : true) &&
               group.items.map((item) =>
                 item.children ? (
                   <div key={item.key}>
