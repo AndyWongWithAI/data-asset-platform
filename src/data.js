@@ -3,8 +3,8 @@ const D = {
     "title": "数据资产管理平台",
     // 种子结构版本：后端持久化 data.json 版本落后/缺失时自动重种，避免 stale 数据掩盖新增字段。
     // ⚠️ 任何改动种子结构（增删实体/字段/枚举）都必须 +1，否则线上旧 data.json 不会被重种。
-    "schemaVersion": 2,
-    "disclaimer": "⚠ 参考模型声明：基于广东院公开业务信息构建的演示模型，非广东院实际部署、仅供演示。不虚构内部运营数据。",
+    "schemaVersion": 3,
+    "disclaimer": "⚠ 参考模型声明：基于申菱环境公开业务信息构建的演示模型，非申菱环境实际部署、仅供演示。不虚构内部运营数据。",
     "stats": {
       "applications": 5,
       "databases": 5,
@@ -27,123 +27,131 @@ const D = {
   },
   "applications": [
     {
-      "id": "app_res",
-      "name": "风资源评估系统",
-      "desc": "测风/气象数据采集与分析"
+      "id": "app_plm",
+      "name": "研发设计系统",
+      "desc": "产品研发/BOM/工艺设计（PLM）"
     },
     {
-      "id": "app_survey",
-      "name": "海洋勘测系统",
-      "desc": "地质/测绘/岩土数据"
+      "id": "app_mes",
+      "name": "生产制造系统",
+      "desc": "生产订单/工序/质检（MES）"
     },
     {
-      "id": "app_design",
-      "name": "工程设计系统",
-      "desc": "风机/海缆/升压站设计"
+      "id": "app_crm",
+      "name": "营销服务系统",
+      "desc": "客户/合同/订单（CRM）"
     },
     {
-      "id": "app_build",
-      "name": "施工管理系统",
-      "desc": "船机调度/作业进度"
+      "id": "app_pm",
+      "name": "集成实施系统",
+      "desc": "数据中心液冷工程实施与维保（PM）"
     },
     {
-      "id": "app_ops",
+      "id": "app_dcim",
       "name": "智慧运维系统",
-      "desc": "SCADA 遥测/功率预测/备件"
+      "desc": "遥测/告警/能耗/维保（DCIM）"
     }
   ],
   "databases": [
     {
-      "id": "db_res",
-      "appId": "app_res",
-      "name": "资源评估库",
+      "id": "db_plm",
+      "appId": "app_plm",
+      "name": "研发设计库",
       "type": "PostgreSQL"
     },
     {
-      "id": "db_survey",
-      "appId": "app_survey",
-      "name": "勘测库",
-      "type": "PostgreSQL"
-    },
-    {
-      "id": "db_design",
-      "appId": "app_design",
-      "name": "设计库",
+      "id": "db_mes",
+      "appId": "app_mes",
+      "name": "生产制造库",
       "type": "Oracle"
     },
     {
-      "id": "db_build",
-      "appId": "app_build",
-      "name": "施工库",
+      "id": "db_crm",
+      "appId": "app_crm",
+      "name": "营销服务库",
       "type": "MySQL"
     },
     {
-      "id": "db_ops",
-      "appId": "app_ops",
-      "name": "运维库",
-      "type": "Hive"
+      "id": "db_pm",
+      "appId": "app_pm",
+      "name": "项目实施库",
+      "type": "SQL Server"
+    },
+    {
+      "id": "db_dcim",
+      "appId": "app_dcim",
+      "name": "运维监控库",
+      "type": "时序库"
     }
   ],
   "bizDomains": [
     {
-      "id": "bd_resource",
-      "name": "资源评估域",
-      "subjects": [
-        {
-          "id": "bs_wind",
-          "name": "测风"
-        }
-      ]
-    },
-    {
-      "id": "bd_survey",
-      "name": "勘测域",
-      "subjects": [
-        {
-          "id": "bs_geo",
-          "name": "地质"
-        },
-        {
-          "id": "bs_topo",
-          "name": "测绘"
-        }
-      ]
-    },
-    {
-      "id": "bd_design",
-      "name": "设计域",
+      "id": "bd_rnd",
+      "name": "研发设计域",
       "subjects": [
         {
           "id": "bs_device",
-          "name": "设备设计"
+          "name": "产品设计"
+        },
+        {
+          "id": "bs_bom",
+          "name": "物料"
+        },
+        {
+          "id": "bs_process",
+          "name": "工艺"
         }
       ]
     },
     {
-      "id": "bd_build",
-      "name": "工程建设域",
+      "id": "bd_mes",
+      "name": "生产制造域",
       "subjects": [
         {
-          "id": "bs_schedule",
-          "name": "进度"
+          "id": "bs_order",
+          "name": "生产订单"
+        },
+        {
+          "id": "bs_inspection",
+          "name": "质检"
+        }
+      ]
+    },
+    {
+      "id": "bd_crm",
+      "name": "营销服务域",
+      "subjects": [
+        {
+          "id": "bs_project",
+          "name": "项目合同"
+        }
+      ]
+    },
+    {
+      "id": "bd_pm",
+      "name": "集成实施域",
+      "subjects": [
+        {
+          "id": "bs_commissioning",
+          "name": "调试实施"
         }
       ]
     },
     {
       "id": "bd_ops",
-      "name": "生产运营域",
+      "name": "智慧运维域",
       "subjects": [
         {
-          "id": "bs_scada",
+          "id": "bs_telemetry",
           "name": "遥测"
         },
         {
-          "id": "bs_forecast",
-          "name": "功率预测"
+          "id": "bs_alarm",
+          "name": "告警"
         },
         {
-          "id": "bs_spare",
-          "name": "备件"
+          "id": "bs_energy",
+          "name": "能耗"
         }
       ]
     }
@@ -165,13 +173,13 @@ const D = {
       "level": "L3",
       "name": "敏感",
       "desc": "受限共享，脱敏后使用",
-      "mask": "字段掩码/坐标偏移"
+      "mask": "字段掩码/精度降低"
     },
     {
       "level": "L4",
       "name": "涉密",
       "desc": "涉密，导出受管控",
-      "mask": "坐标模糊化"
+      "mask": "核心参数隐藏"
     }
   ],
   "securityCatalog": [
@@ -194,219 +202,219 @@ const D = {
     {
       "id": "sc_003",
       "category1": "设计研发域",
-      "category2": "资源评估",
-      "dataType": "测风数据",
+      "category2": "产品设计",
+      "dataType": "液冷设备数据",
       "level": "L2",
       "status": "启用"
     },
     {
       "id": "sc_004",
       "category1": "设计研发域",
-      "category2": "勘测",
-      "dataType": "地质钻孔数据",
+      "category2": "物料管理",
+      "dataType": "BOM物料数据",
       "level": "L3",
       "status": "启用"
     },
     {
       "id": "sc_005",
       "category1": "设计研发域",
-      "category2": "勘测",
-      "dataType": "海底地形测绘数据",
+      "category2": "工艺设计",
+      "dataType": "核心工艺参数数据",
       "level": "L4",
       "status": "启用"
     },
     {
       "id": "sc_006",
       "category1": "设计研发域",
-      "category2": "专业设计",
-      "dataType": "风机设备数据",
+      "category2": "产品设计",
+      "dataType": "冷源设备数据",
       "level": "L2",
       "status": "启用"
     },
     {
       "id": "sc_007",
       "category1": "设计研发域",
-      "category2": "专业设计",
-      "dataType": "海缆参数数据",
+      "category2": "产品设计",
+      "dataType": "冷量分配单元数据",
       "level": "L3",
       "status": "启用"
     },
     {
       "id": "sc_008",
       "category1": "设计研发域",
-      "category2": "专业设计",
-      "dataType": "升压站主变数据",
+      "category2": "产品设计",
+      "dataType": "机柜参数数据",
       "level": "L2",
       "status": "启用"
     },
     {
       "id": "sc_009",
-      "category1": "工程交付域",
-      "category2": "施工管理",
-      "dataType": "施工作业进度数据",
+      "category1": "生产制造域",
+      "category2": "生产管理",
+      "dataType": "生产订单数据",
       "level": "L2",
       "status": "启用"
     },
     {
       "id": "sc_010",
-      "category1": "工程交付域",
-      "category2": "运营管理",
-      "dataType": "SCADA遥测数据",
+      "category1": "集成实施域",
+      "category2": "调试交付",
+      "dataType": "调试实施记录数据",
       "level": "L2",
       "status": "启用"
     },
     {
       "id": "sc_011",
-      "category1": "工程交付域",
-      "category2": "运营管理",
-      "dataType": "功率预测结果数据",
-      "level": "L2",
+      "category1": "智慧运维域",
+      "category2": "遥测监控",
+      "dataType": "运行遥测数据",
+      "level": "L3",
       "status": "启用"
     },
     {
       "id": "sc_012",
-      "category1": "专业技术域",
-      "category2": "新能源发电设计",
-      "dataType": "发电量测算报告",
+      "category1": "智慧运维域",
+      "category2": "能效分析",
+      "dataType": "能耗PUE数据",
       "level": "L2",
       "status": "启用"
     },
     {
       "id": "sc_013",
-      "category1": "支撑服务域",
-      "category2": "供应链",
-      "dataType": "备品备件数据",
+      "category1": "智慧运维域",
+      "category2": "告警管理",
+      "dataType": "告警记录数据",
       "level": "L2",
       "status": "启用"
     }
   ],
   "masterData": [
     {
-      "id": "md_turbine",
+      "id": "md_cdu",
       "code": "MD-001",
-      "name": "风机主数据",
-      "entityType": "风机",
-      "definition": "风电机组的权威主数据，统一机组机型、额定功率与基础型式等核心属性",
-      "rule": "风机编码全局唯一；机型参数变更须走主数据变更审批；退役机组冻结状态保留历史",
-      "owner": "设计组",
+      "name": "液冷设备主数据",
+      "entityType": "液冷设备",
+      "definition": "液冷设备（CDU 冷量分配单元等）的权威主数据，统一设备型号、制冷量与单机柜功率等核心属性",
+      "rule": "液冷设备编码全局唯一；型号/制冷量参数变更须走主数据变更审批；停用设备冻结保留历史",
+      "owner": "研发设计组",
       "approvals": [
         {
-          "id": "ap_md_turbine_1",
+          "id": "ap_md_cdu_1",
           "type": "新建申请",
-          "applicant": "设计组",
+          "applicant": "研发设计组",
           "applyTime": "2024-02-01",
           "approver": "数据治理组",
           "status": "通过",
           "approveTime": "2024-02-05",
-          "comment": "风机主数据编码规则通过，纳入主数据目录"
+          "comment": "液冷设备主数据编码规则通过，纳入主数据目录"
         },
         {
-          "id": "ap_md_turbine_2",
+          "id": "ap_md_cdu_2",
           "type": "变更申请",
-          "applicant": "设计组",
+          "applicant": "研发设计组",
           "applyTime": "2025-05-10",
           "approver": "数据治理组",
           "status": "通过",
           "approveTime": "2025-05-15",
-          "comment": "新增 16.6MW 漂浮式机型编码"
+          "comment": "新增 150kW 单机柜液冷设备型号编码"
         },
         {
-          "id": "ap_md_turbine_3",
+          "id": "ap_md_cdu_3",
           "type": "变更申请",
-          "applicant": "运维组",
+          "applicant": "智慧运维组",
           "applyTime": "2025-11-20",
           "approver": "数据治理组",
           "status": "驳回",
           "approveTime": "2025-11-25",
-          "comment": "退役机组主数据变更材料不全，驳回补充"
+          "comment": "停用设备主数据变更材料不全，驳回补充"
         }
       ]
     },
     {
-      "id": "md_cable",
+      "id": "md_cold_source",
       "code": "MD-002",
-      "name": "海缆主数据",
-      "entityType": "海缆",
-      "definition": "海缆的权威主数据，统一海缆类型、电压等级与截面等核心属性",
-      "rule": "海缆编码全局唯一；电压等级/截面变更须走审批；退役海缆冻结保留历史",
-      "owner": "设计组",
+      "name": "冷源设备主数据",
+      "entityType": "冷源设备",
+      "definition": "冷源设备的权威主数据，统一冷源类型、制冷量与能效等核心属性",
+      "rule": "冷源编码全局唯一；冷源类型/制冷量变更须走审批；停用冷源冻结保留历史",
+      "owner": "研发设计组",
       "approvals": [
         {
-          "id": "ap_md_cable_1",
+          "id": "ap_md_cold_source_1",
           "type": "新建申请",
-          "applicant": "设计组",
+          "applicant": "研发设计组",
           "applyTime": "2024-02-20",
           "approver": "数据治理组",
           "status": "通过",
           "approveTime": "2024-02-24",
-          "comment": "海缆主数据编码规则通过"
+          "comment": "冷源设备主数据编码规则通过"
         },
         {
-          "id": "ap_md_cable_2",
+          "id": "ap_md_cold_source_2",
           "type": "变更申请",
-          "applicant": "设计组",
+          "applicant": "研发设计组",
           "applyTime": "2025-06-01",
           "approver": "数据治理组",
           "status": "通过",
           "approveTime": "2025-06-05",
-          "comment": "新增 500kV 三芯海缆规格编码"
+          "comment": "新增干冷器冷源规格编码"
         }
       ]
     },
     {
-      "id": "md_substation",
+      "id": "md_customer",
       "code": "MD-003",
-      "name": "升压站主数据",
-      "entityType": "升压站",
-      "definition": "海上升压站的权威主数据，统一主变容量、电压等级与接线方式等核心属性",
-      "rule": "升压站编码全局唯一；主变容量变更须走审批；退役站点冻结保留历史",
-      "owner": "设计组",
+      "name": "数据中心客户主数据",
+      "entityType": "数据中心客户",
+      "definition": "数据中心客户的权威主数据，统一客户资质、机房规模与液冷需求等核心属性",
+      "rule": "客户编码全局唯一；客户资质变更须走审批；退出客户冻结保留历史",
+      "owner": "营销服务组",
       "approvals": [
         {
-          "id": "ap_md_substation_1",
+          "id": "ap_md_customer_1",
           "type": "新建申请",
-          "applicant": "设计组",
+          "applicant": "营销服务组",
           "applyTime": "2024-03-01",
           "approver": "数据治理组",
           "status": "通过",
           "approveTime": "2024-03-05",
-          "comment": "升压站主数据编码规则通过"
+          "comment": "数据中心客户主数据编码规则通过"
         },
         {
-          "id": "ap_md_substation_2",
+          "id": "ap_md_customer_2",
           "type": "变更申请",
-          "applicant": "工程组",
+          "applicant": "营销服务组",
           "applyTime": "2025-07-10",
           "approver": "数据治理组",
           "status": "通过",
           "approveTime": "2025-07-15",
-          "comment": "主变容量扩容变更通过"
+          "comment": "新增智算中心客户机房规模变更通过"
         }
       ]
     },
     {
       "id": "md_project",
       "code": "MD-004",
-      "name": "项目主数据",
-      "entityType": "项目",
-      "definition": "海上风电项目的权威主数据，统一项目名称、规模与阶段等核心属性",
-      "rule": "项目编码全局唯一；项目阶段变更须走审批；并网/退役状态冻结",
-      "owner": "工程组",
+      "name": "液冷项目主数据",
+      "entityType": "液冷项目",
+      "definition": "液冷项目的权威主数据，统一项目名称、规模与阶段等核心属性",
+      "rule": "项目编码全局唯一；项目阶段变更须走审批；交付/停运状态冻结",
+      "owner": "集成实施组",
       "approvals": [
         {
           "id": "ap_md_project_1",
           "type": "新建申请",
-          "applicant": "工程组",
+          "applicant": "集成实施组",
           "applyTime": "2024-01-15",
           "approver": "数据治理组",
           "status": "通过",
           "approveTime": "2024-01-20",
-          "comment": "项目主数据编码规则通过"
+          "comment": "液冷项目主数据编码规则通过"
         },
         {
           "id": "ap_md_project_2",
           "type": "变更申请",
-          "applicant": "工程组",
+          "applicant": "集成实施组",
           "applyTime": "2025-09-01",
           "approver": "数据治理组",
           "status": "通过",
@@ -422,12 +430,12 @@ const D = {
       "entityType": "供应商",
       "definition": "设备与材料供应商的权威主数据，统一供应商资质与供货范围等核心属性",
       "rule": "供应商编码全局唯一；资质变更须走审批；不良供应商冻结停用",
-      "owner": "工程组",
+      "owner": "采购组",
       "approvals": [
         {
           "id": "ap_md_supplier_1",
           "type": "新建申请",
-          "applicant": "工程组",
+          "applicant": "采购组",
           "applyTime": "2024-01-25",
           "approver": "数据治理组",
           "status": "通过",
@@ -437,7 +445,7 @@ const D = {
         {
           "id": "ap_md_supplier_2",
           "type": "变更申请",
-          "applicant": "工程组",
+          "applicant": "采购组",
           "applyTime": "2025-10-12",
           "approver": "数据治理组",
           "status": "通过",
@@ -548,89 +556,11 @@ const D = {
       "status": "启用"
     },
     {
-      "id": "term_voltage",
-      "nameCn": "电压",
-      "nameEn": "voltage",
+      "id": "term_device",
+      "nameCn": "设备",
+      "nameEn": "device",
       "synonyms": [
-        "电压值"
-      ],
-      "isClassWord": false,
-      "status": "启用"
-    },
-    {
-      "id": "term_level",
-      "nameCn": "等级",
-      "nameEn": "level",
-      "synonyms": [
-        "级别"
-      ],
-      "isClassWord": false,
-      "status": "启用"
-    },
-    {
-      "id": "term_active",
-      "nameCn": "有功",
-      "nameEn": "active",
-      "synonyms": [],
-      "isClassWord": false,
-      "status": "启用"
-    },
-    {
-      "id": "term_power",
-      "nameCn": "功率",
-      "nameEn": "power",
-      "synonyms": [],
-      "isClassWord": false,
-      "status": "启用"
-    },
-    {
-      "id": "term_turbine",
-      "nameCn": "风机",
-      "nameEn": "turbine",
-      "synonyms": [
-        "风力发电机",
-        "机组"
-      ],
-      "isClassWord": false,
-      "status": "启用"
-    },
-    {
-      "id": "term_model",
-      "nameCn": "机型",
-      "nameEn": "model",
-      "synonyms": [
-        "型号"
-      ],
-      "isClassWord": false,
-      "status": "启用"
-    },
-    {
-      "id": "term_foundation",
-      "nameCn": "基础",
-      "nameEn": "foundation",
-      "synonyms": [
-        "基础结构"
-      ],
-      "isClassWord": false,
-      "status": "启用"
-    },
-    {
-      "id": "term_pattern",
-      "nameCn": "型式",
-      "nameEn": "pattern",
-      "synonyms": [
-        "形式"
-      ],
-      "isClassWord": false,
-      "status": "启用"
-    },
-    {
-      "id": "term_cable",
-      "nameCn": "海缆",
-      "nameEn": "cable",
-      "synonyms": [
-        "海底电缆",
-        "电缆"
+        "装置"
       ],
       "isClassWord": false,
       "status": "启用"
@@ -646,41 +576,97 @@ const D = {
       "status": "启用"
     },
     {
-      "id": "term_sea_area",
-      "nameCn": "海域",
-      "nameEn": "sea_area",
+      "id": "term_consumption",
+      "nameCn": "功耗",
+      "nameEn": "consumption",
       "synonyms": [
-        "海区"
+        "功率消耗"
       ],
       "isClassWord": false,
       "status": "启用"
     },
     {
-      "id": "term_forecast",
-      "nameCn": "预测",
-      "nameEn": "forecast",
+      "id": "term_cdu",
+      "nameCn": "冷量分配单元",
+      "nameEn": "cdu",
       "synonyms": [
-        "预报"
+        "CDU",
+        "冷量分配"
       ],
       "isClassWord": false,
       "status": "启用"
     },
     {
-      "id": "term_accuracy",
-      "nameCn": "精度",
-      "nameEn": "accuracy",
+      "id": "term_model",
+      "nameCn": "型号",
+      "nameEn": "model",
       "synonyms": [
-        "准确度"
+        "规格"
       ],
       "isClassWord": false,
       "status": "启用"
     },
     {
-      "id": "term_wind_speed",
-      "nameCn": "风速",
-      "nameEn": "wind_speed",
+      "id": "term_cooling",
+      "nameCn": "冷却",
+      "nameEn": "cooling",
       "synonyms": [
-        "测风风速"
+        "散热",
+        "制冷"
+      ],
+      "isClassWord": false,
+      "status": "启用"
+    },
+    {
+      "id": "term_mode",
+      "nameCn": "方式",
+      "nameEn": "mode",
+      "synonyms": [
+        "模式"
+      ],
+      "isClassWord": false,
+      "status": "启用"
+    },
+    {
+      "id": "term_coolant",
+      "nameCn": "冷却液",
+      "nameEn": "coolant",
+      "synonyms": [
+        "冷却介质",
+        "载冷剂"
+      ],
+      "isClassWord": false,
+      "status": "启用"
+    },
+    {
+      "id": "term_cold_source",
+      "nameCn": "冷源",
+      "nameEn": "cold_source",
+      "synonyms": [
+        "冷源设备",
+        "冷却源"
+      ],
+      "isClassWord": false,
+      "status": "启用"
+    },
+    {
+      "id": "term_efficiency",
+      "nameCn": "能效",
+      "nameEn": "efficiency",
+      "synonyms": [
+        "能效比",
+        "效率"
+      ],
+      "isClassWord": false,
+      "status": "启用"
+    },
+    {
+      "id": "term_supply",
+      "nameCn": "供液",
+      "nameEn": "supply",
+      "synonyms": [
+        "供液侧",
+        "进水"
       ],
       "isClassWord": false,
       "status": "启用"
@@ -696,6 +682,17 @@ const D = {
       "status": "启用"
     },
     {
+      "id": "term_return",
+      "nameCn": "回液",
+      "nameEn": "return",
+      "synonyms": [
+        "回液侧",
+        "回水"
+      ],
+      "isClassWord": false,
+      "status": "启用"
+    },
+    {
       "id": "term_progress",
       "nameCn": "进度",
       "nameEn": "progress",
@@ -706,21 +703,42 @@ const D = {
       "status": "启用"
     },
     {
-      "id": "term_project",
-      "nameCn": "项目",
-      "nameEn": "project",
+      "id": "term_flow",
+      "nameCn": "流量",
+      "nameEn": "flow",
       "synonyms": [
-        "工程项目"
+        "流量值"
       ],
       "isClassWord": false,
       "status": "启用"
     },
     {
-      "id": "term_master_data",
-      "nameCn": "主数据",
-      "nameEn": "master_data",
+      "id": "term_pressure",
+      "nameCn": "压差",
+      "nameEn": "pressure",
       "synonyms": [
-        "主数据编码"
+        "压差值",
+        "压降"
+      ],
+      "isClassWord": false,
+      "status": "启用"
+    },
+    {
+      "id": "term_level",
+      "nameCn": "等级",
+      "nameEn": "level",
+      "synonyms": [
+        "级别"
+      ],
+      "isClassWord": false,
+      "status": "启用"
+    },
+    {
+      "id": "term_project",
+      "nameCn": "项目",
+      "nameEn": "project",
+      "synonyms": [
+        "工程项目"
       ],
       "isClassWord": false,
       "status": "启用"
@@ -778,262 +796,250 @@ const D = {
   ],
   "refDatas": [
     {
-      "id": "rd_voltage",
+      "id": "rd_device_type",
       "code": "CK0001",
-      "name": "电压等级",
+      "name": "液冷设备类型",
       "status": "启用",
       "values": [
         {
           "code": "01",
-          "name": "35kV"
+          "name": "CDU"
         },
         {
           "code": "02",
-          "name": "66kV"
+          "name": "Manifold"
         },
         {
           "code": "03",
-          "name": "220kV"
+          "name": "冷源"
         },
         {
           "code": "04",
-          "name": "500kV"
-        },
-        {
-          "code": "05",
-          "name": "±500kV"
+          "name": "泵"
         }
       ]
     },
     {
-      "id": "rd_turbine",
+      "id": "rd_cdu_model",
       "code": "CK0002",
-      "name": "风机机型",
+      "name": "CDU 型号",
       "status": "启用",
       "values": [
         {
           "code": "01",
-          "name": "8MW"
+          "name": "SKY-ACMECOL-50"
         },
         {
           "code": "02",
-          "name": "12MW"
+          "name": "SKY-ACMECOL-100"
         },
         {
           "code": "03",
-          "name": "16MW"
-        },
-        {
-          "code": "04",
-          "name": "16.6MW漂浮式"
+          "name": "SKY-ACMECOL-150"
         }
       ]
     },
     {
-      "id": "rd_foundation",
+      "id": "rd_cooling_mode",
       "code": "CK0003",
-      "name": "基础型式",
+      "name": "冷却方式",
       "status": "启用",
       "values": [
         {
           "code": "01",
-          "name": "单桩"
+          "name": "冷板式液冷"
         },
         {
           "code": "02",
-          "name": "导管架"
+          "name": "浸没式液冷"
         },
         {
           "code": "03",
-          "name": "多桩"
+          "name": "风冷"
         },
         {
           "code": "04",
-          "name": "漂浮式"
+          "name": "相变"
         }
       ]
     },
     {
-      "id": "rd_sea_area",
+      "id": "rd_coolant",
       "code": "CK0004",
-      "name": "海域",
+      "name": "冷却液类型",
       "status": "启用",
       "values": [
         {
           "code": "01",
-          "name": "粤东"
+          "name": "去离子水"
         },
         {
           "code": "02",
-          "name": "粤西"
+          "name": "乙二醇溶液"
         },
         {
           "code": "03",
-          "name": "珠三角"
+          "name": "氟化液"
         }
       ]
     },
     {
-      "id": "rd_cable",
+      "id": "rd_cold_source_type",
       "code": "CK0005",
-      "name": "海缆类型",
+      "name": "冷源类型",
       "status": "启用",
       "values": [
         {
           "code": "01",
-          "name": "集电"
+          "name": "风冷冷源"
         },
         {
           "code": "02",
-          "name": "送出"
+          "name": "水冷冷源"
         },
         {
           "code": "03",
-          "name": "三芯"
-        },
-        {
-          "code": "04",
-          "name": "单芯"
+          "name": "干冷器"
         }
       ]
     }
   ],
   "infoItems": [
     {
-      "id": "ii_voltage",
+      "id": "ii_device_type",
       "code": "II0001",
-      "nameCn": "电压等级编码",
-      "nameEn": "voltage_level_code",
+      "nameCn": "设备类型编码",
+      "nameEn": "device_type_code",
       "termIds": [
-        "term_voltage",
-        "term_level",
+        "term_device",
+        "term_type",
         "term_code"
       ],
       "valueDomainId": "vd_varchar10",
-      "refDataId": "rd_voltage",
+      "refDataId": "rd_device_type",
       "type": "业务",
-      "bizDomainId": "bd_design",
-      "definition": "海上风电设备/海缆的电压等级标准取值",
+      "bizDomainId": "bd_rnd",
+      "definition": "液冷设备类型的标准编码",
       "securityLevel": "L2",
       "status": "启用"
     },
     {
-      "id": "ii_active_power",
+      "id": "ii_power_consumption",
       "code": "II0002",
-      "nameCn": "有功功率值",
-      "nameEn": "active_power_value",
+      "nameCn": "功耗值",
+      "nameEn": "consumption_value",
       "termIds": [
-        "term_active",
-        "term_power",
+        "term_consumption",
         "term_value"
       ],
       "valueDomainId": "vd_dec52",
       "refDataId": null,
       "type": "业务",
       "bizDomainId": "bd_ops",
-      "definition": "风电机组有功功率的标准取值",
-      "securityLevel": "L2",
-      "status": "启用"
-    },
-    {
-      "id": "ii_turbine_model",
-      "code": "II0003",
-      "nameCn": "风机机型名称",
-      "nameEn": "turbine_model_name",
-      "termIds": [
-        "term_turbine",
-        "term_model",
-        "term_name"
-      ],
-      "valueDomainId": "vd_name",
-      "refDataId": "rd_turbine",
-      "type": "业务",
-      "bizDomainId": "bd_design",
-      "definition": "风机机型的标准名称",
-      "securityLevel": "L2",
-      "status": "启用"
-    },
-    {
-      "id": "ii_foundation",
-      "code": "II0004",
-      "nameCn": "基础型式名称",
-      "nameEn": "foundation_pattern_name",
-      "termIds": [
-        "term_foundation",
-        "term_pattern",
-        "term_name"
-      ],
-      "valueDomainId": "vd_name",
-      "refDataId": "rd_foundation",
-      "type": "业务",
-      "bizDomainId": "bd_design",
-      "definition": "风机基础结构型式的标准名称",
-      "securityLevel": "L2",
-      "status": "启用"
-    },
-    {
-      "id": "ii_sea_area",
-      "code": "II0005",
-      "nameCn": "海域编码",
-      "nameEn": "sea_area_code",
-      "termIds": [
-        "term_sea_area",
-        "term_code"
-      ],
-      "valueDomainId": "vd_code",
-      "refDataId": "rd_sea_area",
-      "type": "业务",
-      "bizDomainId": "bd_survey",
-      "definition": "海上风电场所在海域的标准编码",
-      "securityLevel": "L4",
-      "status": "启用"
-    },
-    {
-      "id": "ii_cable_type",
-      "code": "II0006",
-      "nameCn": "海缆类型名称",
-      "nameEn": "cable_type_name",
-      "termIds": [
-        "term_cable",
-        "term_type",
-        "term_name"
-      ],
-      "valueDomainId": "vd_name",
-      "refDataId": "rd_cable",
-      "type": "业务",
-      "bizDomainId": "bd_design",
-      "definition": "海缆类型的标准名称",
+      "definition": "液冷设备功耗的标准取值",
       "securityLevel": "L3",
       "status": "启用"
     },
     {
-      "id": "ii_accuracy",
-      "code": "II0007",
-      "nameCn": "预测精度百分比",
-      "nameEn": "forecast_accuracy_percent",
+      "id": "ii_cdu_model",
+      "code": "II0003",
+      "nameCn": "冷量分配单元型号名称",
+      "nameEn": "cdu_model_name",
       "termIds": [
-        "term_forecast",
-        "term_accuracy",
+        "term_cdu",
+        "term_model",
+        "term_name"
+      ],
+      "valueDomainId": "vd_name",
+      "refDataId": "rd_cdu_model",
+      "type": "业务",
+      "bizDomainId": "bd_rnd",
+      "definition": "冷量分配单元型号的标准名称",
+      "securityLevel": "L2",
+      "status": "启用"
+    },
+    {
+      "id": "ii_cooling_mode",
+      "code": "II0004",
+      "nameCn": "冷却方式名称",
+      "nameEn": "cooling_mode_name",
+      "termIds": [
+        "term_cooling",
+        "term_mode",
+        "term_name"
+      ],
+      "valueDomainId": "vd_name",
+      "refDataId": "rd_cooling_mode",
+      "type": "业务",
+      "bizDomainId": "bd_rnd",
+      "definition": "液冷冷却方式的标准名称",
+      "securityLevel": "L2",
+      "status": "启用"
+    },
+    {
+      "id": "ii_coolant_type",
+      "code": "II0005",
+      "nameCn": "冷却液类型编码",
+      "nameEn": "coolant_type_code",
+      "termIds": [
+        "term_coolant",
+        "term_type",
+        "term_code"
+      ],
+      "valueDomainId": "vd_code",
+      "refDataId": "rd_coolant",
+      "type": "业务",
+      "bizDomainId": "bd_rnd",
+      "definition": "液冷冷却液类型的标准编码",
+      "securityLevel": "L4",
+      "status": "启用"
+    },
+    {
+      "id": "ii_cold_source_type",
+      "code": "II0006",
+      "nameCn": "冷源类型名称",
+      "nameEn": "cold_source_type_name",
+      "termIds": [
+        "term_cold_source",
+        "term_type",
+        "term_name"
+      ],
+      "valueDomainId": "vd_name",
+      "refDataId": "rd_cold_source_type",
+      "type": "业务",
+      "bizDomainId": "bd_rnd",
+      "definition": "冷源类型的标准名称",
+      "securityLevel": "L3",
+      "status": "启用"
+    },
+    {
+      "id": "ii_efficiency_percent",
+      "code": "II0007",
+      "nameCn": "能效百分比",
+      "nameEn": "efficiency_percent",
+      "termIds": [
+        "term_efficiency",
         "term_percent"
       ],
       "valueDomainId": "vd_percent",
       "refDataId": null,
       "type": "业务",
       "bizDomainId": "bd_ops",
-      "definition": "功率预测精度的标准百分比",
+      "definition": "液冷系统能效比的标准百分比",
       "securityLevel": "L2",
       "status": "启用"
     },
     {
-      "id": "ii_wind_speed",
+      "id": "ii_supply_temp",
       "code": "II0008",
-      "nameCn": "风速值",
-      "nameEn": "wind_speed_value",
+      "nameCn": "供液温度值",
+      "nameEn": "supply_temperature_value",
       "termIds": [
-        "term_wind_speed",
+        "term_supply",
+        "term_temperature",
         "term_value"
       ],
-      "valueDomainId": "vd_dec52",
+      "valueDomainId": "vd_dec51",
       "refDataId": null,
       "type": "技术",
       "bizDomainId": null,
@@ -1042,11 +1048,12 @@ const D = {
       "status": "启用"
     },
     {
-      "id": "ii_temperature",
+      "id": "ii_return_temp",
       "code": "II0009",
-      "nameCn": "温度值",
-      "nameEn": "temperature_value",
+      "nameCn": "回液温度值",
+      "nameEn": "return_temperature_value",
       "termIds": [
+        "term_return",
         "term_temperature",
         "term_value"
       ],
@@ -1070,8 +1077,8 @@ const D = {
       "valueDomainId": "vd_percent",
       "refDataId": null,
       "type": "业务",
-      "bizDomainId": "bd_build",
-      "definition": "施工作业进度的标准百分比",
+      "bizDomainId": "bd_pm",
+      "definition": "实施进度的标准百分比",
       "securityLevel": "L2",
       "status": "启用"
     }
@@ -1079,80 +1086,80 @@ const D = {
   "qualityRules": [
     {
       "id": "qr_001",
-      "name": "SCADA 有功功率取值范围",
+      "name": "供液温度取值范围",
       "type": "准确性",
-      "targetFieldId": "f_scada_power",
-      "expr": "0 <= active_power <= 16",
+      "targetFieldId": "f_tel_supply_temp",
+      "expr": "20 <= supply_temp <= 45",
       "threshold": "100%",
       "severity": "严重",
       "status": "启用"
     },
     {
       "id": "qr_002",
-      "name": "测风风速取值越界",
+      "name": "回液温度取值越界",
       "type": "准确性",
-      "targetFieldId": "f_wind_speed",
-      "expr": "0 <= wind_speed <= 70",
+      "targetFieldId": "f_tel_return_temp",
+      "expr": "20 <= return_temp <= 50",
       "threshold": "100%",
-      "severity": "警告",
+      "severity": "严重",
       "status": "启用"
     },
     {
       "id": "qr_003",
-      "name": "测风数据完整性",
+      "name": "遥测流量完整性",
       "type": "完整性",
-      "targetFieldId": "f_wind_speed",
-      "expr": "风速字段非空率 >= 95%",
+      "targetFieldId": "f_tel_flow",
+      "expr": "流量字段非空率 >= 95%",
       "threshold": "95%",
       "severity": "警告",
       "status": "启用"
     },
     {
       "id": "qr_004",
-      "name": "海缆监测温度一致性",
+      "name": "供回液压差异常（泄漏预警）",
       "type": "一致性",
-      "targetFieldId": "f_cable_temp",
-      "expr": "温度与相邻测点偏差 <= 5℃",
+      "targetFieldId": "f_tel_pressure",
+      "expr": "压差与设定值偏差 <= 5kPa",
       "threshold": "100%",
       "severity": "严重",
       "status": "启用"
     },
     {
       "id": "qr_005",
-      "name": "功率预测及时性",
-      "type": "及时性",
-      "targetFieldId": "f_forecast_time",
-      "expr": "预测结果产出延迟 <= 15min",
-      "threshold": "15min",
-      "severity": "提示",
+      "name": "供回液温差一致性",
+      "type": "一致性",
+      "targetFieldId": "f_tel_supply_temp",
+      "expr": "供回液温差 <= 10℃",
+      "threshold": "100%",
+      "severity": "警告",
       "status": "启用"
     },
     {
       "id": "qr_006",
-      "name": "地质钻孔地层字段完整性",
+      "name": "质检记录完整性",
       "type": "完整性",
-      "targetFieldId": "f_geo_stratum",
-      "expr": "地层编号非空率 = 100%",
+      "targetFieldId": "f_insp_item",
+      "expr": "质检项非空率 = 100%",
       "threshold": "100%",
       "severity": "警告",
       "status": "启用"
     },
     {
       "id": "qr_007",
-      "name": "主变油温阈值",
+      "name": "PUE 阈值",
       "type": "准确性",
-      "targetFieldId": "f_sub_oil_temp",
-      "expr": "0 <= oil_temp <= 105",
+      "targetFieldId": "f_energy_pue",
+      "expr": "1.0 <= pue <= 1.5",
       "threshold": "100%",
       "severity": "严重",
       "status": "启用"
     },
     {
       "id": "qr_008",
-      "name": "备品备件库存准确性",
+      "name": "订单交期准确性",
       "type": "准确性",
-      "targetFieldId": "f_spare_qty",
-      "expr": "库存数量 >= 0",
+      "targetFieldId": "f_order_delivery",
+      "expr": "交期日期非空率 = 100%",
       "threshold": "100%",
       "severity": "提示",
       "status": "启用"
@@ -1160,54 +1167,38 @@ const D = {
   ],
   "tables": [
     {
-      "id": "t_wind",
-      "appId": "app_res",
-      "dbId": "db_res",
-      "nameCn": "测风数据表",
-      "nameEn": "wind_measurement",
+      "id": "t_device",
+      "appId": "app_plm",
+      "dbId": "db_plm",
+      "nameCn": "液冷设备档案表",
+      "nameEn": "liquid_cooling_device",
       "tableType": "业务表",
-      "bizDomainId": "bd_resource",
-      "subjectId": "bs_wind",
-      "masterDataId": null,
-      "desc": "测风塔实测风速/风向/湍流",
-      "partitions": [
-        {
-          "field": "MEASURE_TIME",
-          "type": "RANGE",
-          "granularity": "日",
-          "count": 365,
-          "desc": "按测量时间日分区，保留近一年测风明细"
-        },
-        {
-          "field": "MEASURE_TIME",
-          "type": "RANGE",
-          "granularity": "月",
-          "count": 12,
-          "desc": "按测量时间月分区，用于历史归档"
-        }
-      ],
+      "bizDomainId": "bd_rnd",
+      "subjectId": "bs_device",
+      "masterDataId": "md_cdu",
+      "desc": "液冷设备（CDU/冷源）型号、制冷量与冷却液等设备参数",
+      "partitions": null,
       "indexes": [
         {
-          "name": "pk_wind_measurement",
+          "name": "pk_liquid_cooling_device",
           "fields": [
-            "MEASURE_TIME"
+            "MD_ID"
           ],
           "type": "主键",
           "unique": true
         },
         {
-          "name": "idx_wind_project",
+          "name": "idx_device_type",
           "fields": [
-            "PROJECT_ID"
+            "DEVICE_TYPE"
           ],
           "type": "普通",
           "unique": false
         },
         {
-          "name": "idx_wind_speed_time",
+          "name": "idx_device_model",
           "fields": [
-            "wind_speed_value",
-            "MEASURE_TIME"
+            "cdu_model_name"
           ],
           "type": "普通",
           "unique": false
@@ -1216,43 +1207,43 @@ const D = {
       "history": [
         {
           "version": "v1.0",
-          "time": "2024-03-15",
-          "operator": "数据治理组",
+          "time": "2024-03-01",
+          "operator": "研发设计组",
           "action": "新建",
-          "desc": "建表并登记测风明细字段元数据"
+          "desc": "建表并登记液冷设备档案元数据"
         },
         {
           "version": "v1.1",
-          "time": "2025-06-20",
-          "operator": "工程组",
+          "time": "2025-01-20",
+          "operator": "数据治理组",
           "action": "变更",
-          "desc": "增加按测量时间日/月分区策略"
+          "desc": "主数据编码字段改为引用液冷设备主数据"
         }
       ]
     },
     {
-      "id": "t_geo",
-      "appId": "app_survey",
-      "dbId": "db_survey",
-      "nameCn": "地质钻孔表",
-      "nameEn": "geological_borehole",
+      "id": "t_bom",
+      "appId": "app_plm",
+      "dbId": "db_plm",
+      "nameCn": "物料清单表",
+      "nameEn": "bill_of_material",
       "tableType": "业务表",
-      "bizDomainId": "bd_survey",
-      "subjectId": "bs_geo",
+      "bizDomainId": "bd_rnd",
+      "subjectId": "bs_bom",
       "masterDataId": null,
-      "desc": "海上风电场地地质钻孔与岩土地层信息",
+      "desc": "BOM 物料编码、名称、数量与单位",
       "partitions": null,
       "indexes": [
         {
-          "name": "pk_geological_borehole",
+          "name": "pk_bill_of_material",
           "fields": [
-            "STRATUM"
+            "BOM_CODE"
           ],
           "type": "主键",
           "unique": true
         },
         {
-          "name": "idx_geo_project",
+          "name": "idx_bom_project",
           "fields": [
             "PROJECT_ID"
           ],
@@ -1260,9 +1251,9 @@ const D = {
           "unique": false
         },
         {
-          "name": "idx_geo_depth",
+          "name": "idx_bom_name",
           "fields": [
-            "DEPTH"
+            "BOM_NAME"
           ],
           "type": "普通",
           "unique": false
@@ -1274,50 +1265,50 @@ const D = {
           "time": "2024-02-10",
           "operator": "数据治理组",
           "action": "新建",
-          "desc": "建表并登记地质钻孔岩土分层元数据"
+          "desc": "建表并登记 BOM 物料清单元数据"
         },
         {
           "version": "v1.1",
           "time": "2024-11-05",
-          "operator": "工程组",
+          "operator": "研发设计组",
           "action": "变更",
-          "desc": "补充桩基持力层字段"
+          "desc": "补充物料数量字段"
         }
       ]
     },
     {
-      "id": "t_topo",
-      "appId": "app_survey",
-      "dbId": "db_survey",
-      "nameCn": "海底地形测绘表",
-      "nameEn": "seabed_topography",
+      "id": "t_process",
+      "appId": "app_plm",
+      "dbId": "db_plm",
+      "nameCn": "工艺参数表",
+      "nameEn": "process_parameter",
       "tableType": "业务表",
-      "bizDomainId": "bd_survey",
-      "subjectId": "bs_topo",
+      "bizDomainId": "bd_rnd",
+      "subjectId": "bs_process",
       "masterDataId": null,
-      "desc": "海底地形测绘坐标、水深与海缆路由",
+      "desc": "供液温度设定、流量与压差等核心工艺参数（涉密）",
       "partitions": null,
       "indexes": [
         {
-          "name": "pk_seabed_topography",
+          "name": "pk_process_parameter",
           "fields": [
-            "COORD"
+            "PROCESS_CODE"
           ],
           "type": "主键",
           "unique": true
         },
         {
-          "name": "idx_topo_route",
+          "name": "idx_process_supply",
           "fields": [
-            "CABLE_ROUTE"
+            "SUPPLY_TEMP_SET"
           ],
           "type": "普通",
           "unique": false
         },
         {
-          "name": "idx_topo_project",
+          "name": "idx_process_flow",
           "fields": [
-            "PROJECT_ID"
+            "FLOW_SET"
           ],
           "type": "普通",
           "unique": false
@@ -1329,160 +1320,50 @@ const D = {
           "time": "2024-01-18",
           "operator": "数据治理组",
           "action": "新建",
-          "desc": "建表并登记海底地形测绘元数据（涉密 L4）"
+          "desc": "建表并登记工艺参数元数据（涉密 L4）"
         },
         {
           "version": "v1.1",
           "time": "2025-04-12",
-          "operator": "设计组",
+          "operator": "研发设计组",
           "action": "变更",
-          "desc": "海缆路由字段关联海缆设计"
+          "desc": "供液温度设定字段关联温度信息项标准"
         }
       ]
     },
     {
-      "id": "t_turbine",
-      "appId": "app_design",
-      "dbId": "db_design",
-      "nameCn": "风机设备表",
-      "nameEn": "turbine_device",
+      "id": "t_order",
+      "appId": "app_mes",
+      "dbId": "db_mes",
+      "nameCn": "生产订单表",
+      "nameEn": "production_order",
       "tableType": "业务表",
-      "bizDomainId": "bd_design",
-      "subjectId": "bs_device",
-      "masterDataId": "md_turbine",
-      "desc": "风机机型、额定功率与基础型式等设备参数",
+      "bizDomainId": "bd_mes",
+      "subjectId": "bs_order",
+      "masterDataId": "md_project",
+      "desc": "生产订单编号、数量与交期",
       "partitions": null,
       "indexes": [
         {
-          "name": "pk_turbine_device",
+          "name": "pk_production_order",
           "fields": [
-            "MD_ID"
+            "ORDER_CODE"
           ],
           "type": "主键",
           "unique": true
         },
         {
-          "name": "idx_turbine_supplier",
+          "name": "idx_order_customer",
           "fields": [
-            "SUPPLIER_ID"
+            "CUSTOMER_ID"
           ],
           "type": "普通",
           "unique": false
         },
         {
-          "name": "idx_turbine_project",
+          "name": "idx_order_project",
           "fields": [
             "PROJECT_ID"
-          ],
-          "type": "普通",
-          "unique": false
-        }
-      ],
-      "history": [
-        {
-          "version": "v1.0",
-          "time": "2024-03-01",
-          "operator": "设计组",
-          "action": "新建",
-          "desc": "建表并登记风机设备档案元数据"
-        },
-        {
-          "version": "v1.1",
-          "time": "2025-01-20",
-          "operator": "数据治理组",
-          "action": "变更",
-          "desc": "主数据编码字段改为引用风机主数据"
-        }
-      ]
-    },
-    {
-      "id": "t_cable",
-      "appId": "app_design",
-      "dbId": "db_design",
-      "nameCn": "海缆参数表",
-      "nameEn": "submarine_cable",
-      "tableType": "业务表",
-      "bizDomainId": "bd_design",
-      "subjectId": "bs_device",
-      "masterDataId": "md_cable",
-      "desc": "海缆类型、电压等级与监测温度等参数",
-      "partitions": null,
-      "indexes": [
-        {
-          "name": "pk_submarine_cable",
-          "fields": [
-            "MD_ID"
-          ],
-          "type": "主键",
-          "unique": true
-        },
-        {
-          "name": "idx_cable_type",
-          "fields": [
-            "TYPE"
-          ],
-          "type": "普通",
-          "unique": false
-        },
-        {
-          "name": "idx_cable_route",
-          "fields": [
-            "ROUTE"
-          ],
-          "type": "普通",
-          "unique": false
-        }
-      ],
-      "history": [
-        {
-          "version": "v1.0",
-          "time": "2024-03-10",
-          "operator": "设计组",
-          "action": "新建",
-          "desc": "建表并登记海缆参数元数据"
-        },
-        {
-          "version": "v1.1",
-          "time": "2025-03-05",
-          "operator": "数据治理组",
-          "action": "变更",
-          "desc": "监测温度字段关联温度信息项标准"
-        }
-      ]
-    },
-    {
-      "id": "t_substation",
-      "appId": "app_design",
-      "dbId": "db_design",
-      "nameCn": "升压站主变表",
-      "nameEn": "substation_transformer",
-      "tableType": "业务表",
-      "bizDomainId": "bd_design",
-      "subjectId": "bs_device",
-      "masterDataId": "md_substation",
-      "desc": "海上升压站主变容量、电压与油温参数",
-      "partitions": null,
-      "indexes": [
-        {
-          "name": "pk_substation_transformer",
-          "fields": [
-            "MD_ID"
-          ],
-          "type": "主键",
-          "unique": true
-        },
-        {
-          "name": "idx_sub_project",
-          "fields": [
-            "PROJECT_ID"
-          ],
-          "type": "普通",
-          "unique": false
-        },
-        {
-          "name": "idx_sub_voltage",
-          "fields": [
-            "VOLTAGE"
           ],
           "type": "普通",
           "unique": false
@@ -1492,60 +1373,52 @@ const D = {
         {
           "version": "v1.0",
           "time": "2024-04-02",
-          "operator": "设计组",
+          "operator": "生产制造组",
           "action": "新建",
-          "desc": "建表并登记升压站主变元数据"
+          "desc": "建表并登记生产订单元数据"
         },
         {
           "version": "v1.1",
           "time": "2025-05-10",
           "operator": "数据治理组",
           "action": "变更",
-          "desc": "主变容量字段补充主数据编码引用"
+          "desc": "交期字段关联质量规则 qr_008"
         }
       ]
     },
     {
-      "id": "t_progress",
-      "appId": "app_build",
-      "dbId": "db_build",
-      "nameCn": "作业进度表",
-      "nameEn": "construction_progress",
+      "id": "t_inspection",
+      "appId": "app_mes",
+      "dbId": "db_mes",
+      "nameCn": "质检记录表",
+      "nameEn": "inspection_record",
       "tableType": "业务表",
-      "bizDomainId": "bd_build",
-      "subjectId": "bs_schedule",
-      "masterDataId": "md_project",
-      "desc": "船机调度与施工作业进度记录",
-      "partitions": [
-        {
-          "field": "TASK",
-          "type": "HASH",
-          "granularity": "日",
-          "count": 8,
-          "desc": "按作业任务哈希分片，支撑每日施工进度高频写入"
-        }
-      ],
+      "bizDomainId": "bd_mes",
+      "subjectId": "bs_inspection",
+      "masterDataId": null,
+      "desc": "质检项、质检结果与质检日期",
+      "partitions": null,
       "indexes": [
         {
-          "name": "pk_construction_progress",
+          "name": "pk_inspection_record",
           "fields": [
-            "TASK"
+            "INSPECTION_ITEM"
           ],
           "type": "主键",
           "unique": true
         },
         {
-          "name": "idx_progress_project",
+          "name": "idx_inspection_order",
           "fields": [
-            "PROJECT_ID"
+            "ORDER_CODE"
           ],
           "type": "普通",
           "unique": false
         },
         {
-          "name": "idx_progress_vessel",
+          "name": "idx_inspection_project",
           "fields": [
-            "VESSEL"
+            "PROJECT_ID"
           ],
           "type": "普通",
           "unique": false
@@ -1555,9 +1428,127 @@ const D = {
         {
           "version": "v1.0",
           "time": "2024-05-06",
-          "operator": "工程组",
+          "operator": "生产制造组",
           "action": "新建",
-          "desc": "建表并登记施工进度元数据"
+          "desc": "建表并登记质检记录元数据"
+        },
+        {
+          "version": "v1.1",
+          "time": "2025-02-14",
+          "operator": "数据治理组",
+          "action": "调整",
+          "desc": "质检项字段关联质量规则 qr_006"
+        }
+      ]
+    },
+    {
+      "id": "t_project",
+      "appId": "app_crm",
+      "dbId": "db_crm",
+      "nameCn": "液冷项目表",
+      "nameEn": "liquid_cooling_project",
+      "tableType": "业务表",
+      "bizDomainId": "bd_crm",
+      "subjectId": "bs_project",
+      "masterDataId": "md_project",
+      "desc": "项目编号、客户与交付时间",
+      "partitions": null,
+      "indexes": [
+        {
+          "name": "pk_liquid_cooling_project",
+          "fields": [
+            "PROJECT_CODE"
+          ],
+          "type": "主键",
+          "unique": true
+        },
+        {
+          "name": "idx_project_customer",
+          "fields": [
+            "CUSTOMER_ID"
+          ],
+          "type": "普通",
+          "unique": false
+        },
+        {
+          "name": "idx_project_contract",
+          "fields": [
+            "CONTRACT_AMOUNT"
+          ],
+          "type": "普通",
+          "unique": false
+        }
+      ],
+      "history": [
+        {
+          "version": "v1.0",
+          "time": "2024-04-02",
+          "operator": "营销服务组",
+          "action": "新建",
+          "desc": "建表并登记液冷项目元数据"
+        },
+        {
+          "version": "v1.1",
+          "time": "2025-05-10",
+          "operator": "数据治理组",
+          "action": "变更",
+          "desc": "客户字段补充数据中心客户主数据引用"
+        }
+      ]
+    },
+    {
+      "id": "t_commissioning",
+      "appId": "app_pm",
+      "dbId": "db_pm",
+      "nameCn": "调试实施记录表",
+      "nameEn": "commissioning_record",
+      "tableType": "业务表",
+      "bizDomainId": "bd_pm",
+      "subjectId": "bs_commissioning",
+      "masterDataId": "md_project",
+      "desc": "调试工单、调试项与实施进度记录",
+      "partitions": [
+        {
+          "field": "COMM_CODE",
+          "type": "HASH",
+          "granularity": "日",
+          "count": 8,
+          "desc": "按调试工单哈希分片，支撑每日调试实施高频写入"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "pk_commissioning_record",
+          "fields": [
+            "COMM_CODE"
+          ],
+          "type": "主键",
+          "unique": true
+        },
+        {
+          "name": "idx_comm_project",
+          "fields": [
+            "PROJECT_ID"
+          ],
+          "type": "普通",
+          "unique": false
+        },
+        {
+          "name": "idx_comm_progress",
+          "fields": [
+            "progress_percent"
+          ],
+          "type": "普通",
+          "unique": false
+        }
+      ],
+      "history": [
+        {
+          "version": "v1.0",
+          "time": "2024-05-06",
+          "operator": "集成实施组",
+          "action": "新建",
+          "desc": "建表并登记调试实施记录元数据"
         },
         {
           "version": "v1.1",
@@ -1569,23 +1560,23 @@ const D = {
       ]
     },
     {
-      "id": "t_scada",
-      "appId": "app_ops",
-      "dbId": "db_ops",
-      "nameCn": "SCADA 遥测表",
-      "nameEn": "scada_telemetry",
+      "id": "t_telemetry",
+      "appId": "app_dcim",
+      "dbId": "db_dcim",
+      "nameCn": "运行遥测表",
+      "nameEn": "operation_telemetry",
       "tableType": "技术表",
       "bizDomainId": "bd_ops",
-      "subjectId": "bs_scada",
+      "subjectId": "bs_telemetry",
       "masterDataId": null,
-      "desc": "风机 SCADA 遥测数据（功率/温度/振动）",
+      "desc": "液冷运行遥测数据（供回液温度/流量/压差/功耗）",
       "partitions": [
         {
           "field": "TS",
           "type": "RANGE",
           "granularity": "日",
           "count": 365,
-          "desc": "按时间戳日分区，保留近一年 SCADA 遥测明细"
+          "desc": "按时间戳日分区，保留近一年运行遥测明细"
         },
         {
           "field": "TS",
@@ -1597,7 +1588,7 @@ const D = {
       ],
       "indexes": [
         {
-          "name": "pk_scada_telemetry",
+          "name": "pk_operation_telemetry",
           "fields": [
             "TS"
           ],
@@ -1605,17 +1596,17 @@ const D = {
           "unique": true
         },
         {
-          "name": "idx_scada_turbine",
+          "name": "idx_tel_supply",
           "fields": [
-            "TURBINE_ID"
+            "supply_temperature_value"
           ],
           "type": "普通",
           "unique": false
         },
         {
-          "name": "idx_scada_power",
+          "name": "idx_tel_power",
           "fields": [
-            "active_power_value"
+            "consumption_value"
           ],
           "type": "普通",
           "unique": false
@@ -1625,67 +1616,67 @@ const D = {
         {
           "version": "v1.0",
           "time": "2024-06-01",
-          "operator": "运维组",
+          "operator": "智慧运维组",
           "action": "新建",
-          "desc": "建表并登记 SCADA 遥测元数据"
+          "desc": "建表并登记运行遥测元数据"
         },
         {
           "version": "v1.1",
           "time": "2025-07-15",
           "operator": "数据治理组",
           "action": "变更",
-          "desc": "有功功率字段贯标 active_power_value 标准"
+          "desc": "供液温度字段贯标 supply_temperature_value 标准"
         }
       ]
     },
     {
-      "id": "t_forecast",
-      "appId": "app_ops",
-      "dbId": "db_ops",
-      "nameCn": "功率预测结果表",
-      "nameEn": "power_forecast",
+      "id": "t_alarm",
+      "appId": "app_dcim",
+      "dbId": "db_dcim",
+      "nameCn": "告警记录表",
+      "nameEn": "alarm_record",
       "tableType": "业务表",
       "bizDomainId": "bd_ops",
-      "subjectId": "bs_forecast",
-      "masterDataId": "md_project",
-      "desc": "功率预测结果与预测精度评估",
+      "subjectId": "bs_alarm",
+      "masterDataId": null,
+      "desc": "告警级别、类型与时间（漏液/超温/超压）",
       "partitions": [
         {
-          "field": "FORECAST_TIME",
+          "field": "ALARM_TIME",
           "type": "RANGE",
           "granularity": "日",
           "count": 365,
-          "desc": "按预测时间日分区，保留近一年预测结果"
+          "desc": "按告警时间日分区，保留近一年告警明细"
         },
         {
-          "field": "FORECAST_TIME",
+          "field": "ALARM_TIME",
           "type": "RANGE",
           "granularity": "月",
           "count": 12,
-          "desc": "按预测时间月分区，用于历史归档"
+          "desc": "按告警时间月分区，用于历史归档"
         }
       ],
       "indexes": [
         {
-          "name": "pk_power_forecast",
+          "name": "pk_alarm_record",
           "fields": [
-            "FORECAST_TIME"
+            "ALARM_CODE"
           ],
           "type": "主键",
           "unique": true
         },
         {
-          "name": "idx_forecast_project",
+          "name": "idx_alarm_device",
           "fields": [
-            "PROJECT_ID"
+            "DEVICE_ID"
           ],
           "type": "普通",
           "unique": false
         },
         {
-          "name": "idx_forecast_model",
+          "name": "idx_alarm_level",
           "fields": [
-            "MODEL"
+            "ALARM_LEVEL"
           ],
           "type": "普通",
           "unique": false
@@ -1695,52 +1686,67 @@ const D = {
         {
           "version": "v1.0",
           "time": "2024-06-15",
-          "operator": "运维组",
+          "operator": "智慧运维组",
           "action": "新建",
-          "desc": "建表并登记功率预测结果元数据"
+          "desc": "建表并登记告警记录元数据"
         },
         {
           "version": "v1.1",
           "time": "2025-08-01",
           "operator": "数据治理组",
           "action": "变更",
-          "desc": "预测精度字段关联精度信息项标准"
+          "desc": "告警类型字段补充漏液/超温/超压枚举"
         }
       ]
     },
     {
-      "id": "t_spare",
-      "appId": "app_ops",
-      "dbId": "db_ops",
-      "nameCn": "备品备件表",
-      "nameEn": "spare_parts",
+      "id": "t_energy",
+      "appId": "app_dcim",
+      "dbId": "db_dcim",
+      "nameCn": "能耗 PUE 表",
+      "nameEn": "energy_pue",
       "tableType": "业务表",
       "bizDomainId": "bd_ops",
-      "subjectId": "bs_spare",
+      "subjectId": "bs_energy",
       "masterDataId": null,
-      "desc": "备品备件名称、库存与适配机型",
-      "partitions": null,
+      "desc": "实时/日均 PUE 与能耗",
+      "partitions": [
+        {
+          "field": "TS",
+          "type": "RANGE",
+          "granularity": "日",
+          "count": 365,
+          "desc": "按时间戳日分区，保留近一年能耗明细"
+        },
+        {
+          "field": "TS",
+          "type": "RANGE",
+          "granularity": "月",
+          "count": 12,
+          "desc": "按时间戳月分区，用于历史归档"
+        }
+      ],
       "indexes": [
         {
-          "name": "pk_spare_parts",
+          "name": "pk_energy_pue",
           "fields": [
-            "NAME"
+            "TS"
           ],
           "type": "主键",
           "unique": true
         },
         {
-          "name": "idx_spare_turbine",
+          "name": "idx_energy_project",
           "fields": [
-            "TURBINE_ID"
+            "PROJECT_ID"
           ],
           "type": "普通",
           "unique": false
         },
         {
-          "name": "idx_spare_supplier",
+          "name": "idx_energy_pue_value",
           "fields": [
-            "SUPPLIER_ID"
+            "efficiency_percent"
           ],
           "type": "普通",
           "unique": false
@@ -1750,64 +1756,112 @@ const D = {
         {
           "version": "v1.0",
           "time": "2024-07-05",
-          "operator": "运维组",
+          "operator": "智慧运维组",
           "action": "新建",
-          "desc": "建表并登记备品备件元数据"
+          "desc": "建表并登记能耗 PUE 元数据"
         },
         {
           "version": "v1.1",
           "time": "2025-04-28",
           "operator": "数据治理组",
           "action": "调整",
-          "desc": "库存数量字段关联质量规则 qr_008"
+          "desc": "PUE 字段关联质量规则 qr_007"
         }
       ]
     }
   ],
   "fields": [
     {
-      "id": "f_wind_speed",
-      "tableId": "t_wind",
+      "id": "f_dev_model",
+      "tableId": "t_device",
       "seq": 1,
       "business": {
-        "code": "wind_speed_value",
-        "nameCn": "风速值",
-        "definition": "测风塔 100m 高度实测平均风速",
+        "code": "cdu_model_name",
+        "nameCn": "冷量分配单元型号名称",
+        "definition": "CDU 冷量分配单元型号",
         "masterDataId": null,
         "masterDataType": null
       },
       "technical": {
-        "type": "decimal(5,2)",
-        "length": 7,
+        "type": "varchar(32)",
+        "length": 32,
         "isPK": false,
         "isFK": false,
-        "qualityRuleIds": [
-          "qr_002",
-          "qr_003"
-        ]
+        "qualityRuleIds": []
       },
       "management": {
-        "standardId": "ii_wind_speed",
+        "standardId": "ii_cdu_model",
         "securityLevel": "L2",
-        "owner": "资源评估组",
-        "updateFrequency": "10分钟",
+        "owner": "研发设计组",
+        "updateFrequency": "静态",
         "securityCatalogId": "sc_003"
       }
     },
     {
-      "id": "f_wind_dir",
-      "tableId": "t_wind",
+      "id": "f_dev_md",
+      "tableId": "t_device",
       "seq": 2,
       "business": {
-        "code": "WIND_DIR",
-        "nameCn": "风向",
-        "definition": "主导风向（0~360°）",
+        "code": "MD_ID",
+        "nameCn": "主数据编码",
+        "definition": "主数据编码",
+        "masterDataId": "md_cdu",
+        "masterDataType": "液冷设备"
+      },
+      "technical": {
+        "type": "varchar(32)",
+        "length": 32,
+        "isPK": true,
+        "isFK": false,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L2",
+        "owner": "研发设计组",
+        "updateFrequency": "静态"
+      }
+    },
+    {
+      "id": "f_dev_type",
+      "tableId": "t_device",
+      "seq": 3,
+      "business": {
+        "code": "DEVICE_TYPE",
+        "nameCn": "设备类型",
+        "definition": "液冷设备类型（CDU/Manifold/冷源/泵）",
         "masterDataId": null,
         "masterDataType": null
       },
       "technical": {
-        "type": "smallint",
-        "length": 4,
+        "type": "varchar(10)",
+        "length": 10,
+        "isPK": false,
+        "isFK": false,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": "ii_device_type",
+        "securityLevel": "L3",
+        "owner": "研发设计组",
+        "updateFrequency": "静态",
+        "securityCatalogId": "sc_007"
+      }
+    },
+    {
+      "id": "f_dev_capacity",
+      "tableId": "t_device",
+      "seq": 4,
+      "business": {
+        "code": "COOLING_CAPACITY",
+        "nameCn": "制冷量",
+        "definition": "液冷设备制冷量（kW）",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "decimal(6,1)",
+        "length": 7,
         "isPK": false,
         "isFK": false,
         "qualityRuleIds": []
@@ -1815,19 +1869,123 @@ const D = {
       "management": {
         "standardId": null,
         "securityLevel": "L2",
-        "owner": "资源评估组",
-        "updateFrequency": "10分钟",
+        "owner": "研发设计组",
+        "updateFrequency": "静态",
         "securityCatalogId": "sc_003"
       }
     },
     {
-      "id": "f_wind_turbulence",
-      "tableId": "t_wind",
+      "id": "f_dev_coolant_type",
+      "tableId": "t_device",
+      "seq": 5,
+      "business": {
+        "code": "COOLANT_TYPE",
+        "nameCn": "冷却液类型",
+        "definition": "冷却液类型（去离子水/乙二醇/氟化液）",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "varchar(20)",
+        "length": 20,
+        "isPK": false,
+        "isFK": false,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": "ii_coolant_type",
+        "securityLevel": "L4",
+        "owner": "研发设计组",
+        "updateFrequency": "静态",
+        "securityCatalogId": "sc_005"
+      }
+    },
+    {
+      "id": "f_bom_code",
+      "tableId": "t_bom",
+      "seq": 1,
+      "business": {
+        "code": "BOM_CODE",
+        "nameCn": "物料编码",
+        "definition": "BOM 物料编码",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "varchar(32)",
+        "length": 32,
+        "isPK": true,
+        "isFK": false,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L3",
+        "owner": "研发设计组",
+        "updateFrequency": "静态",
+        "securityCatalogId": "sc_004"
+      }
+    },
+    {
+      "id": "f_bom_name",
+      "tableId": "t_bom",
+      "seq": 2,
+      "business": {
+        "code": "BOM_NAME",
+        "nameCn": "物料名称",
+        "definition": "BOM 物料名称",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "varchar(64)",
+        "length": 64,
+        "isPK": false,
+        "isFK": false,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L3",
+        "owner": "研发设计组",
+        "updateFrequency": "静态",
+        "securityCatalogId": "sc_004"
+      }
+    },
+    {
+      "id": "f_bom_qty",
+      "tableId": "t_bom",
       "seq": 3,
       "business": {
-        "code": "TURBULENCE",
-        "nameCn": "湍流强度",
-        "definition": "湍流强度等级",
+        "code": "QTY",
+        "nameCn": "数量",
+        "definition": "BOM 物料数量",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "int",
+        "length": 4,
+        "isPK": false,
+        "isFK": false,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L3",
+        "owner": "研发设计组",
+        "updateFrequency": "静态",
+        "securityCatalogId": "sc_004"
+      }
+    },
+    {
+      "id": "f_bom_unit",
+      "tableId": "t_bom",
+      "seq": 4,
+      "business": {
+        "code": "UNIT",
+        "nameCn": "单位",
+        "definition": "BOM 物料计量单位",
         "masterDataId": null,
         "masterDataType": null
       },
@@ -1840,48 +1998,22 @@ const D = {
       },
       "management": {
         "standardId": null,
-        "securityLevel": "L2",
-        "owner": "资源评估组",
-        "updateFrequency": "10分钟",
-        "securityCatalogId": "sc_003"
+        "securityLevel": "L3",
+        "owner": "研发设计组",
+        "updateFrequency": "静态",
+        "securityCatalogId": "sc_004"
       }
     },
     {
-      "id": "f_wind_time",
-      "tableId": "t_wind",
-      "seq": 4,
-      "business": {
-        "code": "MEASURE_TIME",
-        "nameCn": "测量时间",
-        "definition": "数据采集时间戳",
-        "masterDataId": null,
-        "masterDataType": null
-      },
-      "technical": {
-        "type": "datetime",
-        "length": 0,
-        "isPK": true,
-        "isFK": false,
-        "qualityRuleIds": []
-      },
-      "management": {
-        "standardId": null,
-        "securityLevel": "L2",
-        "owner": "资源评估组",
-        "updateFrequency": "10分钟",
-        "securityCatalogId": "sc_003"
-      }
-    },
-    {
-      "id": "f_wind_project",
-      "tableId": "t_wind",
+      "id": "f_bom_project",
+      "tableId": "t_bom",
       "seq": 5,
       "business": {
         "code": "PROJECT_ID",
         "nameCn": "所属项目",
-        "definition": "测风塔所属海上风电项目",
+        "definition": "物料所属液冷项目",
         "masterDataId": "md_project",
-        "masterDataType": "项目"
+        "masterDataType": "液冷项目"
       },
       "technical": {
         "type": "varchar(32)",
@@ -1893,24 +2025,284 @@ const D = {
       "management": {
         "standardId": null,
         "securityLevel": "L2",
-        "owner": "资源评估组",
+        "owner": "研发设计组",
         "updateFrequency": "静态"
       }
     },
     {
-      "id": "f_geo_stratum",
-      "tableId": "t_geo",
+      "id": "f_proc_code",
+      "tableId": "t_process",
       "seq": 1,
       "business": {
-        "code": "STRATUM",
-        "nameCn": "地层编号",
-        "definition": "地层编号",
+        "code": "PROCESS_CODE",
+        "nameCn": "工艺编号",
+        "definition": "工艺参数编号",
         "masterDataId": null,
         "masterDataType": null
       },
       "technical": {
-        "type": "varchar(20)",
-        "length": 20,
+        "type": "varchar(32)",
+        "length": 32,
+        "isPK": true,
+        "isFK": false,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L4",
+        "owner": "研发设计组",
+        "updateFrequency": "静态",
+        "securityCatalogId": "sc_005"
+      }
+    },
+    {
+      "id": "f_proc_supply_temp",
+      "tableId": "t_process",
+      "seq": 2,
+      "business": {
+        "code": "SUPPLY_TEMP_SET",
+        "nameCn": "供液温度设定",
+        "definition": "供液温度设定值（℃）",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "decimal(5,1)",
+        "length": 6,
+        "isPK": false,
+        "isFK": false,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": "ii_supply_temp",
+        "securityLevel": "L4",
+        "owner": "研发设计组",
+        "updateFrequency": "静态",
+        "securityCatalogId": "sc_005"
+      }
+    },
+    {
+      "id": "f_proc_flow",
+      "tableId": "t_process",
+      "seq": 3,
+      "business": {
+        "code": "FLOW_SET",
+        "nameCn": "流量设定",
+        "definition": "流量设定值（L/min）",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "decimal(6,1)",
+        "length": 7,
+        "isPK": false,
+        "isFK": false,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L4",
+        "owner": "研发设计组",
+        "updateFrequency": "静态",
+        "securityCatalogId": "sc_005"
+      }
+    },
+    {
+      "id": "f_proc_pressure",
+      "tableId": "t_process",
+      "seq": 4,
+      "business": {
+        "code": "PRESSURE_SET",
+        "nameCn": "压差设定",
+        "definition": "压差设定值（kPa）",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "decimal(6,1)",
+        "length": 7,
+        "isPK": false,
+        "isFK": false,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L4",
+        "owner": "研发设计组",
+        "updateFrequency": "静态",
+        "securityCatalogId": "sc_005"
+      }
+    },
+    {
+      "id": "f_proc_return_temp",
+      "tableId": "t_process",
+      "seq": 5,
+      "business": {
+        "code": "RETURN_TEMP_SET",
+        "nameCn": "回液温度设定",
+        "definition": "回液温度设定值（℃）",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "decimal(5,1)",
+        "length": 6,
+        "isPK": false,
+        "isFK": false,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": "ii_return_temp",
+        "securityLevel": "L4",
+        "owner": "研发设计组",
+        "updateFrequency": "静态",
+        "securityCatalogId": "sc_005"
+      }
+    },
+    {
+      "id": "f_order_code",
+      "tableId": "t_order",
+      "seq": 1,
+      "business": {
+        "code": "ORDER_CODE",
+        "nameCn": "订单编号",
+        "definition": "生产订单编号",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "varchar(32)",
+        "length": 32,
+        "isPK": true,
+        "isFK": false,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L2",
+        "owner": "生产制造组",
+        "updateFrequency": "每日",
+        "securityCatalogId": "sc_009"
+      }
+    },
+    {
+      "id": "f_order_qty",
+      "tableId": "t_order",
+      "seq": 2,
+      "business": {
+        "code": "QTY",
+        "nameCn": "数量",
+        "definition": "生产订单数量",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "int",
+        "length": 4,
+        "isPK": false,
+        "isFK": false,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L2",
+        "owner": "生产制造组",
+        "updateFrequency": "每日",
+        "securityCatalogId": "sc_009"
+      }
+    },
+    {
+      "id": "f_order_delivery",
+      "tableId": "t_order",
+      "seq": 3,
+      "business": {
+        "code": "DELIVERY_DATE",
+        "nameCn": "交期",
+        "definition": "生产订单交期日期",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "date",
+        "length": 0,
+        "isPK": false,
+        "isFK": false,
+        "qualityRuleIds": [
+          "qr_008"
+        ]
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L2",
+        "owner": "生产制造组",
+        "updateFrequency": "每日",
+        "securityCatalogId": "sc_009"
+      }
+    },
+    {
+      "id": "f_order_customer",
+      "tableId": "t_order",
+      "seq": 4,
+      "business": {
+        "code": "CUSTOMER_ID",
+        "nameCn": "客户",
+        "definition": "订单所属数据中心客户",
+        "masterDataId": "md_customer",
+        "masterDataType": "数据中心客户"
+      },
+      "technical": {
+        "type": "varchar(32)",
+        "length": 32,
+        "isPK": false,
+        "isFK": true,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L2",
+        "owner": "生产制造组",
+        "updateFrequency": "每日"
+      }
+    },
+    {
+      "id": "f_order_project",
+      "tableId": "t_order",
+      "seq": 5,
+      "business": {
+        "code": "PROJECT_ID",
+        "nameCn": "所属项目",
+        "definition": "订单所属液冷项目",
+        "masterDataId": "md_project",
+        "masterDataType": "液冷项目"
+      },
+      "technical": {
+        "type": "varchar(32)",
+        "length": 32,
+        "isPK": false,
+        "isFK": true,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L2",
+        "owner": "生产制造组",
+        "updateFrequency": "每日"
+      }
+    },
+    {
+      "id": "f_insp_item",
+      "tableId": "t_inspection",
+      "seq": 1,
+      "business": {
+        "code": "INSPECTION_ITEM",
+        "nameCn": "质检项",
+        "definition": "质检项目",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "varchar(64)",
+        "length": 64,
         "isPK": true,
         "isFK": false,
         "qualityRuleIds": [
@@ -1919,46 +2311,20 @@ const D = {
       },
       "management": {
         "standardId": null,
-        "securityLevel": "L3",
-        "owner": "勘测组",
-        "updateFrequency": "静态",
-        "securityCatalogId": "sc_004"
+        "securityLevel": "L2",
+        "owner": "生产制造组",
+        "updateFrequency": "每日",
+        "securityCatalogId": "sc_009"
       }
     },
     {
-      "id": "f_geo_depth",
-      "tableId": "t_geo",
+      "id": "f_insp_result",
+      "tableId": "t_inspection",
       "seq": 2,
       "business": {
-        "code": "DEPTH",
-        "nameCn": "钻孔深度",
-        "definition": "钻孔深度",
-        "masterDataId": null,
-        "masterDataType": null
-      },
-      "technical": {
-        "type": "decimal(6,1)",
-        "length": 7,
-        "isPK": false,
-        "isFK": false,
-        "qualityRuleIds": []
-      },
-      "management": {
-        "standardId": null,
-        "securityLevel": "L3",
-        "owner": "勘测组",
-        "updateFrequency": "静态",
-        "securityCatalogId": "sc_004"
-      }
-    },
-    {
-      "id": "f_geo_soil",
-      "tableId": "t_geo",
-      "seq": 3,
-      "business": {
-        "code": "SOIL_TYPE",
-        "nameCn": "土质类型",
-        "definition": "土质类型",
+        "code": "INSPECTION_RESULT",
+        "nameCn": "质检结果",
+        "definition": "质检结果（合格/不合格）",
         "masterDataId": null,
         "masterDataType": null
       },
@@ -1971,123 +2337,20 @@ const D = {
       },
       "management": {
         "standardId": null,
-        "securityLevel": "L3",
-        "owner": "勘测组",
-        "updateFrequency": "静态",
-        "securityCatalogId": "sc_004"
+        "securityLevel": "L2",
+        "owner": "生产制造组",
+        "updateFrequency": "每日",
+        "securityCatalogId": "sc_009"
       }
     },
     {
-      "id": "f_geo_bearing",
-      "tableId": "t_geo",
-      "seq": 4,
-      "business": {
-        "code": "BEARING",
-        "nameCn": "桩基持力层",
-        "definition": "桩基持力层",
-        "masterDataId": null,
-        "masterDataType": null
-      },
-      "technical": {
-        "type": "varchar(20)",
-        "length": 20,
-        "isPK": false,
-        "isFK": false,
-        "qualityRuleIds": []
-      },
-      "management": {
-        "standardId": null,
-        "securityLevel": "L3",
-        "owner": "勘测组",
-        "updateFrequency": "静态",
-        "securityCatalogId": "sc_004"
-      }
-    },
-    {
-      "id": "f_geo_project",
-      "tableId": "t_geo",
-      "seq": 5,
-      "business": {
-        "code": "PROJECT_ID",
-        "nameCn": "所属项目",
-        "definition": "所属项目",
-        "masterDataId": "md_project",
-        "masterDataType": "项目"
-      },
-      "technical": {
-        "type": "varchar(32)",
-        "length": 32,
-        "isPK": false,
-        "isFK": true,
-        "qualityRuleIds": []
-      },
-      "management": {
-        "standardId": null,
-        "securityLevel": "L3",
-        "owner": "勘测组",
-        "updateFrequency": "静态"
-      }
-    },
-    {
-      "id": "f_topo_coord",
-      "tableId": "t_topo",
-      "seq": 1,
-      "business": {
-        "code": "COORD",
-        "nameCn": "坐标",
-        "definition": "坐标",
-        "masterDataId": null,
-        "masterDataType": null
-      },
-      "technical": {
-        "type": "varchar(40)",
-        "length": 40,
-        "isPK": true,
-        "isFK": false,
-        "qualityRuleIds": []
-      },
-      "management": {
-        "standardId": "ii_sea_area",
-        "securityLevel": "L4",
-        "owner": "测绘组",
-        "updateFrequency": "静态",
-        "securityCatalogId": "sc_005"
-      }
-    },
-    {
-      "id": "f_topo_depth",
-      "tableId": "t_topo",
-      "seq": 2,
-      "business": {
-        "code": "WATER_DEPTH",
-        "nameCn": "水深",
-        "definition": "水深",
-        "masterDataId": null,
-        "masterDataType": null
-      },
-      "technical": {
-        "type": "decimal(6,1)",
-        "length": 7,
-        "isPK": false,
-        "isFK": false,
-        "qualityRuleIds": []
-      },
-      "management": {
-        "standardId": null,
-        "securityLevel": "L4",
-        "owner": "测绘组",
-        "updateFrequency": "静态",
-        "securityCatalogId": "sc_005"
-      }
-    },
-    {
-      "id": "f_topo_survey",
-      "tableId": "t_topo",
+      "id": "f_insp_date",
+      "tableId": "t_inspection",
       "seq": 3,
       "business": {
-        "code": "SURVEY_DATE",
-        "nameCn": "测绘日期",
-        "definition": "测绘日期",
+        "code": "INSPECTION_DATE",
+        "nameCn": "质检日期",
+        "definition": "质检日期",
         "masterDataId": null,
         "masterDataType": null
       },
@@ -2100,511 +2363,277 @@ const D = {
       },
       "management": {
         "standardId": null,
-        "securityLevel": "L4",
-        "owner": "测绘组",
-        "updateFrequency": "静态",
-        "securityCatalogId": "sc_005"
-      }
-    },
-    {
-      "id": "f_topo_route",
-      "tableId": "t_topo",
-      "seq": 4,
-      "business": {
-        "code": "CABLE_ROUTE",
-        "nameCn": "海缆路由",
-        "definition": "海缆路由",
-        "masterDataId": null,
-        "masterDataType": null
-      },
-      "technical": {
-        "type": "varchar(64)",
-        "length": 64,
-        "isPK": false,
-        "isFK": false,
-        "qualityRuleIds": []
-      },
-      "management": {
-        "standardId": null,
-        "securityLevel": "L4",
-        "owner": "测绘组",
-        "updateFrequency": "静态",
-        "securityCatalogId": "sc_005"
-      }
-    },
-    {
-      "id": "f_topo_project",
-      "tableId": "t_topo",
-      "seq": 5,
-      "business": {
-        "code": "PROJECT_ID",
-        "nameCn": "所属项目",
-        "definition": "所属项目",
-        "masterDataId": "md_project",
-        "masterDataType": "项目"
-      },
-      "technical": {
-        "type": "varchar(32)",
-        "length": 32,
-        "isPK": false,
-        "isFK": true,
-        "qualityRuleIds": []
-      },
-      "management": {
-        "standardId": null,
-        "securityLevel": "L3",
-        "owner": "测绘组",
-        "updateFrequency": "静态"
-      }
-    },
-    {
-      "id": "f_turbine_model",
-      "tableId": "t_turbine",
-      "seq": 1,
-      "business": {
-        "code": "turbine_model_name",
-        "nameCn": "风机机型名称",
-        "definition": "机型",
-        "masterDataId": null,
-        "masterDataType": null
-      },
-      "technical": {
-        "type": "varchar(20)",
-        "length": 20,
-        "isPK": false,
-        "isFK": false,
-        "qualityRuleIds": []
-      },
-      "management": {
-        "standardId": "ii_turbine_model",
         "securityLevel": "L2",
-        "owner": "设计组",
-        "updateFrequency": "静态",
-        "securityCatalogId": "sc_006"
-      }
-    },
-    {
-      "id": "f_turbine_md",
-      "tableId": "t_turbine",
-      "seq": 2,
-      "business": {
-        "code": "MD_ID",
-        "nameCn": "主数据编码",
-        "definition": "主数据编码",
-        "masterDataId": "md_turbine",
-        "masterDataType": "风机"
-      },
-      "technical": {
-        "type": "varchar(32)",
-        "length": 32,
-        "isPK": true,
-        "isFK": false,
-        "qualityRuleIds": []
-      },
-      "management": {
-        "standardId": null,
-        "securityLevel": "L2",
-        "owner": "设计组",
-        "updateFrequency": "静态"
-      }
-    },
-    {
-      "id": "f_turbine_power",
-      "tableId": "t_turbine",
-      "seq": 3,
-      "business": {
-        "code": "RATED_POWER",
-        "nameCn": "额定功率",
-        "definition": "额定功率",
-        "masterDataId": null,
-        "masterDataType": null
-      },
-      "technical": {
-        "type": "decimal(5,2)",
-        "length": 7,
-        "isPK": false,
-        "isFK": false,
-        "qualityRuleIds": []
-      },
-      "management": {
-        "standardId": "ii_active_power",
-        "securityLevel": "L2",
-        "owner": "设计组",
-        "updateFrequency": "静态",
-        "securityCatalogId": "sc_006"
-      }
-    },
-    {
-      "id": "f_turbine_foundation",
-      "tableId": "t_turbine",
-      "seq": 4,
-      "business": {
-        "code": "FOUNDATION",
-        "nameCn": "基础型式",
-        "definition": "基础型式",
-        "masterDataId": null,
-        "masterDataType": null
-      },
-      "technical": {
-        "type": "varchar(20)",
-        "length": 20,
-        "isPK": false,
-        "isFK": false,
-        "qualityRuleIds": []
-      },
-      "management": {
-        "standardId": "ii_foundation",
-        "securityLevel": "L2",
-        "owner": "设计组",
-        "updateFrequency": "静态",
-        "securityCatalogId": "sc_006"
-      }
-    },
-    {
-      "id": "f_turbine_supplier",
-      "tableId": "t_turbine",
-      "seq": 5,
-      "business": {
-        "code": "SUPPLIER_ID",
-        "nameCn": "供应商",
-        "definition": "供应商",
-        "masterDataId": "md_supplier",
-        "masterDataType": "供应商"
-      },
-      "technical": {
-        "type": "varchar(32)",
-        "length": 32,
-        "isPK": false,
-        "isFK": true,
-        "qualityRuleIds": []
-      },
-      "management": {
-        "standardId": null,
-        "securityLevel": "L2",
-        "owner": "设计组",
-        "updateFrequency": "静态"
-      }
-    },
-    {
-      "id": "f_turbine_project",
-      "tableId": "t_turbine",
-      "seq": 6,
-      "business": {
-        "code": "PROJECT_ID",
-        "nameCn": "所属项目",
-        "definition": "所属项目",
-        "masterDataId": "md_project",
-        "masterDataType": "项目"
-      },
-      "technical": {
-        "type": "varchar(32)",
-        "length": 32,
-        "isPK": false,
-        "isFK": true,
-        "qualityRuleIds": []
-      },
-      "management": {
-        "standardId": null,
-        "securityLevel": "L2",
-        "owner": "设计组",
-        "updateFrequency": "静态"
-      }
-    },
-    {
-      "id": "f_cable_type",
-      "tableId": "t_cable",
-      "seq": 1,
-      "business": {
-        "code": "TYPE",
-        "nameCn": "海缆类型",
-        "definition": "海缆类型",
-        "masterDataId": null,
-        "masterDataType": null
-      },
-      "technical": {
-        "type": "varchar(20)",
-        "length": 20,
-        "isPK": false,
-        "isFK": false,
-        "qualityRuleIds": []
-      },
-      "management": {
-        "standardId": "ii_cable_type",
-        "securityLevel": "L3",
-        "owner": "设计组",
-        "updateFrequency": "静态",
-        "securityCatalogId": "sc_007"
-      }
-    },
-    {
-      "id": "f_cable_md",
-      "tableId": "t_cable",
-      "seq": 2,
-      "business": {
-        "code": "MD_ID",
-        "nameCn": "主数据编码",
-        "definition": "主数据编码",
-        "masterDataId": "md_cable",
-        "masterDataType": "海缆"
-      },
-      "technical": {
-        "type": "varchar(32)",
-        "length": 32,
-        "isPK": true,
-        "isFK": false,
-        "qualityRuleIds": []
-      },
-      "management": {
-        "standardId": null,
-        "securityLevel": "L3",
-        "owner": "设计组",
-        "updateFrequency": "静态"
-      }
-    },
-    {
-      "id": "f_cable_voltage",
-      "tableId": "t_cable",
-      "seq": 3,
-      "business": {
-        "code": "voltage_level_code",
-        "nameCn": "电压等级编码",
-        "definition": "电压等级",
-        "masterDataId": null,
-        "masterDataType": null
-      },
-      "technical": {
-        "type": "varchar(10)",
-        "length": 10,
-        "isPK": false,
-        "isFK": false,
-        "qualityRuleIds": []
-      },
-      "management": {
-        "standardId": "ii_voltage",
-        "securityLevel": "L3",
-        "owner": "设计组",
-        "updateFrequency": "静态",
-        "securityCatalogId": "sc_007"
-      }
-    },
-    {
-      "id": "f_cable_temp",
-      "tableId": "t_cable",
-      "seq": 4,
-      "business": {
-        "code": "MONITOR_TEMP",
-        "nameCn": "监测温度",
-        "definition": "监测温度",
-        "masterDataId": null,
-        "masterDataType": null
-      },
-      "technical": {
-        "type": "decimal(5,1)",
-        "length": 6,
-        "isPK": false,
-        "isFK": false,
-        "qualityRuleIds": [
-          "qr_004"
-        ]
-      },
-      "management": {
-        "standardId": "ii_temperature",
-        "securityLevel": "L3",
-        "owner": "设计组",
-        "updateFrequency": "静态",
-        "securityCatalogId": "sc_007"
-      }
-    },
-    {
-      "id": "f_cable_route",
-      "tableId": "t_cable",
-      "seq": 5,
-      "business": {
-        "code": "ROUTE",
-        "nameCn": "路由坐标",
-        "definition": "路由坐标",
-        "masterDataId": null,
-        "masterDataType": null
-      },
-      "technical": {
-        "type": "varchar(64)",
-        "length": 64,
-        "isPK": false,
-        "isFK": false,
-        "qualityRuleIds": []
-      },
-      "management": {
-        "standardId": null,
-        "securityLevel": "L4",
-        "owner": "设计组",
-        "updateFrequency": "静态",
-        "securityCatalogId": "sc_005"
-      }
-    },
-    {
-      "id": "f_sub_md",
-      "tableId": "t_substation",
-      "seq": 1,
-      "business": {
-        "code": "MD_ID",
-        "nameCn": "主数据编码",
-        "definition": "主数据编码",
-        "masterDataId": "md_substation",
-        "masterDataType": "升压站"
-      },
-      "technical": {
-        "type": "varchar(32)",
-        "length": 32,
-        "isPK": true,
-        "isFK": false,
-        "qualityRuleIds": []
-      },
-      "management": {
-        "standardId": null,
-        "securityLevel": "L2",
-        "owner": "设计组",
-        "updateFrequency": "静态"
-      }
-    },
-    {
-      "id": "f_sub_capacity",
-      "tableId": "t_substation",
-      "seq": 2,
-      "business": {
-        "code": "CAPACITY",
-        "nameCn": "主变容量",
-        "definition": "主变容量",
-        "masterDataId": null,
-        "masterDataType": null
-      },
-      "technical": {
-        "type": "varchar(20)",
-        "length": 20,
-        "isPK": false,
-        "isFK": false,
-        "qualityRuleIds": []
-      },
-      "management": {
-        "standardId": null,
-        "securityLevel": "L2",
-        "owner": "设计组",
-        "updateFrequency": "静态",
-        "securityCatalogId": "sc_008"
-      }
-    },
-    {
-      "id": "f_sub_voltage",
-      "tableId": "t_substation",
-      "seq": 3,
-      "business": {
-        "code": "VOLTAGE",
-        "nameCn": "电压等级",
-        "definition": "电压等级",
-        "masterDataId": null,
-        "masterDataType": null
-      },
-      "technical": {
-        "type": "varchar(10)",
-        "length": 10,
-        "isPK": false,
-        "isFK": false,
-        "qualityRuleIds": []
-      },
-      "management": {
-        "standardId": "ii_voltage",
-        "securityLevel": "L2",
-        "owner": "设计组",
-        "updateFrequency": "静态",
-        "securityCatalogId": "sc_008"
-      }
-    },
-    {
-      "id": "f_sub_oil_temp",
-      "tableId": "t_substation",
-      "seq": 4,
-      "business": {
-        "code": "OIL_TEMP",
-        "nameCn": "油温",
-        "definition": "油温",
-        "masterDataId": null,
-        "masterDataType": null
-      },
-      "technical": {
-        "type": "decimal(5,1)",
-        "length": 6,
-        "isPK": false,
-        "isFK": false,
-        "qualityRuleIds": [
-          "qr_007"
-        ]
-      },
-      "management": {
-        "standardId": null,
-        "securityLevel": "L2",
-        "owner": "设计组",
-        "updateFrequency": "静态",
-        "securityCatalogId": "sc_008"
-      }
-    },
-    {
-      "id": "f_sub_project",
-      "tableId": "t_substation",
-      "seq": 5,
-      "business": {
-        "code": "PROJECT_ID",
-        "nameCn": "所属项目",
-        "definition": "所属项目",
-        "masterDataId": "md_project",
-        "masterDataType": "项目"
-      },
-      "technical": {
-        "type": "varchar(32)",
-        "length": 32,
-        "isPK": false,
-        "isFK": true,
-        "qualityRuleIds": []
-      },
-      "management": {
-        "standardId": null,
-        "securityLevel": "L2",
-        "owner": "设计组",
-        "updateFrequency": "静态"
-      }
-    },
-    {
-      "id": "f_prog_task",
-      "tableId": "t_progress",
-      "seq": 1,
-      "business": {
-        "code": "TASK",
-        "nameCn": "作业任务",
-        "definition": "作业任务",
-        "masterDataId": null,
-        "masterDataType": null
-      },
-      "technical": {
-        "type": "varchar(64)",
-        "length": 64,
-        "isPK": true,
-        "isFK": false,
-        "qualityRuleIds": []
-      },
-      "management": {
-        "standardId": null,
-        "securityLevel": "L2",
-        "owner": "施工管理组",
+        "owner": "生产制造组",
         "updateFrequency": "每日",
         "securityCatalogId": "sc_009"
       }
     },
     {
-      "id": "f_prog_progress",
-      "tableId": "t_progress",
+      "id": "f_insp_order",
+      "tableId": "t_inspection",
+      "seq": 4,
+      "business": {
+        "code": "ORDER_CODE",
+        "nameCn": "订单",
+        "definition": "质检关联的生产订单",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "varchar(32)",
+        "length": 32,
+        "isPK": false,
+        "isFK": true,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L2",
+        "owner": "生产制造组",
+        "updateFrequency": "每日"
+      }
+    },
+    {
+      "id": "f_insp_project",
+      "tableId": "t_inspection",
+      "seq": 5,
+      "business": {
+        "code": "PROJECT_ID",
+        "nameCn": "所属项目",
+        "definition": "质检记录所属液冷项目",
+        "masterDataId": "md_project",
+        "masterDataType": "液冷项目"
+      },
+      "technical": {
+        "type": "varchar(32)",
+        "length": 32,
+        "isPK": false,
+        "isFK": true,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L2",
+        "owner": "生产制造组",
+        "updateFrequency": "每日"
+      }
+    },
+    {
+      "id": "f_proj_code",
+      "tableId": "t_project",
+      "seq": 1,
+      "business": {
+        "code": "PROJECT_CODE",
+        "nameCn": "项目编号",
+        "definition": "液冷项目编号",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "varchar(32)",
+        "length": 32,
+        "isPK": true,
+        "isFK": false,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L2",
+        "owner": "营销服务组",
+        "updateFrequency": "静态",
+        "securityCatalogId": "sc_001"
+      }
+    },
+    {
+      "id": "f_proj_name",
+      "tableId": "t_project",
       "seq": 2,
+      "business": {
+        "code": "PROJECT_NAME",
+        "nameCn": "项目名称",
+        "definition": "液冷项目名称",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "varchar(64)",
+        "length": 64,
+        "isPK": false,
+        "isFK": false,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L2",
+        "owner": "营销服务组",
+        "updateFrequency": "静态",
+        "securityCatalogId": "sc_001"
+      }
+    },
+    {
+      "id": "f_proj_customer",
+      "tableId": "t_project",
+      "seq": 3,
+      "business": {
+        "code": "CUSTOMER_ID",
+        "nameCn": "客户",
+        "definition": "项目所属数据中心客户",
+        "masterDataId": "md_customer",
+        "masterDataType": "数据中心客户"
+      },
+      "technical": {
+        "type": "varchar(32)",
+        "length": 32,
+        "isPK": false,
+        "isFK": true,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L2",
+        "owner": "营销服务组",
+        "updateFrequency": "静态"
+      }
+    },
+    {
+      "id": "f_proj_delivery",
+      "tableId": "t_project",
+      "seq": 4,
+      "business": {
+        "code": "DELIVERY_TIME",
+        "nameCn": "交付时间",
+        "definition": "液冷项目交付时间",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "datetime",
+        "length": 0,
+        "isPK": false,
+        "isFK": false,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L2",
+        "owner": "营销服务组",
+        "updateFrequency": "静态",
+        "securityCatalogId": "sc_001"
+      }
+    },
+    {
+      "id": "f_proj_contract",
+      "tableId": "t_project",
+      "seq": 5,
+      "business": {
+        "code": "CONTRACT_AMOUNT",
+        "nameCn": "合同额",
+        "definition": "液冷项目合同金额（万元）",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "decimal(10,2)",
+        "length": 12,
+        "isPK": false,
+        "isFK": false,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L3",
+        "owner": "营销服务组",
+        "updateFrequency": "静态",
+        "securityCatalogId": "sc_002"
+      }
+    },
+    {
+      "id": "f_comm_code",
+      "tableId": "t_commissioning",
+      "seq": 1,
+      "business": {
+        "code": "COMM_CODE",
+        "nameCn": "工单号",
+        "definition": "调试实施工单号",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "varchar(32)",
+        "length": 32,
+        "isPK": true,
+        "isFK": false,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L2",
+        "owner": "集成实施组",
+        "updateFrequency": "每日",
+        "securityCatalogId": "sc_010"
+      }
+    },
+    {
+      "id": "f_comm_item",
+      "tableId": "t_commissioning",
+      "seq": 2,
+      "business": {
+        "code": "COMM_ITEM",
+        "nameCn": "调试项",
+        "definition": "调试实施项目",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "varchar(64)",
+        "length": 64,
+        "isPK": false,
+        "isFK": false,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L2",
+        "owner": "集成实施组",
+        "updateFrequency": "每日",
+        "securityCatalogId": "sc_010"
+      }
+    },
+    {
+      "id": "f_comm_result",
+      "tableId": "t_commissioning",
+      "seq": 3,
+      "business": {
+        "code": "COMM_RESULT",
+        "nameCn": "调试结果",
+        "definition": "调试结果（通过/未通过）",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "varchar(20)",
+        "length": 20,
+        "isPK": false,
+        "isFK": false,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L2",
+        "owner": "集成实施组",
+        "updateFrequency": "每日",
+        "securityCatalogId": "sc_010"
+      }
+    },
+    {
+      "id": "f_comm_progress",
+      "tableId": "t_commissioning",
+      "seq": 4,
       "business": {
         "code": "progress_percent",
         "nameCn": "进度百分比",
-        "definition": "进度百分比",
+        "definition": "调试实施进度百分比",
         "masterDataId": null,
         "masterDataType": null
       },
@@ -2618,25 +2647,241 @@ const D = {
       "management": {
         "standardId": "ii_progress",
         "securityLevel": "L2",
-        "owner": "施工管理组",
+        "owner": "集成实施组",
         "updateFrequency": "每日",
-        "securityCatalogId": "sc_009"
+        "securityCatalogId": "sc_010"
       }
     },
     {
-      "id": "f_prog_vessel",
-      "tableId": "t_progress",
+      "id": "f_comm_project",
+      "tableId": "t_commissioning",
+      "seq": 5,
+      "business": {
+        "code": "PROJECT_ID",
+        "nameCn": "所属项目",
+        "definition": "调试实施所属液冷项目",
+        "masterDataId": "md_project",
+        "masterDataType": "液冷项目"
+      },
+      "technical": {
+        "type": "varchar(32)",
+        "length": 32,
+        "isPK": false,
+        "isFK": true,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L2",
+        "owner": "集成实施组",
+        "updateFrequency": "每日"
+      }
+    },
+    {
+      "id": "f_tel_supply_temp",
+      "tableId": "t_telemetry",
+      "seq": 1,
+      "business": {
+        "code": "supply_temperature_value",
+        "nameCn": "供液温度值",
+        "definition": "供液温度实测值（℃）",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "decimal(5,1)",
+        "length": 6,
+        "isPK": false,
+        "isFK": false,
+        "qualityRuleIds": [
+          "qr_001",
+          "qr_005"
+        ]
+      },
+      "management": {
+        "standardId": "ii_supply_temp",
+        "securityLevel": "L3",
+        "owner": "智慧运维组",
+        "updateFrequency": "1分钟",
+        "securityCatalogId": "sc_011"
+      }
+    },
+    {
+      "id": "f_tel_return_temp",
+      "tableId": "t_telemetry",
+      "seq": 2,
+      "business": {
+        "code": "return_temperature_value",
+        "nameCn": "回液温度值",
+        "definition": "回液温度实测值（℃）",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "decimal(5,1)",
+        "length": 6,
+        "isPK": false,
+        "isFK": false,
+        "qualityRuleIds": [
+          "qr_002"
+        ]
+      },
+      "management": {
+        "standardId": "ii_return_temp",
+        "securityLevel": "L3",
+        "owner": "智慧运维组",
+        "updateFrequency": "1分钟",
+        "securityCatalogId": "sc_011"
+      }
+    },
+    {
+      "id": "f_tel_flow",
+      "tableId": "t_telemetry",
       "seq": 3,
       "business": {
-        "code": "VESSEL",
-        "nameCn": "船机",
-        "definition": "船机",
+        "code": "FLOW",
+        "nameCn": "流量",
+        "definition": "冷却液流量实测值（L/min）",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "decimal(6,1)",
+        "length": 7,
+        "isPK": false,
+        "isFK": false,
+        "qualityRuleIds": [
+          "qr_003"
+        ]
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L3",
+        "owner": "智慧运维组",
+        "updateFrequency": "1分钟",
+        "securityCatalogId": "sc_011"
+      }
+    },
+    {
+      "id": "f_tel_pressure",
+      "tableId": "t_telemetry",
+      "seq": 4,
+      "business": {
+        "code": "PRESSURE",
+        "nameCn": "压差",
+        "definition": "供回液压差实测值（kPa）",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "decimal(6,1)",
+        "length": 7,
+        "isPK": false,
+        "isFK": false,
+        "qualityRuleIds": [
+          "qr_004"
+        ]
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L3",
+        "owner": "智慧运维组",
+        "updateFrequency": "1分钟",
+        "securityCatalogId": "sc_011"
+      }
+    },
+    {
+      "id": "f_tel_power",
+      "tableId": "t_telemetry",
+      "seq": 5,
+      "business": {
+        "code": "consumption_value",
+        "nameCn": "功耗值",
+        "definition": "液冷设备功耗（kW）",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "decimal(8,2)",
+        "length": 10,
+        "isPK": false,
+        "isFK": false,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": "ii_power_consumption",
+        "securityLevel": "L3",
+        "owner": "智慧运维组",
+        "updateFrequency": "1分钟",
+        "securityCatalogId": "sc_011"
+      }
+    },
+    {
+      "id": "f_tel_time",
+      "tableId": "t_telemetry",
+      "seq": 6,
+      "business": {
+        "code": "TS",
+        "nameCn": "时间戳",
+        "definition": "遥测采集时间戳",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "datetime",
+        "length": 0,
+        "isPK": true,
+        "isFK": false,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L3",
+        "owner": "智慧运维组",
+        "updateFrequency": "1分钟",
+        "securityCatalogId": "sc_011"
+      }
+    },
+    {
+      "id": "f_alarm_code",
+      "tableId": "t_alarm",
+      "seq": 1,
+      "business": {
+        "code": "ALARM_CODE",
+        "nameCn": "告警编号",
+        "definition": "告警记录编号",
         "masterDataId": null,
         "masterDataType": null
       },
       "technical": {
         "type": "varchar(32)",
         "length": 32,
+        "isPK": true,
+        "isFK": false,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L2",
+        "owner": "智慧运维组",
+        "updateFrequency": "实时",
+        "securityCatalogId": "sc_013"
+      }
+    },
+    {
+      "id": "f_alarm_level",
+      "tableId": "t_alarm",
+      "seq": 2,
+      "business": {
+        "code": "ALARM_LEVEL",
+        "nameCn": "告警级别",
+        "definition": "告警级别（提示/警告/严重）",
+        "masterDataId": null,
+        "masterDataType": null
+      },
+      "technical": {
+        "type": "varchar(10)",
+        "length": 10,
         "isPK": false,
         "isFK": false,
         "qualityRuleIds": []
@@ -2644,19 +2889,19 @@ const D = {
       "management": {
         "standardId": null,
         "securityLevel": "L2",
-        "owner": "施工管理组",
-        "updateFrequency": "每日",
-        "securityCatalogId": "sc_009"
+        "owner": "智慧运维组",
+        "updateFrequency": "实时",
+        "securityCatalogId": "sc_013"
       }
     },
     {
-      "id": "f_prog_seastate",
-      "tableId": "t_progress",
-      "seq": 4,
+      "id": "f_alarm_type",
+      "tableId": "t_alarm",
+      "seq": 3,
       "business": {
-        "code": "SEA_STATE",
-        "nameCn": "海况",
-        "definition": "海况",
+        "code": "ALARM_TYPE",
+        "nameCn": "告警类型",
+        "definition": "告警类型（漏液/超温/超压）",
         "masterDataId": null,
         "masterDataType": null
       },
@@ -2670,129 +2915,25 @@ const D = {
       "management": {
         "standardId": null,
         "securityLevel": "L2",
-        "owner": "施工管理组",
-        "updateFrequency": "每日",
-        "securityCatalogId": "sc_009"
+        "owner": "智慧运维组",
+        "updateFrequency": "实时",
+        "securityCatalogId": "sc_013"
       }
     },
     {
-      "id": "f_prog_project",
-      "tableId": "t_progress",
-      "seq": 5,
-      "business": {
-        "code": "PROJECT_ID",
-        "nameCn": "所属项目",
-        "definition": "所属项目",
-        "masterDataId": "md_project",
-        "masterDataType": "项目"
-      },
-      "technical": {
-        "type": "varchar(32)",
-        "length": 32,
-        "isPK": false,
-        "isFK": true,
-        "qualityRuleIds": []
-      },
-      "management": {
-        "standardId": null,
-        "securityLevel": "L2",
-        "owner": "施工管理组",
-        "updateFrequency": "每日"
-      }
-    },
-    {
-      "id": "f_scada_power",
-      "tableId": "t_scada",
-      "seq": 1,
-      "business": {
-        "code": "active_power_value",
-        "nameCn": "有功功率值",
-        "definition": "有功功率",
-        "masterDataId": null,
-        "masterDataType": null
-      },
-      "technical": {
-        "type": "decimal(5,2)",
-        "length": 7,
-        "isPK": false,
-        "isFK": false,
-        "qualityRuleIds": [
-          "qr_001"
-        ]
-      },
-      "management": {
-        "standardId": "ii_active_power",
-        "securityLevel": "L2",
-        "owner": "运维组",
-        "updateFrequency": "1分钟",
-        "securityCatalogId": "sc_010"
-      }
-    },
-    {
-      "id": "f_scada_turbine",
-      "tableId": "t_scada",
-      "seq": 2,
-      "business": {
-        "code": "TURBINE_ID",
-        "nameCn": "机组",
-        "definition": "机组",
-        "masterDataId": "md_turbine",
-        "masterDataType": "风机"
-      },
-      "technical": {
-        "type": "varchar(32)",
-        "length": 32,
-        "isPK": false,
-        "isFK": true,
-        "qualityRuleIds": []
-      },
-      "management": {
-        "standardId": null,
-        "securityLevel": "L2",
-        "owner": "运维组",
-        "updateFrequency": "1分钟"
-      }
-    },
-    {
-      "id": "f_scada_temp",
-      "tableId": "t_scada",
-      "seq": 3,
-      "business": {
-        "code": "temperature_value",
-        "nameCn": "温度值",
-        "definition": "温度",
-        "masterDataId": null,
-        "masterDataType": null
-      },
-      "technical": {
-        "type": "decimal(5,1)",
-        "length": 6,
-        "isPK": false,
-        "isFK": false,
-        "qualityRuleIds": []
-      },
-      "management": {
-        "standardId": "ii_temperature",
-        "securityLevel": "L2",
-        "owner": "运维组",
-        "updateFrequency": "1分钟",
-        "securityCatalogId": "sc_010"
-      }
-    },
-    {
-      "id": "f_scada_vibration",
-      "tableId": "t_scada",
+      "id": "f_alarm_time",
+      "tableId": "t_alarm",
       "seq": 4,
       "business": {
-        "code": "VIBRATION",
-        "nameCn": "振动",
-        "definition": "振动",
+        "code": "ALARM_TIME",
+        "nameCn": "告警时间",
+        "definition": "告警触发时间",
         "masterDataId": null,
         "masterDataType": null
       },
       "technical": {
-        "type": "decimal(6,2)",
-        "length": 8,
+        "type": "datetime",
+        "length": 0,
         "isPK": false,
         "isFK": false,
         "qualityRuleIds": []
@@ -2800,19 +2941,44 @@ const D = {
       "management": {
         "standardId": null,
         "securityLevel": "L2",
-        "owner": "运维组",
-        "updateFrequency": "1分钟",
-        "securityCatalogId": "sc_010"
+        "owner": "智慧运维组",
+        "updateFrequency": "实时",
+        "securityCatalogId": "sc_013"
       }
     },
     {
-      "id": "f_scada_time",
-      "tableId": "t_scada",
+      "id": "f_alarm_device",
+      "tableId": "t_alarm",
       "seq": 5,
+      "business": {
+        "code": "DEVICE_ID",
+        "nameCn": "设备",
+        "definition": "告警关联的液冷设备",
+        "masterDataId": "md_cdu",
+        "masterDataType": "液冷设备"
+      },
+      "technical": {
+        "type": "varchar(32)",
+        "length": 32,
+        "isPK": false,
+        "isFK": true,
+        "qualityRuleIds": []
+      },
+      "management": {
+        "standardId": null,
+        "securityLevel": "L2",
+        "owner": "智慧运维组",
+        "updateFrequency": "实时"
+      }
+    },
+    {
+      "id": "f_energy_time",
+      "tableId": "t_energy",
+      "seq": 1,
       "business": {
         "code": "TS",
         "nameCn": "时间戳",
-        "definition": "时间戳",
+        "definition": "能耗采集时间戳",
         "masterDataId": null,
         "masterDataType": null
       },
@@ -2826,98 +2992,47 @@ const D = {
       "management": {
         "standardId": null,
         "securityLevel": "L2",
-        "owner": "运维组",
-        "updateFrequency": "1分钟",
-        "securityCatalogId": "sc_010"
+        "owner": "智慧运维组",
+        "updateFrequency": "15分钟",
+        "securityCatalogId": "sc_012"
       }
     },
     {
-      "id": "f_forecast_time",
-      "tableId": "t_forecast",
-      "seq": 1,
+      "id": "f_energy_pue",
+      "tableId": "t_energy",
+      "seq": 2,
       "business": {
-        "code": "FORECAST_TIME",
-        "nameCn": "预测时间",
-        "definition": "预测时间",
+        "code": "efficiency_percent",
+        "nameCn": "能效百分比",
+        "definition": "实时 PUE（电源使用效率）",
         "masterDataId": null,
         "masterDataType": null
       },
       "technical": {
-        "type": "datetime",
-        "length": 0,
-        "isPK": true,
+        "type": "decimal(4,2)",
+        "length": 6,
+        "isPK": false,
         "isFK": false,
         "qualityRuleIds": [
-          "qr_005"
+          "qr_007"
         ]
       },
       "management": {
-        "standardId": null,
+        "standardId": "ii_efficiency_percent",
         "securityLevel": "L2",
-        "owner": "运维组",
+        "owner": "智慧运维组",
         "updateFrequency": "15分钟",
-        "securityCatalogId": "sc_011"
+        "securityCatalogId": "sc_012"
       }
     },
     {
-      "id": "f_forecast_power",
-      "tableId": "t_forecast",
-      "seq": 2,
-      "business": {
-        "code": "PREDICT_POWER",
-        "nameCn": "预测功率",
-        "definition": "预测功率",
-        "masterDataId": null,
-        "masterDataType": null
-      },
-      "technical": {
-        "type": "decimal(5,2)",
-        "length": 7,
-        "isPK": false,
-        "isFK": false,
-        "qualityRuleIds": []
-      },
-      "management": {
-        "standardId": "ii_active_power",
-        "securityLevel": "L2",
-        "owner": "运维组",
-        "updateFrequency": "15分钟",
-        "securityCatalogId": "sc_011"
-      }
-    },
-    {
-      "id": "f_forecast_project",
-      "tableId": "t_forecast",
+      "id": "f_energy_daily_pue",
+      "tableId": "t_energy",
       "seq": 3,
       "business": {
-        "code": "PROJECT_ID",
-        "nameCn": "所属项目",
-        "definition": "所属项目",
-        "masterDataId": "md_project",
-        "masterDataType": "项目"
-      },
-      "technical": {
-        "type": "varchar(32)",
-        "length": 32,
-        "isPK": false,
-        "isFK": true,
-        "qualityRuleIds": []
-      },
-      "management": {
-        "standardId": null,
-        "securityLevel": "L2",
-        "owner": "运维组",
-        "updateFrequency": "15分钟"
-      }
-    },
-    {
-      "id": "f_forecast_accuracy",
-      "tableId": "t_forecast",
-      "seq": 4,
-      "business": {
-        "code": "ACCURACY",
-        "nameCn": "预测精度",
-        "definition": "预测精度",
+        "code": "DAILY_PUE",
+        "nameCn": "日均PUE",
+        "definition": "日均 PUE",
         "masterDataId": null,
         "masterDataType": null
       },
@@ -2929,154 +3044,49 @@ const D = {
         "qualityRuleIds": []
       },
       "management": {
-        "standardId": "ii_accuracy",
+        "standardId": null,
         "securityLevel": "L2",
-        "owner": "运维组",
+        "owner": "智慧运维组",
         "updateFrequency": "15分钟",
-        "securityCatalogId": "sc_011"
+        "securityCatalogId": "sc_012"
       }
     },
     {
-      "id": "f_forecast_model",
-      "tableId": "t_forecast",
-      "seq": 5,
-      "business": {
-        "code": "MODEL",
-        "nameCn": "算法模型",
-        "definition": "算法模型",
-        "masterDataId": null,
-        "masterDataType": null
-      },
-      "technical": {
-        "type": "varchar(32)",
-        "length": 32,
-        "isPK": false,
-        "isFK": false,
-        "qualityRuleIds": []
-      },
-      "management": {
-        "standardId": null,
-        "securityLevel": "L2",
-        "owner": "运维组",
-        "updateFrequency": "15分钟",
-        "securityCatalogId": "sc_011"
-      }
-    },
-    {
-      "id": "f_spare_name",
-      "tableId": "t_spare",
-      "seq": 1,
-      "business": {
-        "code": "NAME",
-        "nameCn": "备件名称",
-        "definition": "备件名称",
-        "masterDataId": null,
-        "masterDataType": null
-      },
-      "technical": {
-        "type": "varchar(64)",
-        "length": 64,
-        "isPK": true,
-        "isFK": false,
-        "qualityRuleIds": []
-      },
-      "management": {
-        "standardId": null,
-        "securityLevel": "L2",
-        "owner": "备件组",
-        "updateFrequency": "每日",
-        "securityCatalogId": "sc_013"
-      }
-    },
-    {
-      "id": "f_spare_qty",
-      "tableId": "t_spare",
-      "seq": 2,
-      "business": {
-        "code": "QTY",
-        "nameCn": "库存数量",
-        "definition": "库存数量",
-        "masterDataId": null,
-        "masterDataType": null
-      },
-      "technical": {
-        "type": "int",
-        "length": 4,
-        "isPK": false,
-        "isFK": false,
-        "qualityRuleIds": [
-          "qr_008"
-        ]
-      },
-      "management": {
-        "standardId": null,
-        "securityLevel": "L2",
-        "owner": "备件组",
-        "updateFrequency": "每日",
-        "securityCatalogId": "sc_013"
-      }
-    },
-    {
-      "id": "f_spare_turbine",
-      "tableId": "t_spare",
-      "seq": 3,
-      "business": {
-        "code": "TURBINE_ID",
-        "nameCn": "适配机型",
-        "definition": "适配机型",
-        "masterDataId": null,
-        "masterDataType": null
-      },
-      "technical": {
-        "type": "varchar(32)",
-        "length": 32,
-        "isPK": false,
-        "isFK": false,
-        "qualityRuleIds": []
-      },
-      "management": {
-        "standardId": "ii_turbine_model",
-        "securityLevel": "L2",
-        "owner": "备件组",
-        "updateFrequency": "每日",
-        "securityCatalogId": "sc_013"
-      }
-    },
-    {
-      "id": "f_spare_supplier",
-      "tableId": "t_spare",
+      "id": "f_energy_consumption",
+      "tableId": "t_energy",
       "seq": 4,
       "business": {
-        "code": "SUPPLIER_ID",
-        "nameCn": "供应商",
-        "definition": "供应商",
-        "masterDataId": "md_supplier",
-        "masterDataType": "供应商"
+        "code": "ENERGY_CONSUMPTION",
+        "nameCn": "能耗",
+        "definition": "液冷系统能耗（kWh）",
+        "masterDataId": null,
+        "masterDataType": null
       },
       "technical": {
-        "type": "varchar(32)",
-        "length": 32,
+        "type": "decimal(8,2)",
+        "length": 10,
         "isPK": false,
-        "isFK": true,
+        "isFK": false,
         "qualityRuleIds": []
       },
       "management": {
         "standardId": null,
         "securityLevel": "L2",
-        "owner": "备件组",
-        "updateFrequency": "每日"
+        "owner": "智慧运维组",
+        "updateFrequency": "15分钟",
+        "securityCatalogId": "sc_012"
       }
     },
     {
-      "id": "f_spare_project",
-      "tableId": "t_spare",
+      "id": "f_energy_project",
+      "tableId": "t_energy",
       "seq": 5,
       "business": {
         "code": "PROJECT_ID",
         "nameCn": "所属项目",
-        "definition": "所属项目",
+        "definition": "能耗数据所属液冷项目",
         "masterDataId": "md_project",
-        "masterDataType": "项目"
+        "masterDataType": "液冷项目"
       },
       "technical": {
         "type": "varchar(32)",
@@ -3088,38 +3098,38 @@ const D = {
       "management": {
         "standardId": null,
         "securityLevel": "L2",
-        "owner": "备件组",
-        "updateFrequency": "每日"
+        "owner": "智慧运维组",
+        "updateFrequency": "15分钟"
       }
     }
   ],
   "qualityResults": [
     {
-      "id": "qres_app_res",
-      "appId": "app_res",
+      "id": "qres_app_mes",
+      "appId": "app_mes",
       "score": 92,
       "dimension": "完整性",
       "issues": [
         {
           "id": "issue_001",
-          "fieldId": "f_wind_speed",
-          "ruleId": "qr_003",
-          "desc": "2026-07 有 3 个 10 分钟区间风速缺失",
+          "fieldId": "f_insp_item",
+          "ruleId": "qr_006",
+          "desc": "2026-07 有 2 条质检记录缺质检项",
           "severity": "警告"
         }
       ]
     },
     {
-      "id": "qres_app_ops",
-      "appId": "app_ops",
+      "id": "qres_app_dcim",
+      "appId": "app_dcim",
       "score": 78,
       "dimension": "准确性",
       "issues": [
         {
           "id": "issue_002",
-          "fieldId": "f_scada_power",
+          "fieldId": "f_tel_supply_temp",
           "ruleId": "qr_001",
-          "desc": "6 台机组有功功率越界（>16MW）",
+          "desc": "3 台 CDU 供液温度越界（>45℃）",
           "severity": "严重"
         }
       ]
@@ -3128,179 +3138,159 @@ const D = {
   "lineage": [
     {
       "id": "lg_001",
-      "up": "t_wind",
-      "down": "t_forecast",
-      "relation": "功率预测输入",
-      "mode": "离线批次",
-      "desc": "测风数据离线批次同步至功率预测模型",
+      "up": "t_device",
+      "down": "t_telemetry",
+      "relation": "采集配置",
+      "mode": "数据服务",
+      "desc": "液冷设备档案经实时数据服务同步为运行遥测采集配置",
       "fieldMapping": [
         {
-          "up": "f_wind_speed",
-          "down": "f_forecast_power"
+          "up": "f_dev_md",
+          "down": "f_tel_power"
         },
         {
-          "up": "f_wind_time",
-          "down": "f_forecast_time"
-        },
-        {
-          "up": "f_wind_dir",
-          "down": "f_forecast_power"
+          "up": "f_dev_model",
+          "down": "f_tel_supply_temp"
         }
       ]
     },
     {
       "id": "lg_002",
-      "up": "t_scada",
-      "down": "t_forecast",
-      "relation": "模型训练数据",
-      "mode": "应用内",
-      "desc": "运维应用内定时脚本加工训练预测模型",
+      "up": "t_process",
+      "down": "t_telemetry",
+      "relation": "工艺参数比对",
+      "mode": "数据服务",
+      "desc": "工艺参数设定值经数据服务下发为遥测比对基准",
       "fieldMapping": [
         {
-          "up": "f_scada_power",
-          "down": "f_forecast_power"
+          "up": "f_proc_supply_temp",
+          "down": "f_tel_supply_temp"
         },
         {
-          "up": "f_scada_time",
-          "down": "f_forecast_time"
+          "up": "f_proc_pressure",
+          "down": "f_tel_pressure"
         }
       ]
     },
     {
       "id": "lg_003",
-      "up": "t_scada",
-      "down": "t_spare",
-      "relation": "备件需求驱动",
+      "up": "t_telemetry",
+      "down": "t_alarm",
+      "relation": "告警触发",
       "mode": "应用内",
-      "desc": "运维应用内定时脚本加工驱动备件需求",
+      "desc": "运维应用内实时脚本根据遥测超限触发告警",
       "fieldMapping": [
         {
-          "up": "f_scada_turbine",
-          "down": "f_spare_turbine"
+          "up": "f_tel_supply_temp",
+          "down": "f_alarm_time"
         },
         {
-          "up": "f_scada_vibration",
-          "down": "f_spare_qty"
+          "up": "f_tel_pressure",
+          "down": "f_alarm_level"
         }
       ]
     },
     {
       "id": "lg_004",
-      "up": "t_geo",
-      "down": "t_turbine",
-      "relation": "机型选址依据",
-      "mode": "离线批次",
-      "desc": "地质钻孔数据离线批次支撑机型/基础选型",
+      "up": "t_telemetry",
+      "down": "t_energy",
+      "relation": "能效计算",
+      "mode": "应用内",
+      "desc": "运维应用内定时脚本加工遥测功耗计算 PUE 能耗",
       "fieldMapping": [
         {
-          "up": "f_geo_bearing",
-          "down": "f_turbine_foundation"
+          "up": "f_tel_power",
+          "down": "f_energy_pue"
         },
         {
-          "up": "f_geo_stratum",
-          "down": "f_turbine_model"
-        },
-        {
-          "up": "f_geo_project",
-          "down": "f_turbine_project"
+          "up": "f_tel_time",
+          "down": "f_energy_time"
         }
       ]
     },
     {
       "id": "lg_005",
-      "up": "t_topo",
-      "down": "t_cable",
-      "relation": "海缆路由依据",
+      "up": "t_bom",
+      "down": "t_order",
+      "relation": "物料需求驱动",
       "mode": "离线批次",
-      "desc": "海底地形测绘离线批次支撑海缆路由设计",
+      "desc": "BOM 物料清单离线批次下发驱动生产订单",
       "fieldMapping": [
         {
-          "up": "f_topo_route",
-          "down": "f_cable_route"
+          "up": "f_bom_code",
+          "down": "f_order_code"
         },
         {
-          "up": "f_topo_depth",
-          "down": "f_cable_type"
+          "up": "f_bom_project",
+          "down": "f_order_project"
         }
       ]
     },
     {
       "id": "lg_006",
-      "up": "t_topo",
-      "down": "t_substation",
-      "relation": "站址选址依据",
-      "mode": "离线批次",
-      "desc": "海底地形测绘离线批次支撑升压站选址",
+      "up": "t_order",
+      "down": "t_inspection",
+      "relation": "质检触发",
+      "mode": "应用内",
+      "desc": "制造应用内脚本根据生产订单触发质检记录",
       "fieldMapping": [
         {
-          "up": "f_topo_coord",
-          "down": "f_sub_md"
+          "up": "f_order_code",
+          "down": "f_insp_order"
         },
         {
-          "up": "f_topo_depth",
-          "down": "f_sub_capacity"
-        },
-        {
-          "up": "f_topo_project",
-          "down": "f_sub_project"
+          "up": "f_order_project",
+          "down": "f_insp_project"
         }
       ]
     },
     {
       "id": "lg_007",
-      "up": "t_turbine",
-      "down": "t_scada",
-      "relation": "采集配置",
-      "mode": "数据服务",
-      "desc": "风机设备参数经实时数据服务同步为 SCADA 采集配置",
+      "up": "t_project",
+      "down": "t_order",
+      "relation": "项目订单关联",
+      "mode": "离线批次",
+      "desc": "液冷项目信息离线批次下发关联生产订单",
       "fieldMapping": [
         {
-          "up": "f_turbine_md",
-          "down": "f_scada_turbine"
+          "up": "f_proj_code",
+          "down": "f_order_project"
         },
         {
-          "up": "f_turbine_power",
-          "down": "f_scada_power"
+          "up": "f_proj_customer",
+          "down": "f_order_customer"
         }
       ]
     },
     {
       "id": "lg_008",
-      "up": "t_cable",
-      "down": "t_substation",
-      "relation": "海缆监测汇聚",
-      "mode": "应用内",
-      "desc": "设计应用内定时脚本汇聚海缆监测至升压站主变表",
+      "up": "t_project",
+      "down": "t_commissioning",
+      "relation": "实施任务关联",
+      "mode": "离线批次",
+      "desc": "液冷项目信息离线批次下发关联调试实施任务",
       "fieldMapping": [
         {
-          "up": "f_cable_temp",
-          "down": "f_sub_oil_temp"
+          "up": "f_proj_code",
+          "down": "f_comm_project"
         },
         {
-          "up": "f_cable_md",
-          "down": "f_sub_md"
+          "up": "f_proj_delivery",
+          "down": "f_comm_result"
         }
       ]
     },
     {
       "id": "lg_009",
-      "up": "t_forecast",
-      "down": "t_progress",
-      "relation": "作业窗口调度",
-      "mode": "数据服务",
-      "desc": "功率预测经准实时数据服务支撑施工/运维作业窗口调度",
+      "up": "t_commissioning",
+      "down": "t_device",
+      "relation": "设备档案回写",
+      "mode": "离线批次",
+      "desc": "调试实施结果离线批次回写更新设备档案制冷量",
       "fieldMapping": [
         {
-          "up": "f_forecast_power",
-          "down": "f_prog_seastate"
-        },
-        {
-          "up": "f_forecast_time",
-          "down": "f_prog_task"
-        },
-        {
-          "up": "f_forecast_project",
-          "down": "f_prog_project"
+          "up": "f_comm_result",
+          "down": "f_dev_capacity"
         }
       ]
     }
@@ -3308,22 +3298,22 @@ const D = {
   "batchFiles": [
     {
       "id": "bf_001",
-      "name": "测风数据批次交换",
+      "name": "BOM 物料批次下发",
       "direction": "outbound",
-      "sourceSystem": "风资源评估系统",
-      "sourceTableId": "t_wind",
-      "sourceTableName": "测风数据表",
-      "targetSystem": "大数据开发平台·功率预测",
+      "sourceSystem": "研发设计系统",
+      "sourceTableId": "t_bom",
+      "sourceTableName": "物料清单表",
+      "targetSystem": "生产制造系统·物料需求",
       "targetTableId": null,
-      "targetTableName": "功率预测输入表",
+      "targetTableName": "物料需求表",
       "fileFormat": "CSV",
       "schedule": "每日 02:00",
-      "securityLevel": "L2",
+      "securityLevel": "L3",
       "status": "运行中",
       "applyFlow": [
         {
           "step": "申请",
-          "actor": "资源评估组",
+          "actor": "研发设计组",
           "time": "2026-05-12",
           "result": "通过"
         },
@@ -3343,22 +3333,22 @@ const D = {
     },
     {
       "id": "bf_002",
-      "name": "地质勘测数据批次交换",
+      "name": "工艺参数批次下发",
       "direction": "outbound",
-      "sourceSystem": "海洋勘测系统",
-      "sourceTableId": "t_geo",
-      "sourceTableName": "地质钻孔表",
-      "targetSystem": "工程设计系统·机型选型",
+      "sourceSystem": "研发设计系统",
+      "sourceTableId": "t_process",
+      "sourceTableName": "工艺参数表",
+      "targetSystem": "智慧运维系统·比对基准",
       "targetTableId": null,
-      "targetTableName": "基础选型参数表",
-      "fileFormat": "CSV",
+      "targetTableName": "工艺基准参数表",
+      "fileFormat": "JSON",
       "schedule": "每日 02:00",
-      "securityLevel": "L3",
+      "securityLevel": "L4",
       "status": "运行中",
       "applyFlow": [
         {
           "step": "申请",
-          "actor": "勘测组",
+          "actor": "研发设计组",
           "time": "2026-05-11",
           "result": "通过"
         },
@@ -3378,22 +3368,22 @@ const D = {
     },
     {
       "id": "bf_003",
-      "name": "海底地形批次交换",
+      "name": "设备档案批次同步",
       "direction": "outbound",
-      "sourceSystem": "海洋勘测系统",
-      "sourceTableId": "t_topo",
-      "sourceTableName": "海底地形测绘表",
-      "targetSystem": "工程设计系统·路由/站址",
+      "sourceSystem": "研发设计系统",
+      "sourceTableId": "t_device",
+      "sourceTableName": "液冷设备档案表",
+      "targetSystem": "智慧运维系统·采集配置",
       "targetTableId": null,
-      "targetTableName": "路由比选表",
-      "fileFormat": "SHP",
+      "targetTableName": "采集配置表",
+      "fileFormat": "CSV",
       "schedule": "每周一 03:00",
       "securityLevel": "L3",
       "status": "运行中",
       "applyFlow": [
         {
           "step": "申请",
-          "actor": "测绘组",
+          "actor": "研发设计组",
           "time": "2026-05-10",
           "result": "通过"
         },
@@ -3413,51 +3403,22 @@ const D = {
     },
     {
       "id": "bf_004",
-      "name": "备件库存月度对账批次",
+      "name": "质检报告批次交换",
       "direction": "outbound",
-      "sourceSystem": "智慧运维系统",
-      "sourceTableId": "t_spare",
-      "sourceTableName": "备品备件表",
-      "targetSystem": "供应商协同平台",
+      "sourceSystem": "生产制造系统",
+      "sourceTableId": "t_inspection",
+      "sourceTableName": "质检记录表",
+      "targetSystem": "客户协同平台",
       "targetTableId": null,
-      "targetTableName": "备件对账表",
+      "targetTableName": "质检报告表",
       "fileFormat": "CSV",
-      "schedule": "每月 1 日 02:00",
-      "securityLevel": "L2",
-      "status": "审批中",
-      "applyFlow": [
-        {
-          "step": "申请",
-          "actor": "备件组",
-          "time": "2026-08-01",
-          "result": "通过"
-        },
-        {
-          "step": "安全合规审批",
-          "actor": "数据安全组",
-          "time": "2026-08-03",
-          "result": "通过"
-        }
-      ]
-    },
-    {
-      "id": "bf_005",
-      "name": "施工进度批次交换",
-      "direction": "outbound",
-      "sourceSystem": "施工管理系统",
-      "sourceTableId": "t_progress",
-      "sourceTableName": "作业进度表",
-      "targetSystem": "项目管理系统",
-      "targetTableId": null,
-      "targetTableName": "进度汇总表",
-      "fileFormat": "JSON",
       "schedule": "每日 06:00",
       "securityLevel": "L2",
       "status": "运行中",
       "applyFlow": [
         {
           "step": "申请",
-          "actor": "施工管理组",
+          "actor": "生产制造组",
           "time": "2026-05-09",
           "result": "通过"
         },
@@ -3476,23 +3437,52 @@ const D = {
       ]
     },
     {
-      "id": "bf_006",
-      "name": "SCADA遥测数据接入",
-      "direction": "inbound",
-      "sourceSystem": "SCADA采集系统",
-      "sourceDatabaseName": "scada_telemetry_db",
-      "sourceDatabaseType": "MySQL",
-      "targetSystem": "数据资产平台",
-      "targetDatabaseId": "db_ops",
-      "targetDatabaseName": "运维库",
-      "fileFormat": "JSON",
-      "schedule": "每 5 分钟",
+      "id": "bf_005",
+      "name": "订单对账批次交换",
+      "direction": "outbound",
+      "sourceSystem": "生产制造系统",
+      "sourceTableId": "t_order",
+      "sourceTableName": "生产订单表",
+      "targetSystem": "供应商协同平台",
+      "targetTableId": null,
+      "targetTableName": "订单对账表",
+      "fileFormat": "CSV",
+      "schedule": "每月 1 日 02:00",
       "securityLevel": "L2",
+      "status": "审批中",
+      "applyFlow": [
+        {
+          "step": "申请",
+          "actor": "生产制造组",
+          "time": "2026-08-01",
+          "result": "通过"
+        },
+        {
+          "step": "安全合规审批",
+          "actor": "数据安全组",
+          "time": "2026-08-03",
+          "result": "通过"
+        }
+      ]
+    },
+    {
+      "id": "bf_006",
+      "name": "运行遥测数据接入",
+      "direction": "inbound",
+      "sourceSystem": "IoT 采集系统",
+      "sourceDatabaseName": "iot_telemetry_db",
+      "sourceDatabaseType": "时序库",
+      "targetSystem": "数据资产平台",
+      "targetDatabaseId": "db_dcim",
+      "targetDatabaseName": "运维监控库",
+      "fileFormat": "JSON",
+      "schedule": "每 1 分钟",
+      "securityLevel": "L3",
       "status": "运行中",
       "applyFlow": [
         {
           "step": "申请",
-          "actor": "运维组",
+          "actor": "智慧运维组",
           "time": "2026-05-20",
           "result": "通过"
         },
@@ -3512,22 +3502,22 @@ const D = {
     },
     {
       "id": "bf_007",
-      "name": "气象站观测数据接入",
+      "name": "设备档案数据接入",
       "direction": "inbound",
-      "sourceSystem": "气象站",
-      "sourceDatabaseName": "met_station_db",
-      "sourceDatabaseType": "MySQL",
+      "sourceSystem": "设备管理平台",
+      "sourceDatabaseName": "device_db",
+      "sourceDatabaseType": "PostgreSQL",
       "targetSystem": "数据资产平台",
-      "targetDatabaseId": "db_res",
-      "targetDatabaseName": "资源评估库",
-      "fileFormat": "CSV",
-      "schedule": "每日 01:00",
+      "targetDatabaseId": "db_plm",
+      "targetDatabaseName": "研发设计库",
+      "fileFormat": "JSON",
+      "schedule": "每日 02:00",
       "securityLevel": "L2",
       "status": "运行中",
       "applyFlow": [
         {
           "step": "申请",
-          "actor": "资源评估组",
+          "actor": "研发设计组",
           "time": "2026-05-19",
           "result": "通过"
         },
@@ -3547,22 +3537,22 @@ const D = {
     },
     {
       "id": "bf_008",
-      "name": "BIM模型属性接入",
+      "name": "能耗数据上报接入",
       "direction": "inbound",
-      "sourceSystem": "BIM系统",
-      "sourceDatabaseName": "bim_model_db",
-      "sourceDatabaseType": "Oracle",
+      "sourceSystem": "能耗采集系统",
+      "sourceDatabaseName": "energy_db",
+      "sourceDatabaseType": "时序库",
       "targetSystem": "数据资产平台",
-      "targetDatabaseId": "db_design",
-      "targetDatabaseName": "设计库",
+      "targetDatabaseId": "db_dcim",
+      "targetDatabaseName": "运维监控库",
       "fileFormat": "JSON",
-      "schedule": "每日 02:00",
-      "securityLevel": "L3",
+      "schedule": "每 15 分钟",
+      "securityLevel": "L2",
       "status": "审批中",
       "applyFlow": [
         {
           "step": "申请",
-          "actor": "设计组",
+          "actor": "智慧运维组",
           "time": "2026-08-01",
           "result": "通过"
         },
@@ -3583,17 +3573,17 @@ const D = {
   ],
   "prodMetadatas": [
     {
-      "id": "pm_scada",
+      "id": "pm_telemetry",
       "batchFileId": "bf_006",
-      "sourceSystem": "SCADA采集系统",
-      "databaseName": "scada_telemetry_db",
-      "databaseType": "MySQL",
-      "targetDatabaseId": "db_ops",
+      "sourceSystem": "IoT 采集系统",
+      "databaseName": "iot_telemetry_db",
+      "databaseType": "时序库",
+      "targetDatabaseId": "db_dcim",
       "collectedAt": "2026-08-15 02:00",
       "tables": [
         {
-          "nameEn": "scada_telemetry",
-          "nameCn": "SCADA遥测表",
+          "nameEn": "operation_telemetry",
+          "nameCn": "运行遥测表",
           "fields": [
             {
               "code": "TS",
@@ -3601,133 +3591,54 @@ const D = {
               "type": "datetime"
             },
             {
-              "code": "TURBINE_ID",
-              "nameCn": "机组",
-              "type": "varchar(32)"
-            },
-            {
-              "code": "temperature_value",
-              "nameCn": "温度值",
+              "code": "supply_temperature_value",
+              "nameCn": "供液温度值",
               "type": "decimal(5,1)"
             },
             {
-              "code": "active_power_value",
-              "nameCn": "有功功率",
-              "type": "decimal(8,2)"
-            },
-            {
-              "code": "gearbox_temp",
-              "nameCn": "齿轮箱温度",
+              "code": "return_temperature_value",
+              "nameCn": "回液温度值",
               "type": "decimal(5,1)"
             },
             {
-              "code": "nacelle_yaw",
-              "nameCn": "机舱偏航角",
-              "type": "decimal(6,2)"
-            }
-          ]
-        },
-        {
-          "nameEn": "scada_alarm_raw",
-          "nameCn": "SCADA告警原始表",
-          "fields": [
-            {
-              "code": "ALARM_ID",
-              "nameCn": "告警编号",
-              "type": "varchar(32)"
-            },
-            {
-              "code": "ALARM_TIME",
-              "nameCn": "告警时间",
-              "type": "datetime"
-            },
-            {
-              "code": "ALARM_LEVEL",
-              "nameCn": "告警等级",
-              "type": "varchar(10)"
-            }
-          ]
-        },
-        {
-          "nameEn": "scada_event_log",
-          "nameCn": "SCADA事件日志表",
-          "fields": [
-            {
-              "code": "EVENT_ID",
-              "nameCn": "事件编号",
-              "type": "varchar(32)"
-            },
-            {
-              "code": "EVENT_TIME",
-              "nameCn": "事件时间",
-              "type": "datetime"
-            },
-            {
-              "code": "EVENT_TYPE",
-              "nameCn": "事件类型",
-              "type": "varchar(20)"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "pm_met",
-      "batchFileId": "bf_007",
-      "sourceSystem": "气象站",
-      "databaseName": "met_station_db",
-      "databaseType": "MySQL",
-      "targetDatabaseId": "db_res",
-      "collectedAt": "2026-08-15 01:00",
-      "tables": [
-        {
-          "nameEn": "wind_measurement",
-          "nameCn": "测风数据表",
-          "fields": [
-            {
-              "code": "MEASURE_TIME",
-              "nameCn": "测量时间",
-              "type": "datetime"
-            },
-            {
-              "code": "PROJECT_ID",
-              "nameCn": "所属项目",
-              "type": "varchar(32)"
-            },
-            {
-              "code": "wind_speed_value",
-              "nameCn": "风速值",
-              "type": "decimal(5,2)"
-            },
-            {
-              "code": "TURBULENCE",
-              "nameCn": "湍流强度",
-              "type": "varchar(10)"
-            },
-            {
-              "code": "WIND_DIR",
-              "nameCn": "风向",
+              "code": "FLOW",
+              "nameCn": "流量",
               "type": "int"
             },
             {
-              "code": "wind_gust",
-              "nameCn": "阵风风速",
-              "type": "decimal(5,2)"
+              "code": "PRESSURE",
+              "nameCn": "压差",
+              "type": "decimal(6,1)"
+            },
+            {
+              "code": "consumption_value",
+              "nameCn": "功耗",
+              "type": "decimal(10,2)"
+            },
+            {
+              "code": "leak_status",
+              "nameCn": "漏液状态",
+              "type": "varchar(10)"
             }
           ]
         },
         {
-          "nameEn": "met_forecast_raw",
-          "nameCn": "气象预报原始表",
+          "nameEn": "sensor_raw",
+          "nameCn": "传感器原始表",
           "fields": [
             {
-              "code": "FORECAST_ID",
-              "nameCn": "预报编号",
+              "code": "SENSOR_ID",
+              "nameCn": "传感器编号",
               "type": "varchar(32)"
             },
             {
-              "code": "FORECAST_TIME",
-              "nameCn": "预报时间",
+              "code": "RAW_VALUE",
+              "nameCn": "原始读数",
+              "type": "decimal(8,2)"
+            },
+            {
+              "code": "RAW_TIME",
+              "nameCn": "采集时间",
               "type": "datetime"
             }
           ]
@@ -3735,17 +3646,17 @@ const D = {
       ]
     },
     {
-      "id": "pm_bim",
-      "batchFileId": "bf_008",
-      "sourceSystem": "BIM系统",
-      "databaseName": "bim_model_db",
-      "databaseType": "Oracle",
-      "targetDatabaseId": "db_design",
+      "id": "pm_device",
+      "batchFileId": "bf_007",
+      "sourceSystem": "设备管理平台",
+      "databaseName": "device_db",
+      "databaseType": "PostgreSQL",
+      "targetDatabaseId": "db_plm",
       "collectedAt": "2026-08-15 02:00",
       "tables": [
         {
-          "nameEn": "turbine_device",
-          "nameCn": "风机设备表",
+          "nameEn": "liquid_cooling_device",
+          "nameCn": "液冷设备档案表",
           "fields": [
             {
               "code": "MD_ID",
@@ -3753,19 +3664,77 @@ const D = {
               "type": "varchar(32)"
             },
             {
-              "code": "turbine_model_name",
-              "nameCn": "风机机型名称",
-              "type": "varchar(20)"
-            },
-            {
-              "code": "RATED_POWER",
-              "nameCn": "额定功率",
-              "type": "decimal(5,2)"
-            },
-            {
-              "code": "SUPPLIER_ID",
-              "nameCn": "供应商",
+              "code": "cdu_model_name",
+              "nameCn": "冷量分配单元型号名称",
               "type": "varchar(32)"
+            },
+            {
+              "code": "DEVICE_TYPE",
+              "nameCn": "设备类型",
+              "type": "varchar(10)"
+            },
+            {
+              "code": "COOLING_CAPACITY",
+              "nameCn": "制冷量",
+              "type": "decimal(6,1)"
+            },
+            {
+              "code": "COOLANT_TYPE",
+              "nameCn": "冷却液类型",
+              "type": "varchar(20)"
+            }
+          ]
+        },
+        {
+          "nameEn": "legacy_device",
+          "nameCn": "历史设备表",
+          "fields": [
+            {
+              "code": "LEGACY_ID",
+              "nameCn": "历史编号",
+              "type": "varchar(32)"
+            },
+            {
+              "code": "LEGACY_NAME",
+              "nameCn": "历史名称",
+              "type": "varchar(64)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pm_energy",
+      "batchFileId": "bf_008",
+      "sourceSystem": "能耗采集系统",
+      "databaseName": "energy_db",
+      "databaseType": "时序库",
+      "targetDatabaseId": "db_dcim",
+      "collectedAt": "2026-08-15 02:00",
+      "tables": [
+        {
+          "nameEn": "energy_pue",
+          "nameCn": "能耗 PUE 表",
+          "fields": [
+            {
+              "code": "TS",
+              "nameCn": "时间戳",
+              "type": "datetime"
+            },
+            {
+              "code": "efficiency_percent",
+              "nameCn": "能效比",
+              "type": "decimal(4,2)"
+            },
+            {
+              "code": "DAILY_PUE",
+              "nameCn": "日均PUE",
+              "type": "decimal(4,2)"
+            },
+            {
+              "code": "ENERGY_CONSUMPTION",
+              "nameCn": "能耗",
+              "type": "decimal(8,2)"
             },
             {
               "code": "PROJECT_ID",
@@ -3773,35 +3742,9 @@ const D = {
               "type": "varchar(32)"
             },
             {
-              "code": "FOUNDATION",
-              "nameCn": "基础形式",
-              "type": "varchar(20)"
-            },
-            {
-              "code": "blade_length",
-              "nameCn": "叶片长度",
-              "type": "decimal(5,1)"
-            }
-          ]
-        },
-        {
-          "nameEn": "bim_element_attr",
-          "nameCn": "BIM构件属性表",
-          "fields": [
-            {
-              "code": "ELEMENT_ID",
-              "nameCn": "构件编号",
-              "type": "varchar(32)"
-            },
-            {
-              "code": "ATTR_NAME",
-              "nameCn": "属性名称",
-              "type": "varchar(64)"
-            },
-            {
-              "code": "ATTR_VALUE",
-              "nameCn": "属性值",
-              "type": "varchar(128)"
+              "code": "cooling_efficiency",
+              "nameCn": "冷却效率",
+              "type": "decimal(4,2)"
             }
           ]
         }
@@ -3811,30 +3754,30 @@ const D = {
   "services": [
     {
       "id": "svc_001",
-      "name": "风资源评估 API",
+      "name": "设备运行监控 API",
       "type": "API",
       "latency": "准实时",
       "tableIds": [
-        "t_wind"
+        "t_telemetry"
       ],
-      "desc": "对外提供测风数据查询与统计",
+      "desc": "对外提供液冷设备运行遥测数据查询与统计",
       "securityLevel": "L2",
       "status": "已上架",
       "access": {
-        "endpoint": "https://demo.intelab.cn/api/v1/wind/query",
+        "endpoint": "https://demo.intelab.cn/api/v1/device/monitor",
         "method": "POST",
         "params": [
           {
-            "name": "turbineId",
+            "name": "deviceId",
             "type": "string",
             "required": true,
-            "desc": "风机编号"
+            "desc": "液冷设备编号"
           },
           {
             "name": "metric",
             "type": "string",
             "required": true,
-            "desc": "指标：wind_speed / wind_dir / turbulence"
+            "desc": "指标：supply_temp / return_temp / flow / pressure / power"
           },
           {
             "name": "startTime",
@@ -3843,20 +3786,20 @@ const D = {
             "desc": "起始时间（ISO8601）"
           }
         ],
-        "requestExample": "curl -X POST \"https://demo.intelab.cn/api/v1/wind/query\" -H \"Content-Type: application/json\" -d '{\"turbineId\":\"W-001\",\"metric\":\"wind_speed\",\"startTime\":\"2026-08-01T00:00:00Z\"}'",
-        "responseExample": "{ \"code\": 0, \"data\": [ { \"ts\": \"2026-08-01T10:00:00Z\", \"turbineId\": \"W-001\", \"wind_speed\": 8.4 } ] }",
+        "requestExample": "curl -X POST \"https://demo.intelab.cn/api/v1/device/monitor\" -H \"Content-Type: application/json\" -d '{\"deviceId\":\"CDU-001\",\"metric\":\"supply_temp\",\"startTime\":\"2026-08-01T00:00:00Z\"}'",
+        "responseExample": "{ \"code\": 0, \"data\": [ { \"ts\": \"2026-08-01T10:00:00Z\", \"deviceId\": \"CDU-001\", \"supply_temp\": 36.5 } ] }",
         "rateLimit": "1000 次/分钟",
         "version": "v1.2"
       },
       "metrics": {
-        "calls": 12340,
+        "calls": 15620,
         "consumers": 3,
-        "last24h": 1280
+        "last24h": 1680
       },
       "applyFlow": [
         {
           "step": "申请",
-          "actor": "资源评估组",
+          "actor": "智慧运维组",
           "time": "2026-05-12",
           "result": "通过"
         },
@@ -3876,41 +3819,46 @@ const D = {
     },
     {
       "id": "svc_002",
-      "name": "SCADA 实时数据订阅",
+      "name": "遥测实时订阅",
       "type": "订阅",
       "latency": "实时",
       "tableIds": [
-        "t_scada"
+        "t_telemetry"
       ],
-      "desc": "风机 SCADA 遥测实时订阅推送",
+      "desc": "液冷运行遥测实时订阅推送",
       "securityLevel": "L2",
       "status": "已上架",
       "access": {
         "protocol": "MQTT",
         "endpoint": "mqtt://demo.intelab.cn:1883",
-        "topic": "wind/scada/{turbineId}/telemetry",
+        "topic": "liquid-cooling/telemetry/{deviceId}",
         "qos": 1,
         "messageFormat": "JSON",
         "messageFields": [
           {
-            "name": "turbineId",
+            "name": "deviceId",
             "type": "string",
-            "desc": "风机编号"
+            "desc": "液冷设备编号"
           },
           {
-            "name": "activePower",
+            "name": "supplyTemp",
             "type": "float",
-            "desc": "有功功率（kW）"
+            "desc": "供液温度（℃）"
           },
           {
-            "name": "windSpeed",
+            "name": "returnTemp",
             "type": "float",
-            "desc": "风速（m/s）"
+            "desc": "回液温度（℃）"
           },
           {
-            "name": "temperature",
+            "name": "flow",
             "type": "float",
-            "desc": "机舱温度（℃）"
+            "desc": "流量（L/min）"
+          },
+          {
+            "name": "power",
+            "type": "float",
+            "desc": "功耗（kW）"
           },
           {
             "name": "ts",
@@ -3920,14 +3868,14 @@ const D = {
         ]
       },
       "metrics": {
-        "calls": 456210,
+        "calls": 528600,
         "consumers": 2,
-        "last24h": 30240
+        "last24h": 34560
       },
       "applyFlow": [
         {
           "step": "申请",
-          "actor": "运维组",
+          "actor": "智慧运维组",
           "time": "2026-04-20",
           "result": "通过"
         },
@@ -3947,46 +3895,46 @@ const D = {
     },
     {
       "id": "svc_003",
-      "name": "功率预测服务",
+      "name": "能效分析服务",
       "type": "API",
       "latency": "准实时",
       "tableIds": [
-        "t_forecast"
+        "t_energy"
       ],
-      "desc": "功率预测结果对外 API 服务",
+      "desc": "PUE 能耗数据对外 API 服务",
       "securityLevel": "L2",
       "status": "已上架",
       "access": {
-        "endpoint": "https://demo.intelab.cn/api/v1/forecast/power",
+        "endpoint": "https://demo.intelab.cn/api/v1/energy/pue",
         "method": "GET",
         "params": [
           {
-            "name": "forecastDate",
+            "name": "projectId",
             "type": "string",
             "required": true,
-            "desc": "预测日期（YYYY-MM-DD）"
+            "desc": "液冷项目编号"
           },
           {
-            "name": "horizon",
+            "name": "date",
             "type": "string",
             "required": false,
-            "desc": "预测时长：24h / 72h"
+            "desc": "查询日期（YYYY-MM-DD）"
           }
         ],
-        "requestExample": "curl \"https://demo.intelab.cn/api/v1/forecast/power?forecastDate=2026-08-16&horizon=24h\"",
-        "responseExample": "{ \"code\": 0, \"data\": [ { \"ts\": \"2026-08-16T00:00:00Z\", \"predicted_power\": 4200.5 } ] }",
+        "requestExample": "curl \"https://demo.intelab.cn/api/v1/energy/pue?projectId=LC-001&date=2026-08-16\"",
+        "responseExample": "{ \"code\": 0, \"data\": [ { \"ts\": \"2026-08-16T00:00:00Z\", \"pue\": 1.12 } ] }",
         "rateLimit": "500 次/分钟",
         "version": "v1.0"
       },
       "metrics": {
-        "calls": 8970,
+        "calls": 8740,
         "consumers": 3,
-        "last24h": 640
+        "last24h": 620
       },
       "applyFlow": [
         {
           "step": "申请",
-          "actor": "运维组",
+          "actor": "智慧运维组",
           "time": "2026-04-18",
           "result": "通过"
         },
@@ -4006,31 +3954,31 @@ const D = {
     },
     {
       "id": "svc_004",
-      "name": "海域限制因素共享",
+      "name": "核心工艺参数共享",
       "type": "数据包",
       "latency": "准实时",
       "tableIds": [
-        "t_topo"
+        "t_process"
       ],
-      "desc": "海域限制因素（政府监管）数据共享",
+      "desc": "液冷核心工艺参数（涉密）数据共享",
       "securityLevel": "L4",
       "status": "已上架",
       "access": {
         "format": "CSV / Parquet",
-        "downloadUrl": "https://demo.intelab.cn/api/v1/packages/sea-restrict/download",
+        "downloadUrl": "https://demo.intelab.cn/api/v1/packages/process-param/download",
         "updateFreq": "按季度更新",
-        "size": "1.8 GB",
-        "partition": "按海域分区"
+        "size": "860 MB",
+        "partition": "按工艺编号分区"
       },
       "metrics": {
-        "calls": 126,
+        "calls": 96,
         "consumers": 1,
         "last24h": 0
       },
       "applyFlow": [
         {
           "step": "申请",
-          "actor": "测绘组",
+          "actor": "研发设计组",
           "time": "2026-03-05",
           "result": "通过"
         },
@@ -4056,31 +4004,46 @@ const D = {
     },
     {
       "id": "svc_005",
-      "name": "设备档案数据产品",
-      "type": "数据包",
+      "name": "设备档案查询 API",
+      "type": "API",
       "latency": "准实时",
       "tableIds": [
-        "t_turbine"
+        "t_device"
       ],
-      "desc": "风机设备档案数据产品",
+      "desc": "液冷设备档案查询服务",
       "securityLevel": "L2",
       "status": "已上架",
       "access": {
-        "format": "CSV",
-        "downloadUrl": "https://demo.intelab.cn/api/v1/packages/turbine-archive/download",
-        "updateFreq": "按月更新",
-        "size": "420 MB",
-        "partition": "按机型分区"
+        "endpoint": "https://demo.intelab.cn/api/v1/device/archive",
+        "method": "GET",
+        "params": [
+          {
+            "name": "model",
+            "type": "string",
+            "required": false,
+            "desc": "设备型号（CDU 系列）"
+          },
+          {
+            "name": "deviceType",
+            "type": "string",
+            "required": false,
+            "desc": "设备类型：CDU / Manifold / 冷源 / 泵"
+          }
+        ],
+        "requestExample": "curl \"https://demo.intelab.cn/api/v1/device/archive?deviceType=CDU\"",
+        "responseExample": "{ \"code\": 0, \"data\": [ { \"model\": \"SKY-ACMECOL-100\", \"coolingCapacity\": 100.0 } ] }",
+        "rateLimit": "800 次/分钟",
+        "version": "v1.1"
       },
       "metrics": {
-        "calls": 2340,
+        "calls": 3120,
         "consumers": 2,
-        "last24h": 96
+        "last24h": 128
       },
       "applyFlow": [
         {
           "step": "申请",
-          "actor": "设计组",
+          "actor": "研发设计组",
           "time": "2026-04-10",
           "result": "通过"
         },
@@ -4102,16 +4065,16 @@ const D = {
   "portalAssets": [
     {
       "id": "pa_001",
-      "name": "海上风电场测风数据集",
-      "category": "风资源",
-      "desc": "测风塔实测风速/风向/湍流，用于风资源评估与发电量测算。",
-      "dataOwner": "风资源室",
+      "name": "液冷运行遥测数据集",
+      "category": "运行监测",
+      "desc": "液冷设备供回液温度/流量/压差/功耗运行遥测，用于运行监测与能效分析。",
+      "dataOwner": "智慧运维室",
       "govSpecialist": "业务数据治理专员",
       "manager": "数据管理人员",
       "usageType": "下载",
-      "securityLevel": "L2",
+      "securityLevel": "L3",
       "tableIds": [
-        "t_wind"
+        "t_telemetry"
       ],
       "serviceIds": [],
       "status": "已上架",
@@ -4143,10 +4106,10 @@ const D = {
     },
     {
       "id": "pa_002",
-      "name": "风资源评估 API",
-      "category": "风资源",
-      "desc": "对外提供测风数据查询与统计的标准 API。",
-      "dataOwner": "风资源室",
+      "name": "设备运行监控 API",
+      "category": "运行监测",
+      "desc": "对外提供液冷设备运行遥测查询与统计的标准 API。",
+      "dataOwner": "智慧运维室",
       "govSpecialist": "业务数据治理专员",
       "manager": "数据管理人员",
       "usageType": "申请",
@@ -4184,17 +4147,16 @@ const D = {
     },
     {
       "id": "pa_003",
-      "name": "海底地形测绘数据包",
-      "category": "海洋勘测",
-      "desc": "海底地形测绘坐标、水深与海缆路由数据包（涉密，已获授权共享）。",
-      "dataOwner": "海洋勘测室",
+      "name": "核心工艺参数数据包",
+      "category": "工艺标准",
+      "desc": "液冷核心工艺参数（供液温度/流量/压差设定值）数据包（涉密，已获授权共享）。",
+      "dataOwner": "研发设计室",
       "govSpecialist": "业务数据治理专员",
       "manager": "数据管理人员",
       "usageType": "下载",
       "securityLevel": "L4",
       "tableIds": [
-        "t_topo",
-        "t_cable"
+        "t_process"
       ],
       "serviceIds": [],
       "status": "已上架",
@@ -4226,16 +4188,16 @@ const D = {
     },
     {
       "id": "pa_004",
-      "name": "地质钻孔数据集",
-      "category": "海洋勘测",
-      "desc": "海上风电场地地质钻孔与岩土地层信息。",
-      "dataOwner": "海洋勘测室",
+      "name": "BOM 物料数据集",
+      "category": "工艺标准",
+      "desc": "液冷设备 BOM 物料清单编码、名称与数量。",
+      "dataOwner": "研发设计室",
       "govSpecialist": "业务数据治理专员",
       "manager": "数据管理人员",
       "usageType": "下载",
       "securityLevel": "L3",
       "tableIds": [
-        "t_geo"
+        "t_bom"
       ],
       "serviceIds": [],
       "status": "已上架",
@@ -4267,16 +4229,16 @@ const D = {
     },
     {
       "id": "pa_005",
-      "name": "SCADA 实时运行监测",
-      "category": "运营监测",
-      "desc": "风机 SCADA 遥测实时订阅（功率/温度/振动）与运行监测。",
-      "dataOwner": "运营监控室",
+      "name": "液冷遥测实时订阅",
+      "category": "运行监测",
+      "desc": "液冷运行遥测实时订阅（供回液温度/流量/压差/功耗）与运行监测。",
+      "dataOwner": "智慧运维室",
       "govSpecialist": "业务数据治理专员",
       "manager": "数据管理人员",
       "usageType": "申请",
-      "securityLevel": "L2",
+      "securityLevel": "L3",
       "tableIds": [
-        "t_scada"
+        "t_telemetry"
       ],
       "serviceIds": [
         "svc_002"
@@ -4310,16 +4272,16 @@ const D = {
     },
     {
       "id": "pa_006",
-      "name": "风机设备档案数据产品",
-      "category": "风机设备",
-      "desc": "风机机型、额定功率与基础型式等设备档案数据产品。",
-      "dataOwner": "设备设计室",
+      "name": "液冷设备档案数据产品",
+      "category": "液冷设备",
+      "desc": "液冷设备型号、制冷量与冷却液类型等设备档案数据产品（含涉密冷却液配方）。",
+      "dataOwner": "研发设计室",
       "govSpecialist": "业务数据治理专员",
       "manager": "数据管理人员",
       "usageType": "下载",
-      "securityLevel": "L2",
+      "securityLevel": "L4",
       "tableIds": [
-        "t_turbine"
+        "t_device"
       ],
       "serviceIds": [
         "svc_005"
@@ -4340,7 +4302,7 @@ const D = {
           "actor": "业务数据治理专员",
           "action": "通过",
           "time": "2026-07-09",
-          "comment": "同意共享"
+          "comment": "涉密数据，确认授权范围"
         },
         {
           "step": "上架",
@@ -4353,10 +4315,10 @@ const D = {
     },
     {
       "id": "pa_007",
-      "name": "功率预测服务",
-      "category": "运营监测",
-      "desc": "功率预测结果对外 API 服务与预测精度评估。",
-      "dataOwner": "运营监控室",
+      "name": "能效分析服务",
+      "category": "能效分析",
+      "desc": "PUE 能耗数据对外 API 服务与能效分析。",
+      "dataOwner": "智慧运维室",
       "govSpecialist": "业务数据治理专员",
       "manager": "数据管理人员",
       "usageType": "申请",
@@ -4394,16 +4356,16 @@ const D = {
     },
     {
       "id": "pa_008",
-      "name": "海域限制因素共享",
-      "category": "海域环境",
-      "desc": "海域限制因素（政府监管）数据共享。",
-      "dataOwner": "海域规划室",
+      "name": "核心工艺参数共享",
+      "category": "工艺标准",
+      "desc": "液冷核心工艺参数（涉密）数据共享。",
+      "dataOwner": "研发设计室",
       "govSpecialist": "业务数据治理专员",
       "manager": "数据管理人员",
       "usageType": "下载",
       "securityLevel": "L4",
       "tableIds": [
-        "t_topo"
+        "t_process"
       ],
       "serviceIds": [
         "svc_004"
@@ -4502,16 +4464,24 @@ const D = {
       "name": "设计研发域",
       "items": [
         {
-          "id": "勘测",
-          "name": "勘测"
+          "id": "产品设计",
+          "name": "产品设计"
         },
         {
-          "id": "方案设计",
-          "name": "方案设计"
+          "id": "BOM管理",
+          "name": "BOM管理"
         },
         {
-          "id": "专业设计",
-          "name": "专业设计"
+          "id": "工艺设计",
+          "name": "工艺设计"
+        },
+        {
+          "id": "热仿真",
+          "name": "热仿真"
+        },
+        {
+          "id": "样机测试",
+          "name": "样机测试"
         },
         {
           "id": "设计评审",
@@ -4520,92 +4490,84 @@ const D = {
         {
           "id": "成果管理",
           "name": "成果管理"
-        },
-        {
-          "id": "资源评估",
-          "name": "资源评估"
-        },
-        {
-          "id": "现场设计服务",
-          "name": "现场设计服务"
         }
       ]
     },
     {
-      "id": "工程交付域",
-      "name": "工程交付域",
+      "id": "生产制造域",
+      "name": "生产制造域",
       "items": [
         {
           "id": "采购",
           "name": "采购"
         },
         {
-          "id": "施工管理",
-          "name": "施工管理"
+          "id": "生产计划",
+          "name": "生产计划"
         },
         {
-          "id": "进度·质量·安全",
-          "name": "进度·质量·安全"
+          "id": "工序管理",
+          "name": "工序管理"
         },
         {
-          "id": "变更管理",
-          "name": "变更管理"
+          "id": "质量检验",
+          "name": "质量检验"
         },
         {
-          "id": "调试移交",
-          "name": "调试移交"
+          "id": "仓储物流",
+          "name": "仓储物流"
         },
-        {
-          "id": "运营管理",
-          "name": "运营管理"
-        }
-      ]
-    },
-    {
-      "id": "专业技术域",
-      "name": "专业技术域",
-      "items": [
-        {
-          "id": "电网规划与输变电设计",
-          "name": "电网规划与输变电设计"
-        },
-        {
-          "id": "新能源发电设计",
-          "name": "新能源发电设计"
-        },
-        {
-          "id": "发电工程设计",
-          "name": "发电工程设计"
-        },
-        {
-          "id": "咨询与数字化服务",
-          "name": "咨询与数字化服务"
-        }
-      ]
-    },
-    {
-      "id": "支撑服务域",
-      "name": "支撑服务域",
-      "items": [
         {
           "id": "供应链",
           "name": "供应链"
+        }
+      ]
+    },
+    {
+      "id": "集成实施域",
+      "name": "集成实施域",
+      "items": [
+        {
+          "id": "工程实施",
+          "name": "工程实施"
         },
         {
-          "id": "人力",
-          "name": "人力"
+          "id": "调试交付",
+          "name": "调试交付"
         },
         {
-          "id": "财务",
-          "name": "财务"
+          "id": "现场服务",
+          "name": "现场服务"
         },
         {
-          "id": "知识管理",
-          "name": "知识管理"
+          "id": "项目验收",
+          "name": "项目验收"
+        }
+      ]
+    },
+    {
+      "id": "智慧运维域",
+      "name": "智慧运维域",
+      "items": [
+        {
+          "id": "遥测监控",
+          "name": "遥测监控"
         },
         {
-          "id": "数字化支撑",
-          "name": "数字化支撑"
+          "id": "告警管理",
+          "name": "告警管理"
+        },
+        {
+          "id": "能效分析",
+          "name": "能效分析"
+        },
+        {
+          "id": "预测性维护",
+          "name": "预测性维护"
+        },
+        {
+          "id": "备件管理",
+          "name": "备件管理"
         }
       ]
     }

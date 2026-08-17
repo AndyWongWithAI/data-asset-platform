@@ -71,7 +71,7 @@ const SCHEMAS = {
     idKey: 'id', idPrefix: 'md', creatable: false, updatable: false,
     required: ['code', 'name', 'entityType', 'definition', 'rule', 'owner'],
     unique: ['code'],
-    enum: { entityType: ['风机', '海缆', '升压站', '项目', '供应商'] },
+    enum: { entityType: ['液冷设备', '冷源设备', '数据中心客户', '液冷项目', '供应商'] },
     types: { approvals: 'array' },
     refs: {},
   },
@@ -123,7 +123,7 @@ const SCHEMAS = {
     required: ['name', 'category', 'dataOwner', 'usageType', 'securityLevel'],
     unique: ['name'],
     enum: {
-      category: ['风资源', '海洋勘测', '风机设备', '运营监测', '海域环境'],
+      category: ['液冷设备', '运行监测', '能效分析', '工艺标准', '客户项目'],
       usageType: ['下载', '申请'],
       securityLevel: ['L1', 'L2', 'L3', 'L4'],
       status: ['审批中', '已上架', '已下架'],

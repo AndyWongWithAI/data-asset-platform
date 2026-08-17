@@ -98,14 +98,14 @@ def main():
         page.locator('.modal button', has_text='关闭').click()
         assert page.locator('.modal').count() == 0
         # 表结构 编辑（真写入口，非「开发中」占位）
-        page.locator('.table tbody tr', has_text='测风数据表').locator('button', has_text='编辑').first.click()
+        page.locator('.table tbody tr', has_text='液冷设备档案表').locator('button', has_text='编辑').first.click()
         assert page.locator('.modal h3', has_text='编辑表').count() == 1
         assert page.locator('.modal label', has_text='主题域').count() == 1
         page.locator('.modal button', has_text='取消').click()
         assert page.locator('.modal').count() == 0
         # 查看按钮 → 打开表详情（默认表级元数据 tab，五子 tab）
         page.locator('.table tbody tr .link').first.click()
-        assert page.locator('.tab', has_text='测风数据表').count() == 1
+        assert page.locator('.tab', has_text='液冷设备档案表').count() == 1
         assert page.locator('.sub-tabs button').count() == 5
         assert page.locator('.detail-head').count() == 1
         assert page.locator('.field-table').count() == 0
@@ -116,7 +116,7 @@ def main():
         assert_table_fills(page)
         assert_no_hscroll(page)
         # 字段编辑（真写入口）
-        page.locator('.field-table tbody tr', has_text='风速值').locator('button', has_text='编辑').first.click()
+        page.locator('.field-table tbody tr', has_text='冷量分配单元型号名称').locator('button', has_text='编辑').first.click()
         assert page.locator('.modal h3', has_text='编辑字段').count() == 1
         assert page.locator('.modal label', has_text='字段中文名').count() == 1
         assert page.locator('.modal label', has_text='安全分级').count() == 1
@@ -155,7 +155,7 @@ def main():
         assert page.locator('.modal').count() == 0
         # 十七期：质量规则 编辑 + 批量导入
         # 编辑 → 表单弹窗（.modal-lg）→ 取消
-        page.locator('.table tbody tr', has_text='有功功率取值范围').locator('button', has_text='编辑').first.click()
+        page.locator('.table tbody tr', has_text='供液温度取值范围').locator('button', has_text='编辑').first.click()
         assert page.locator('.modal-lg').count() == 1
         page.locator('.modal button', has_text='取消').click()
         assert page.locator('.modal').count() == 0
@@ -172,7 +172,7 @@ def main():
         page.locator('.detail-panel .link', has_text='定位').click()
         assert page.locator('.field-table').count() == 1
         assert page.locator('.row-active').count() == 1
-        assert page.locator('.tab.active', has_text='SCADA 遥测表').count() == 1
+        assert page.locator('.tab.active', has_text='运行遥测表').count() == 1
         # M3 数据标准（可收缩目录：父级「数据标准」含 4 子项）
         # 侧边栏折叠目录：点「数据标准」父级 toggle 折叠/展开子项
         assert page.locator('.sidebar-sub', has_text='基础术语').count() == 1   # 默认展开
@@ -232,10 +232,10 @@ def main():
         page.locator('.table tbody tr .link').first.click()
         assert page.locator('.tab.active', has_text='值域详情').count() == 1
         assert page.locator('.detail-panel').count() == 1
-        # 被引用信息项中文名 → 信息项详情 tab（ii_voltage 电压等级编码）
-        page.locator('.detail-panel table tbody tr .link', has_text='电压等级编码').click()
+        # 被引用信息项中文名 → 信息项详情 tab（ii_voltage 设备类型编码）
+        page.locator('.detail-panel table tbody tr .link', has_text='设备类型编码').click()
         assert page.locator('.tab.active', has_text='信息项详情').count() == 1
-        assert page.locator('.detail-panel h3', has_text='电压等级编码').count() == 1
+        assert page.locator('.detail-panel h3', has_text='设备类型编码').count() == 1
         # 参考数据
         click_menu(page, '参考数据')
         assert page.locator('.tab.active', has_text='参考数据').count() == 1
@@ -246,7 +246,7 @@ def main():
         assert page.locator('.modal').count() == 0
         # 十七期：参考数据 编辑 + 批量导入
         # 编辑 → 表单弹窗（.modal-lg）→ 取消
-        page.locator('.table tbody tr', has_text='电压等级').locator('button', has_text='编辑').first.click()
+        page.locator('.table tbody tr', has_text='液冷设备类型').locator('button', has_text='编辑').first.click()
         assert page.locator('.modal-lg').count() == 1
         page.locator('.modal button', has_text='取消').click()
         assert page.locator('.modal').count() == 0
@@ -259,10 +259,10 @@ def main():
         page.locator('.table tbody tr .link').first.click()
         assert page.locator('.tab.active', has_text='参考数据详情').count() == 1
         assert page.locator('.detail-panel').count() == 1
-        # 被引用信息项中文名 → 信息项详情 tab（ii_voltage 电压等级编码）
-        page.locator('.detail-panel table tbody tr .link', has_text='电压等级编码').click()
+        # 被引用信息项中文名 → 信息项详情 tab（ii_voltage 设备类型编码）
+        page.locator('.detail-panel table tbody tr .link', has_text='设备类型编码').click()
         assert page.locator('.tab.active', has_text='信息项详情').count() == 1
-        assert page.locator('.detail-panel h3', has_text='电压等级编码').count() == 1
+        assert page.locator('.detail-panel h3', has_text='设备类型编码').count() == 1
         # 信息项
         click_menu(page, '信息项')
         assert page.locator('.tab.active', has_text='信息项').count() == 1
@@ -287,9 +287,9 @@ def main():
         # 信息项编辑：中文名只读（derived-value 而非 input）
         page.locator('.table tbody tr', has_text='II0001').locator('button', has_text='编辑').first.click()
         assert page.locator('.modal-lg').count() == 1
-        assert page.locator('.modal .derived-value', has_text='电压等级编码').count() == 1
+        assert page.locator('.modal .derived-value', has_text='设备类型编码').count() == 1
         page.locator('.modal button', has_text='取消').click()
-        # 点信息项进详情（第一条 ii_voltage 电压等级编码）→ 无词根链 + 类型/业务域/定义 + 被引用字段转跳 M1
+        # 点信息项进详情（第一条 ii_voltage 设备类型编码）→ 无词根链 + 类型/业务域/定义 + 被引用字段转跳 M1
         page.locator('.table tbody tr .link').first.click()
         assert page.locator('.tab.active', has_text='信息项详情').count() == 1
         assert page.locator('.detail-panel').count() == 1
@@ -301,38 +301,38 @@ def main():
         page.locator('.detail-panel .link', has_text='定位').first.click()
         assert page.locator('.field-table').count() == 1
         assert page.locator('.row-active').count() == 1
-        assert page.locator('.tab.active', has_text='海缆参数表').count() == 1
+        assert page.locator('.tab.active', has_text='液冷设备档案表').count() == 1
         # 值域跳转：信息项详情点「值域」→ 值域详情 tab（ii_voltage 值域=VD-VARCHAR10）
         page.locator('.tab', has_text='信息项详情').click()
         assert page.locator('.detail-panel').count() == 1
         page.locator('.detail-panel .kv-list .link', has_text='VD-VARCHAR10').click()
         assert page.locator('.tab.active', has_text='值域详情').count() == 1
         assert page.locator('.detail-panel', has_text='VD-VARCHAR10').count() >= 1
-        # 参考数据跳转：信息项详情「参考数据」→ 参考数据详情 tab（ii_voltage 参考数据=电压等级）
+        # 参考数据跳转：信息项详情「参考数据」→ 参考数据详情 tab（ii_voltage 参考数据=液冷设备类型）
         page.locator('.tab', has_text='信息项详情').click()
         assert page.locator('.detail-panel').count() == 1
-        page.locator('.detail-panel .kv-list .link', has_text='电压等级').click()
+        page.locator('.detail-panel .kv-list .link', has_text='液冷设备类型').click()
         assert page.locator('.tab.active', has_text='参考数据详情').count() == 1
-        assert page.locator('.detail-panel h3', has_text='电压等级').count() == 1
-        # 关联标准转跳（需求 5）：M1 资产目录 → 测风数据表「查看」→ 点「关联标准」→ 信息项详情
+        assert page.locator('.detail-panel h3', has_text='液冷设备类型').count() == 1
+        # 关联标准转跳（需求 5）：M1 资产目录 → 液冷设备档案表「查看」→ 点「关联标准」→ 信息项详情
         click_menu(page, '表结构')
         assert page.locator('.table tbody tr').count() >= 5
-        page.locator('.table tbody tr', has_text='测风数据表').locator('.link', has_text='查看').click()
+        page.locator('.table tbody tr', has_text='液冷设备档案表').locator('.link', has_text='查看').click()
         page.locator('.sub-tabs button', has_text='字段元数据').click()
         assert page.locator('.field-table').count() == 1
-        page.locator('.field-table tbody tr', has_text='风速值').locator('.link', has_text='II0008').click()
+        page.locator('.field-table tbody tr', has_text='冷量分配单元型号名称').locator('.link', has_text='II0003').click()
         assert page.locator('.tab.active', has_text='信息项详情').count() == 1
         assert page.locator('.detail-panel').count() == 1
-        assert page.locator('.detail-panel h3', has_text='风速值').count() == 1
-        assert page.locator('.detail-panel h3', has_text='电压等级编码').count() == 0
+        assert page.locator('.detail-panel h3', has_text='冷量分配单元型号名称').count() == 1
+        assert page.locator('.detail-panel h3', has_text='设备类型编码').count() == 0
         # 关联规则跳转：字段明细「关联规则」列 → 具体规则详情
         click_menu(page, '表结构')
-        page.locator('.table tbody tr', has_text='测风数据表').locator('.link', has_text='查看').click()
+        page.locator('.table tbody tr', has_text='运行遥测表').locator('.link', has_text='查看').click()
         page.locator('.sub-tabs button', has_text='字段元数据').click()
         assert page.locator('.field-table').count() == 1
-        page.locator('.field-table tbody tr', has_text='风速值').locator('.link', has_text='测风风速取值越界').click()
+        page.locator('.field-table tbody tr', has_text='供液温度值').locator('.link', has_text='供液温度取值范围').click()
         assert page.locator('.tab.active', has_text='规则详情').count() == 1
-        assert page.locator('.detail-panel h3', has_text='测风风速取值越界').count() == 1
+        assert page.locator('.detail-panel h3', has_text='供液温度取值范围').count() == 1
         # M4 数据安全分级（十四期：分级总览 + 分类目录 + 分类详情下钻）
         click_menu(page, '数据安全')
         assert page.locator('.tab', has_text='数据安全').count() == 1
@@ -364,33 +364,33 @@ def main():
         assert page.locator('.modal label', has_text='一级分类').count() == 1
         assert page.locator('.modal label', has_text='二级分类').count() == 1
         page.locator('.modal button', has_text='取消').click()
-        page.locator('.table tbody tr', has_text='测风数据').locator('button', has_text='编辑').first.click()
+        page.locator('.table tbody tr', has_text='液冷设备数据').locator('button', has_text='编辑').first.click()
         assert page.locator('.modal h3', has_text='编辑数据安全分类').count() == 1
         page.locator('.modal button', has_text='取消').click()
         # 状态列 + 停用/启用切换（可逆不物理删）
         assert page.locator('.table thead th', has_text='状态').count() == 1
-        assert page.locator('.table tbody tr', has_text='测风数据').locator('button', has_text='停用').count() == 1
-        # 分类目录「海底地形测绘数据」查看明细 → 数据安全分类详情（扁平字段列表：表名/字段中文名/字段英文名/字段安全分级来源/操作，5 字段）
-        page.locator('.table tbody tr', has_text='海底地形测绘数据').locator('.link', has_text='查看明细').click()
+        assert page.locator('.table tbody tr', has_text='液冷设备数据').locator('button', has_text='停用').count() == 1
+        # 分类目录「核心工艺参数数据」查看明细 → 数据安全分类详情（扁平字段列表：表名/字段中文名/字段英文名/字段安全分级来源/操作，5 字段）
+        page.locator('.table tbody tr', has_text='核心工艺参数数据').locator('.link', has_text='查看明细').click()
         assert page.locator('.tab.active', has_text='数据安全分类详情').count() == 1
         assert page.locator('.detail-panel').count() == 1
         for col in ['表名', '字段中文名', '字段英文名', '字段安全分级来源', '操作']:
             assert page.locator('.detail-panel thead th', has_text=col).count() == 1, f'缺表头 {col}'
-        assert page.locator('.detail-panel table tbody tr').count() == 5   # 5 个定位字段
+        assert page.locator('.detail-panel table tbody tr').count() == 6   # 6 个定位字段
         assert page.locator('.detail-panel', has_text='所属项目').count() == 0   # 不含主数据引用字段
         assert page.locator('.detail-panel .tag', has_text='继承').count() >= 1
         # 分类详情「定位」→ 字段级高亮转跳 M1
         page.locator('.detail-panel table tbody tr .link', has_text='定位').first.click()
         assert page.locator('.field-table').count() == 1
         assert page.locator('.row-active').count() == 1
-        # 字段元数据「安全分级」列反向转跳：水深 → 海底地形测绘数据分类详情
+        # 字段元数据「安全分级」列反向转跳：压差设定 → 核心工艺参数数据分类详情
         click_menu(page, '表结构')
-        page.locator('.table tbody tr', has_text='海底地形测绘表').locator('.link', has_text='查看').click()
+        page.locator('.table tbody tr', has_text='工艺参数表').locator('.link', has_text='查看').click()
         page.locator('.sub-tabs button', has_text='字段元数据').click()
         assert page.locator('.field-table').count() == 1
-        page.locator('.field-table tbody tr', has_text='水深').locator('.link', has_text='海底地形测绘数据').click()
+        page.locator('.field-table tbody tr', has_text='压差设定').locator('.link', has_text='核心工艺参数数据').click()
         assert page.locator('.tab.active', has_text='数据安全分类详情').count() == 1
-        assert page.locator('.detail-panel h3', has_text='海底地形测绘数据').count() == 1
+        assert page.locator('.detail-panel h3', has_text='核心工艺参数数据').count() == 1
         # M5 主数据管理（同步占位，不可新增；清单 5 列 + 详情三 tab）
         click_menu(page, '主数据')
         assert page.locator('.tab', has_text='主数据').count() == 1
@@ -419,7 +419,7 @@ def main():
         page.locator('.detail-panel .link', has_text='定位').first.click()
         assert page.locator('.field-table').count() == 1
         assert page.locator('.row-active').count() == 1
-        assert page.locator('.tab.active', has_text='风机设备表').count() == 1
+        assert page.locator('.tab.active', has_text='液冷设备档案表').count() == 1
 
         # ① 数据质量看板
         click_menu(page, '数据质量看板')
@@ -444,10 +444,10 @@ def main():
         # 5 个计数卡片
         for label in ['未登记表', '疑似下线表', '未登记字段', '疑似下线字段', '漂移字段']:
             assert page.locator('.stat-card', has_text=label).count() == 1, f'缺计数卡片 {label}'
-        # 表级差异明细：未登记表 scada_alarm_raw
-        assert page.locator('.table tbody tr', has_text='scada_alarm_raw').count() == 1
-        # 字段级差异明细：漂移字段 active_power_value
-        assert page.locator('.table tbody tr', has_text='active_power_value').count() == 1
+        # 表级差异明细：未登记表 sensor_raw
+        assert page.locator('.table tbody tr', has_text='sensor_raw').count() == 1
+        # 字段级差异明细：漂移字段 consumption_value
+        assert page.locator('.table tbody tr', has_text='consumption_value').count() == 1
         # 只读：无写操作按钮（范围限定工作区，排除侧边栏「门户资产新增」导航项）
         assert page.locator('.tab-panel button', has_text='新增').count() == 0
         # ④ 文件交换（列表 + 详情 + 审批链 + 源表转跳 + 占位）
@@ -457,7 +457,7 @@ def main():
         # 库级字段（入站任务展示库名）
         assert page.locator('.table thead th', has_text='源系统 · 源对象').count() == 1
         assert page.locator('.table thead th', has_text='目标系统 · 目标对象').count() == 1
-        assert page.locator('.table tbody tr', has_text='scada_telemetry_db').count() == 1
+        assert page.locator('.table tbody tr', has_text='iot_telemetry_db').count() == 1
         page.locator('button', has_text='发起交换申请').click()
         assert page.locator('.modal').count() == 1
         page.locator('.modal button', has_text='知道了').click()
@@ -470,12 +470,12 @@ def main():
         assert page.locator('.row-active').count() == 0   # 表详情非字段定位，无高亮
         # 入站详情：库级字段 + 采集元数据快照 + 转跳表结构目录
         click_menu(page, '文件交换')
-        page.locator('.table tbody tr', has_text='SCADA遥测数据接入').locator('.link').first.click()
+        page.locator('.table tbody tr', has_text='运行遥测数据接入').locator('.link').first.click()
         assert page.locator('.tab.active', has_text='文件交换详情').count() == 1
         assert page.locator('.detail-panel', has_text='源库').count() == 1
-        assert page.locator('.detail-panel', has_text='scada_telemetry_db').count() == 1
+        assert page.locator('.detail-panel', has_text='iot_telemetry_db').count() == 1
         assert page.locator('.detail-panel', has_text='采集元数据快照').count() == 1
-        assert page.locator('.detail-panel', has_text='scada_alarm_raw').count() == 1
+        assert page.locator('.detail-panel', has_text='sensor_raw').count() == 1
         page.locator('.detail-panel .link', has_text='查看目录').click()
         assert page.locator('.tab.active', has_text='表结构').count() == 1
         # ⑥ 数据服务（列表 + 详情 + 审批链 + 封装资产转跳 + 占位）
@@ -493,9 +493,9 @@ def main():
         assert page.locator('.detail-head').count() == 1
 
         # ⑧ 数据服务接入指南（十六期）：三类接入契约 + 复制按钮 + 无鉴权/密钥
-        # API 类型（svc_001 风资源评估 API）
+        # API 类型（svc_001 设备运行监控 API）
         click_menu(page, '数据服务')
-        page.locator('.table tbody tr', has_text='风资源评估 API').locator('button.link').first.click()
+        page.locator('.table tbody tr', has_text='设备运行监控 API').locator('button.link').first.click()
         assert page.locator('.tab.active', has_text='数据服务详情').count() == 1
         assert page.locator('.detail-panel', has_text='接入指南').count() == 1
         assert page.locator('.detail-panel', has_text='接口地址').count() == 1
@@ -507,16 +507,16 @@ def main():
         assert page.locator('.detail-panel', has_text='密钥').count() == 0
         assert page.locator('.detail-panel', has_text='鉴权').count() == 0
         assert page.locator('.detail-panel', has_text='API Key').count() == 0
-        # 订阅类型（svc_002 SCADA 实时数据订阅）
+        # 订阅类型（svc_002 遥测实时订阅）
         click_menu(page, '数据服务')
-        page.locator('.table tbody tr', has_text='SCADA 实时数据订阅').locator('button.link').first.click()
+        page.locator('.table tbody tr', has_text='遥测实时订阅').locator('button.link').first.click()
         assert page.locator('.detail-panel', has_text='协议').count() == 1
         assert page.locator('.detail-panel', has_text='MQTT').count() >= 1
         assert page.locator('.detail-panel', has_text='订阅主题').count() == 1
         assert page.locator('.detail-panel', has_text='消息字段').count() == 1
-        # 数据包类型（svc_004 海域限制因素共享）
+        # 数据包类型（svc_004 核心工艺参数共享）
         click_menu(page, '数据服务')
-        page.locator('.table tbody tr', has_text='海域限制因素共享').locator('button.link').first.click()
+        page.locator('.table tbody tr', has_text='核心工艺参数共享').locator('button.link').first.click()
         assert page.locator('.detail-panel', has_text='文件格式').count() == 1
         assert page.locator('.detail-panel', has_text='下载地址').count() == 1
         assert page.locator('.detail-panel', has_text='包含字段').count() == 1
@@ -551,7 +551,7 @@ def main():
         page.locator('.picker-results input[type=checkbox]').first.check()
         assert page.locator('.table tbody tr', has_text='数据表').count() == 1
         # 名称搜索过滤：命中 / 无命中
-        page.locator('.picker-search input').fill('测风')
+        page.locator('.picker-search input').fill('液冷')
         assert page.locator('.picker-results label').count() >= 1
         page.locator('.picker-search input').fill('zzz_not_exist')
         assert page.locator('.picker-empty', has_text='无匹配资产').count() == 1
@@ -559,7 +559,7 @@ def main():
         # 跨模块转跳：质量看板 → 定位字段 → 打开表详情 tab
         page.locator('.tab', has_text='数据质量看板').click()
         page.locator('.issue .link').first.click()
-        assert page.locator('.tab.active', has_text='测风数据表').count() == 1
+        assert page.locator('.tab.active', has_text='质检记录表').count() == 1
         assert page.locator('.field-table').count() == 1
         print('page_test PASS')
         browser.close()

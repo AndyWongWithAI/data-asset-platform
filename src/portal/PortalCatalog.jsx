@@ -3,13 +3,13 @@ import { useData } from '../DataContext.jsx';
 import Tag from '../components/Tag.jsx';
 
 const LEVEL_TONE = { L1: 'ok', L2: 'default', L3: 'warn', L4: 'danger' };
-const CATEGORIES = ['风资源', '海洋勘测', '风机设备', '运营监测', '海域环境'];
+const CATEGORIES = ['液冷设备', '运行监测', '能效分析', '工艺标准', '客户项目'];
 const CAT_COLOR = {
-  '风资源': '#00b42a',
-  '海洋勘测': '#165dff',
-  '风机设备': '#722ed1',
-  '运营监测': '#ff7d00',
-  '海域环境': '#0fc6c2',
+  '液冷设备': '#00b42a',
+  '运行监测': '#165dff',
+  '能效分析': '#722ed1',
+  '工艺标准': '#ff7d00',
+  '客户项目': '#0fc6c2',
 };
 
 export default function PortalCatalog({ onOpenAsset }) {

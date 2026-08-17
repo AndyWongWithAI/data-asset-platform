@@ -29,19 +29,19 @@ def main():
         assert page.locator('.header-title h1').inner_text() == '数据资产门户'
         assert page.locator('.header button', has_text='资产管理').count() == 1
         assert page.locator('.asset-card').count() == 8
-        # 统计条：已上架 8 · 业务分类 5 · 覆盖数据表 6
-        assert page.locator('.portal-stat-num').all_inner_texts() == ['8', '5', '6']
+        # 统计条：已上架 8 · 业务分类 5 · 覆盖数据表 4
+        assert page.locator('.portal-stat-num').all_inner_texts() == ['8', '5', '4']
         # 精选资产：单一列表 + 精选角标置顶（精选不拆区，仍在全部资产中）
         assert page.locator('.asset-grid').count() == 1
         assert page.locator('.asset-featured').count() == 3
         assert page.locator('.asset-card').nth(0).locator('.asset-featured').count() == 1
         # 分类导航筛选
-        page.locator('.portal-cats button', has_text='海洋勘测').click()
-        assert page.locator('.asset-card').count() == 2
+        page.locator('.portal-cats button', has_text='工艺标准').click()
+        assert page.locator('.asset-card').count() == 3
         page.locator('.portal-cats button', has_text='全部').click()
         assert page.locator('.asset-card').count() == 8
-        # 搜索（「地质钻孔」仅命中 pa_004 一条，验证搜索过滤；勿用「测风」——会同时命中 pa_001 名 + pa_002 描述共 2 条）
-        page.locator('.portal-toolbar input').fill('地质钻孔')
+        # 搜索（「BOM 物料」仅命中 pa_004 一条，验证搜索过滤）
+        page.locator('.portal-toolbar input').fill('BOM 物料')
         assert page.locator('.asset-card').count() == 1
         page.locator('.portal-toolbar input').fill('')
         # 详情 + 占位按钮
@@ -51,7 +51,7 @@ def main():
         page.locator('.detail-panel .link', has_text='返回目录').click()
         assert page.locator('.asset-card').count() == 8
         # 申请类资产 → 「申请开通」占位
-        page.locator('.asset-card', has_text='风资源评估 API').click()
+        page.locator('.asset-card', has_text='设备运行监控 API').click()
         assert page.locator('.detail-panel button', has_text='申请开通').count() >= 1
         page.locator('.detail-panel .link', has_text='返回目录').click()
         assert page.locator('.asset-card').count() == 8

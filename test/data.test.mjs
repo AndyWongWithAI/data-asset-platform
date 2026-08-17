@@ -303,7 +303,7 @@ test('字段名与信息项标准名对齐（6 字段已贯标）', () => {
     const ii = iiMap.get(f.management.standardId);
     if (f.business.nameCn === ii.nameCn && f.business.code === ii.nameEn) aligned.add(f.id);
   }
-  const expected = new Set(['f_wind_speed', 'f_scada_temp', 'f_prog_progress', 'f_cable_voltage', 'f_scada_power', 'f_turbine_model']);
+  const expected = new Set(['f_dev_model', 'f_tel_supply_temp', 'f_tel_return_temp', 'f_tel_power', 'f_comm_progress', 'f_energy_pue']);
   assert.deepEqual([...aligned].sort(), [...expected].sort(), '已对齐字段集合应精确等于这 6 个字段');
 });
 
@@ -377,7 +377,7 @@ test('securityCatalog 13 条 + id 唯一 + 分级/分类合法 + 字段级定位
   assert.equal(D.securityCatalog.length, 13, 'securityCatalog 应恰好 13 条');
   assert.equal(ids(D.securityCatalog).size, D.securityCatalog.length, 'securityCatalog id 重复');
   const levels = new Set(['L1', 'L2', 'L3', 'L4']);
-  const categories = new Set(['项目经营域', '设计研发域', '工程交付域', '专业技术域', '支撑服务域']);
+  const categories = new Set(['项目经营域', '设计研发域', '生产制造域', '集成实施域', '智慧运维域']);
   const catalogIds = ids(D.securityCatalog);
   for (const sc of D.securityCatalog) {
     assert.ok(sc.id && sc.category1 && sc.category2 && sc.dataType, `securityCatalog ${sc.id} 缺 id/category1/category2/dataType`);
@@ -424,7 +424,7 @@ test('portalAssets 引用完整 + 治理一致（securityLevel >= 打包对象�
   assert.equal(data.portalAssets.length, 8);
   const ids = new Set(data.portalAssets.map((a) => a.id));
   assert.equal(ids.size, 8, 'portalAssets id 应唯一');
-  const CATS = ['风资源', '海洋勘测', '风机设备', '运营监测', '海域环境'];
+  const CATS = ['液冷设备', '运行监测', '能效分析', '工艺标准', '客户项目'];
   const USAGE = ['下载', '申请'];
   const STATUS = ['已上架', '已下架', '审批中'];
   for (const a of data.portalAssets) {
