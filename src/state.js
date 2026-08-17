@@ -1,29 +1,32 @@
 // tab 状态机纯逻辑，不依赖 React，可 node --test
 export const MODULE_GROUPS = [
-  { name: '生产态·治理看板', items: [
-    { key: 'qualityBoard', title: '数据质量看板', implemented: true },
-    { key: 'standardBoard', title: '数据标准看板', implemented: true },
-    { key: 'metadataCompare', title: '元数据比对', implemented: true },
-  ]},
-  { name: '设计态·定义', items: [
-    { key: 'catalog', title: '表结构', implemented: true },
-    { key: 'quality', title: '数据质量', implemented: true },
-    { key: 'standard', title: '数据标准', implemented: true, children: [
-      { key: 'baseTerm', title: '基础术语', implemented: true },
-      { key: 'valueDomain', title: '值域', implemented: true },
-      { key: 'refData', title: '参考数据', implemented: true },
-      { key: 'infoItem', title: '信息项', implemented: true },
-    ]},
-    { key: 'security', title: '数据安全', implemented: true },
-    { key: 'masterdata', title: '主数据', implemented: true },
-    { key: 'dataExchange', title: '数据交换', implemented: true, children: [
-      { key: 'fileExchange', title: '文件交换', implemented: true },
-      { key: 'dataService', title: '数据服务', implemented: true },
-    ]},
-  ]},
-  { name: '系统管理', items: [
-    { key: 'portalManagement', title: '门户管理', implemented: true },
-  ]},
+  {
+    name: '',
+    items: [
+      { key: 'dataExchange', title: '数据交换', implemented: true, children: [
+        { key: 'fileExchange', title: '文件交换', implemented: true },
+        { key: 'dataService', title: '数据服务', implemented: true },
+      ]},
+      { key: 'catalog', title: '表结构', implemented: true },
+      { key: 'quality', title: '数据质量', implemented: true },
+      { key: 'standard', title: '数据标准', implemented: true, children: [
+        { key: 'baseTerm', title: '基础术语', implemented: true },
+        { key: 'valueDomain', title: '值域', implemented: true },
+        { key: 'refData', title: '参考数据', implemented: true },
+        { key: 'infoItem', title: '信息项', implemented: true },
+      ]},
+      { key: 'security', title: '数据安全', implemented: true },
+      { key: 'masterdata', title: '主数据', implemented: true },
+      { key: 'governanceBoard', title: '治理看板', implemented: true, children: [
+        { key: 'qualityBoard', title: '数据质量看板', implemented: true },
+        { key: 'standardBoard', title: '数据标准看板', implemented: true },
+        { key: 'metadataCompare', title: '元数据比对', implemented: true },
+      ]},
+      { key: 'systemManagement', title: '系统管理', implemented: true, children: [
+        { key: 'portalManagement', title: '门户管理', implemented: true },
+      ]},
+    ],
+  },
 ];
 
 // 非侧边栏模块：表详情（多实例，每张表一个 tab，标题取表名）

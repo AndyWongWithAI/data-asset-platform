@@ -58,12 +58,9 @@ def main():
         # 顶部标题只保留「数据资产管理平台」
         assert page.locator('.header-title h1').inner_text() == '数据资产管理平台'
         assert page.locator('.header-subtitle').count() == 0
-        # 三个大分组可折叠/展开
-        assert page.locator('.sidebar-group-dir').count() == 3
-        assert page.locator('.sidebar-group-dir', has_text='系统管理').count() == 1
-        page.locator('.sidebar-group-dir', has_text='设计态·定义').click()
-        assert page.locator('.sidebar-item', has_text='表结构').count() == 0
-        page.locator('.sidebar-group-dir', has_text='设计态·定义').click()
+        # 顶层目录平铺（无一级分组名），系统管理为可折叠父级目录，表结构为顶层叶子
+        assert page.locator('.sidebar-group-dir').count() == 0
+        assert page.locator('.sidebar-dir', has_text='系统管理').count() == 1
         assert page.locator('.sidebar-item', has_text='表结构').count() == 1
         # 侧边栏搜索框：按目录名过滤
         search = page.locator('.sidebar-search input')
@@ -144,7 +141,7 @@ def main():
         assert_no_hscroll(page)
         # 恢复常规视口
         page.set_viewport_size({'width': 1280, 'height': 720})
-        # 打开数据质量看板（生产态）
+        # 打开数据质量看板
         click_menu(page, '数据质量看板')
         assert page.locator('.tab', has_text='数据质量看板').count() == 1
         # M2 数据质量
@@ -183,7 +180,7 @@ def main():
         assert page.locator('.sidebar-sub', has_text='基础术语').count() == 0   # 折叠后不可见
         page.locator('.sidebar-dir', has_text='数据标准').click()
         assert page.locator('.sidebar-sub', has_text='基础术语').count() == 1   # 再点展开
-        # 数据交换（设计态下二级目录：父级「数据交换」含 文件交换/数据服务 2 子项）
+        # 数据交换（顶层目录：父级「数据交换」含 文件交换/数据服务 2 子项）
         assert page.locator('.sidebar-sub', has_text='文件交换').count() == 1   # 默认展开
         page.locator('.sidebar-dir', has_text='数据交换').click()
         assert page.locator('.sidebar-sub', has_text='文件交换').count() == 0   # 折叠后不可见
@@ -424,11 +421,11 @@ def main():
         assert page.locator('.row-active').count() == 1
         assert page.locator('.tab.active', has_text='风机设备表').count() == 1
 
-        # ① 数据质量看板（生产态）
+        # ① 数据质量看板
         click_menu(page, '数据质量看板')
         assert page.locator('.tab', has_text='数据质量看板').count() == 1
         assert page.locator('.score-row').count() >= 2
-        # ② 数据标准看板（生产态）+ 贯标对齐判定（需求 6）
+        # ② 数据标准看板 + 贯标对齐判定（需求 6）
         click_menu(page, '数据标准看板')
         assert page.locator('.tab', has_text='数据标准看板').count() == 1
         assert page.locator('.score-row').count() >= 1
@@ -440,10 +437,10 @@ def main():
         assert page.locator('th', has_text='应用名称').count() == 2  # 应用维度表 + 明细表各一列
         assert page.locator('th', has_text='表名称').count() == 1
         assert page.locator('th', has_text='字段名称').count() == 1
-        # ③ 元数据比对（生产态差异清单，只读）
+        # ③ 元数据比对（差异清单，只读）
         click_menu(page, '元数据比对')
         assert page.locator('.tab', has_text='元数据比对').count() == 1
-        assert page.locator('h3', has_text='企业整体生产元数据情况').count() == 1
+        assert page.locator('h3', has_text='企业整体元数据情况').count() == 1
         # 5 个计数卡片
         for label in ['未登记表', '疑似下线表', '未登记字段', '疑似下线字段', '漂移字段']:
             assert page.locator('.stat-card', has_text=label).count() == 1, f'缺计数卡片 {label}'
@@ -471,13 +468,13 @@ def main():
         page.locator('.detail-panel .link', has_text='查看').click()
         assert page.locator('.detail-head').count() == 1   # 表详情默认表级元数据
         assert page.locator('.row-active').count() == 0   # 表详情非字段定位，无高亮
-        # 入站详情：库级字段 + 生产元数据快照 + 转跳表结构目录
+        # 入站详情：库级字段 + 采集元数据快照 + 转跳表结构目录
         click_menu(page, '文件交换')
         page.locator('.table tbody tr', has_text='SCADA遥测数据接入').locator('.link').first.click()
         assert page.locator('.tab.active', has_text='文件交换详情').count() == 1
         assert page.locator('.detail-panel', has_text='源库').count() == 1
         assert page.locator('.detail-panel', has_text='scada_telemetry_db').count() == 1
-        assert page.locator('.detail-panel', has_text='生产元数据快照').count() == 1
+        assert page.locator('.detail-panel', has_text='采集元数据快照').count() == 1
         assert page.locator('.detail-panel', has_text='scada_alarm_raw').count() == 1
         page.locator('.detail-panel .link', has_text='查看目录').click()
         assert page.locator('.tab.active', has_text='表结构').count() == 1

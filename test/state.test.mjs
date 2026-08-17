@@ -2,23 +2,33 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { MODULE_GROUPS, MODULES, createInitialState, openTab, closeTab, navigate, filterModuleGroups } from '../src/state.js';
 
-test('MODULE_GROUPS 3 组 + standard/数据交换 父级目录 + MODULES 14 叶子 + tableDetail + 门户资产新增 + 10 详情共 26', () => {
-  assert.deepEqual(MODULE_GROUPS.map((g) => g.name), ['生产态·治理看板', '设计态·定义', '系统管理']);
-  const design = MODULE_GROUPS.find((g) => g.name === '设计态·定义');
-  const standard = design.items.find((i) => i.key === 'standard');
+test('MODULE_GROUPS 单根组 8 顶层项 + 4 父级目录 + MODULES 14 叶子 + tableDetail + 门户资产新增 + 10 详情共 26', () => {
+  assert.equal(MODULE_GROUPS.length, 1, '应为单根分组');
+  const root = MODULE_GROUPS[0];
+  assert.equal(root.name, '', '根分组名应为空');
+  assert.deepEqual(
+    root.items.map((i) => i.key),
+    ['dataExchange', 'catalog', 'quality', 'standard', 'security', 'masterdata', 'governanceBoard', 'systemManagement'],
+    '顶层顺序：数据交换在最前、治理看板在系统管理上方'
+  );
+  const standard = root.items.find((i) => i.key === 'standard');
   assert.ok(standard && standard.children, 'standard 应为父级目录');
   assert.deepEqual(standard.children.map((c) => c.key), ['baseTerm', 'valueDomain', 'refData', 'infoItem']);
-  const dataExchange = design.items.find((i) => i.key === 'dataExchange');
-  assert.ok(dataExchange && dataExchange.children, '数据交换 应为设计态下的父级目录');
+  const dataExchange = root.items.find((i) => i.key === 'dataExchange');
+  assert.ok(dataExchange && dataExchange.children, '数据交换 应为父级目录');
   assert.deepEqual(dataExchange.children.map((c) => c.key), ['fileExchange', 'dataService']);
-  const sysAdmin = MODULE_GROUPS.find((g) => g.name === '系统管理');
-  assert.ok(sysAdmin, '系统管理 组应存在');
-  assert.deepEqual(sysAdmin.items.map((i) => i.key), ['portalManagement'], '门户管理 应在 系统管理 下');
-  assert.ok(!design.items.some((i) => i.key === 'portalManagement'), '门户管理 不应再在 设计态·定义 下');
+  const gov = root.items.find((i) => i.key === 'governanceBoard');
+  assert.ok(gov && gov.children, '治理看板 应为父级目录');
+  assert.deepEqual(gov.children.map((c) => c.key), ['qualityBoard', 'standardBoard', 'metadataCompare']);
+  const sysAdmin = root.items.find((i) => i.key === 'systemManagement');
+  assert.ok(sysAdmin && sysAdmin.children, '系统管理 应为父级目录');
+  assert.deepEqual(sysAdmin.children.map((c) => c.key), ['portalManagement'], '门户管理 应在 系统管理 下');
   const leafKeys = MODULES.map((m) => m.key);
   assert.equal(leafKeys.length, 26); // 14 叶子模块 + tableDetail + 门户资产新增 + 10 详情模块
   assert.ok(!leafKeys.includes('standard'), 'standard 父级不应是模块');
   assert.ok(!leafKeys.includes('dataExchange'), '数据交换 父级不应是模块');
+  assert.ok(!leafKeys.includes('governanceBoard'), '治理看板 父级不应是模块');
+  assert.ok(!leafKeys.includes('systemManagement'), '系统管理 父级不应是模块');
   assert.ok(leafKeys.includes('tableDetail'));
   assert.ok(leafKeys.includes('metadataCompare'), '元数据比对应在 MODULES');
   const detailKeys = ['infoItemDetail', 'valueDomainDetail', 'refDataDetail', 'qualityDetail', 'masterdataDetail', 'fileExchangeDetail', 'dataServiceDetail', 'securityDetail', 'securityCatalogDetail', 'portalManagementDetail'];
@@ -85,26 +95,27 @@ test('门户资产新增为非侧边栏模块：仅由「发起上架」转跳�
   assert.ok(!sidebarKeys.includes('portalAssetCreate'), '门户资产新增不应在侧边栏');
 });
 
-test('filterModuleGroups 空查询原样返回；命中叶子/父级目录名/分组名分别过滤', () => {
+test('filterModuleGroups 空查询原样返回；命中叶子/父级目录名分别过滤', () => {
   assert.deepEqual(filterModuleGroups(MODULE_GROUPS, ''), MODULE_GROUPS);
   assert.deepEqual(filterModuleGroups(MODULE_GROUPS, '   '), MODULE_GROUPS);
 
-  // 命中叶子：'文件' → 仅设计态组，数据交换目录下只剩 文件交换
+  // 命中叶子：'文件' → 数据交换目录下只剩 文件交换
   const leaf = filterModuleGroups(MODULE_GROUPS, '文件');
-  assert.deepEqual(leaf.map((g) => g.name), ['设计态·定义']);
+  assert.equal(leaf.length, 1);
   const dxLeaf = leaf[0].items.find((i) => i.key === 'dataExchange');
   assert.deepEqual(dxLeaf.children.map((c) => c.key), ['fileExchange']);
 
   // 命中父级目录名：'数据交换' → 该目录整组保留（文件交换 + 数据服务）
   const parent = filterModuleGroups(MODULE_GROUPS, '数据交换');
-  assert.deepEqual(parent.map((g) => g.name), ['设计态·定义']);
+  assert.equal(parent.length, 1);
   const dxParent = parent[0].items.find((i) => i.key === 'dataExchange');
   assert.deepEqual(dxParent.children.map((c) => c.key), ['fileExchange', 'dataService']);
 
-  // 命中分组名：'生产态' → 整组保留 3 项
-  const grp = filterModuleGroups(MODULE_GROUPS, '生产态');
-  assert.deepEqual(grp.map((g) => g.name), ['生产态·治理看板']);
-  assert.equal(grp[0].items.length, 3);
+  // 命中父级目录名：'治理看板' → 该目录整组保留 3 项
+  const gov = filterModuleGroups(MODULE_GROUPS, '治理看板');
+  assert.equal(gov.length, 1);
+  const govItem = gov[0].items.find((i) => i.key === 'governanceBoard');
+  assert.deepEqual(govItem.children.map((c) => c.key), ['qualityBoard', 'standardBoard', 'metadataCompare']);
 
   // 无命中 → 空数组
   assert.deepEqual(filterModuleGroups(MODULE_GROUPS, '不存在的目录'), []);

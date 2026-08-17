@@ -57,7 +57,7 @@ export default function FileExchangeDetailModule({ onNavigate, assetId }) {
       </div>
       {inbound && (
         <>
-          <h4>生产元数据快照</h4>
+          <h4>采集元数据快照</h4>
           {snapshot ? (
             <>
               <div className="kv-list">
@@ -80,7 +80,7 @@ export default function FileExchangeDetailModule({ onNavigate, assetId }) {
               </table>
             </>
           ) : (
-            <div className="empty-hint">暂无生产元数据快照</div>
+            <div className="empty-hint">暂无采集元数据快照</div>
           )}
         </>
       )}

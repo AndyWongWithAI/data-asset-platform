@@ -36,7 +36,7 @@ test('metadataCompare：漂移字段维度精确（active_power_value 类型+中
   assert.deepEqual(driftMap.get('FOUNDATION'), ['nameCn']);
 });
 
-test('metadataCompare：漂移字段生产侧/设计态侧对照值正确', () => {
+test('metadataCompare：漂移字段实际侧/登记侧对照值正确', () => {
   const byCode = new Map(
     result.fieldDiffs.filter((d) => d.type === 'drift').map((d) => [d.prod.code, d])
   );
